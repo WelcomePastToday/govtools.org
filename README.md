@@ -1,22 +1,21 @@
-# GovTools Home (The Hub)
+# GovTools Registry (govtools.org)
 
-This is the central portal for the **GovTools** monorepo `WelcomePastToday/govtools`. 
-It serves as the front-page routing to all sub-applications and visually renders metrics via dashboards (like the `gov-posts` and `gov-web-edits` trackers).
+This is the central portal for the **GovTools** ecosystem (`WelcomePastToday/govtools.org`). 
+It serves as the front-page routing and discovery registry for all sub-applications in the network.
 
 ## Overview
 
 - **Framework**: Next.js 15+ (App Router)
 - **Role**: It reads from `govtools.registry.yaml` to dynamically render navigation cards and routing links to the "Spoke" applications (e.g., Cataloger, Trackers).
-- **Data Dependency**: The trackers generate output directories (`govtools-posts-tracker/data`, `gov-web-edits/output`). In production, Docker maps these raw directories into `govtools-home/public` allowing the visualizations to pull static JSON/CSV data without touching the source code.
+- **Data Dependency**: None. This is a lightweight routing and registry application. The dashboards and trackers have been separated into `govtools-dashboard` and `govtools-data`.
 
 ## Development
 
 ```bash
-cd govtools/govtools-home
 npm install
 npm run dev
 ```
 
-For environment secrets, please use the master `.env.local` located at the root of the monorepo (`govtools/`).
+For local development, copy `.env.example` to `.env.local`. In production, secrets are injected centrally via the `govtools-infra` orchestrator.
 
 > **Security Note:** Avoid revealing backend infrastructure details (such as orchestration tools, registry file names, or specific network configs) on the public-facing UI. The landing page should remain opaque regarding how it is managed behind the scenes.
