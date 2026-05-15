@@ -1,0 +1,295 @@
+- name: GovTools System Standards (Infrastructure)
+  priority: highest
+  type: rules
+  paths:
+    - SYSTEM.md
+  instructions:
+    - PROACTIVE DATA PERSISTENCE: Use BIND MOUNTS (./data:/app/data). NO named volumes.
+    - Update .gitignore for all new data paths.
+    - Add new data paths to `pull-data.sh` immediately.
+
+- name: Swiss International Style Enforcement (Visual Design)
+  priority: highest
+  type: rules
+  paths:
+    - govtools-home/DESIGN.md
+  instructions:
+    - STRICTLY adhere to Swiss Modernism: Mathematical Grid, Asymmetry, Sans-Serif.
+    - NO rounded corners > 2px. NO shadows. Left-align text.
+    - If it looks like "modern SaaS," it is wrong.
+
+- name: GovTools Style Contract (Non-Negotiables)
+  priority: highest
+  type: rules
+  instructions:
+    - Layout: NO Cards. Content sits directly on the white background, separated by 1px lines or whitespace.
+    - Typography: Inter/Helvetica. Left-aligned. Sentence case headers. Tabular numbers.
+    - Interaction: 1px borders, minimal hover states (bg-gray-50).
+    - Data: Always show source, date, status. Use specific, plain language.
+    - Grid: 12-column. 8px vertical rhythm.
+    - Optimize for 2040 credibility: If it looks trendy, remove it.
+
+- name: GovTools Automation Triggers
+  priority: high
+  type: reference
+  description: |
+    All scheduled automation for the GovTools project. Do not add new automation
+    without updating this entry.
+  triggers:
+    - name: "Internet Archive Open Materials Sync"
+      what: "Fetches latest counts from the Internet Archive API and appends to history.json"
+      where: "Digital Ocean server (cron)"
+      schedule: "Daily at 00:00 UTC"
+      mechanism: "crontab: curl https://open.govtools.org/api/cron-sync?key=CRON_KEY"
+      data_output: "ia_open_data Docker volume (/app/data/)"
+
+    - name: "Gov Posts Tracker (Embassy X/Twitter Screenshots)"
+      what: "Screenshots embassy X/Twitter accounts, saves CSVs + PNGs, rsyncs to server"
+      where: "Local Mac (launchd)"
+      schedule: "Daily at 12:00 PM local time"
+      mechanism: "~/Library/LaunchAgents/local.govtools.tracker.plist → govtools-posts-tracker/run_robust.sh"
+      data_output: "govtools-posts-tracker/data/ (local + rsynced to server)"
+      skip_logic: "Skips handles processed within 8 hours"
+
+    - name: "Gov Web Edits (Government Document Change Detection)"
+      what: "Processes 384 target URLs through Wayback Machine CDX API, fetches captures, hashes content, detects changes"
+      where: "Digital Ocean server (cron)"
+      schedule: "Weekly on Sunday at 02:00 UTC"
+      mechanism: "crontab: cd ~/govtools/gov-web-edits && ./run.sh --file targets.txt --mode recent >> ~/gov-web-edits.log 2>&1"
+      data_output: "gov-web-edits/output/ (timeline.jsonl + changelog.jsonl per URL)"
+      bottleneck: "Wayback Machine rate limiting (I/O bound, not CPU)"
+
+- context: "Internet Archive API Sync"
+  instruction: "When fetching comparative stats from a continuously updating source, ALWAYS fetch the public (subset) data BEFORE the admin (superset) data. This ensures the admin snapshot captures any items indexed during the public fetch, preventing negative gaps."
+
+- context: "Docker Data Management"
+  instruction: "NEVER try to delete or modify container data by manipulating files in the local repository if the service uses named volumes (e.g., ia_data:/app/data). ALWAYS use docker exec <container> <command> to manipulate files inside the active volume."
+
+- context: "Historical Data Integrity"
+  instruction: |
+    - No Live Fallbacks: NEVER implement live fallbacks for components meant to display archived state. Render empty states instead.
+    - Archived Views Must Stay Pure: If a metric is defined as historical/archival, do not silently switch to live sources when historical data is missing.
+
+- context: "Chart Projections"
+  instruction: "When calculating growth projections, ALWAYS verify existence of at least two historical data points. Do not attempt to project trends from a single data point."
+
+- context: "Internet Archive Query Syntax"
+  instruction: "To strictly differentiate between Open and Restricted items, ALWAYS use _exists_:access-restricted-item for restricted content and NOT _exists_:access-restricted-item for open content. Do not rely on valid/public flags alone."
+
+- context: "Internet Archive Official Statistics (2025)"
+  instruction: |
+    When in need of general statistics or statements about Internet Archive quantities, draw upon these approved numbers:
+    - GENERAL: 210+ unique PB data, 113+ million public items, 3M daily viewers, 23k daily uploads.
+    - WAYBACK MACHINE: 1 trillion web pages, 800M pages captured daily.
+    - ARCHIVE-IT: 25k collections (6.6 PB), 1,400 partners.
+    - BOOKS: 56 million texts, 8.4M digitized books, 15k+ periodicals.
+    - TELEVISION: 3.3 million news programs.
+    - MOVIES: 11.5 million movie items.
+    - AUDIO: 13 million items (280k live concerts, 187k 78rpm).
+    - SOFTWARE: 1.3 million titles.
+    - IMAGES: 5.3 million items.
+
+- context: "Environment Configuration"
+  instruction: "Critical environment variables (e.g., CRON_KEY, IA_ACCESS_KEY) are managed in .env.local files located in the govtools-home directory on the server. When adding new keys, ALWAYS append them to the server's .env.local via SSH and restart the affected containers (e.g., docker restart <container>)."
+
+- context: "Deployment & Version Control"
+  instruction: |
+    The deployment workflow involves three synchronized repositories. When pushing changes:
+    1. Commit & Push App Repo: `git -C ../<app-repo> commit -m "update" && git -C ../<app-repo> push origin main`
+    2. Update Server: `ssh deploy@govtools.org "cd <app-repo> && git pull origin main"`
+    3. Rebuild Containers (ALL): `ssh deploy@govtools.org "cd ../govtools-home && docker compose up -d --build"`
+    3a. Rebuild Single App (Faster): `ssh deploy@govtools.org "cd ../govtools-home && docker compose up -d --build --no-deps <service_name>"` (service_names: `cataloger`, `ia-open`, `home`)
+    4. (Optional) Primary Website Repo: If changes affect the main `govtools` monorepo structure, push that as well: `git push origin main`.
+
+    TROUBLESHOOTING (502 Bad Gateway / Application Down):
+    - Verify server status: `ssh deploy@govtools.org "cd govtools-home && docker compose ps"`
+    - Full Rebuild Procedure: If apps are largely unresponsive, perform a full pull and rebuild:
+      `ssh deploy@govtools.org "cd govdoc-cataloger && git pull && cd ../ia-open-materials && git pull && cd ../govtools-home && git pull && docker compose up -d --build --force-recreate"`
+
+- context: "Internet Archive Authentication"
+  instruction: |
+    Authentication heavily impacts query limits and visibility. Use a tiered approach:
+    1) Primary (Cookies): For Python scripts/local tools, piggyback on the ia CLI tool's credentials. Run ia configure --print, extract logged-in cookies (logged-in-user / logged-in-sig), and inject them into the Cookie header. This is the most reliable way to mimic a logged-in user and bypass public IP rate limits.
+    2) Secondary/Server (Keys): For headless servers or configured apps, use IA_ACCESS_KEY and IA_SECRET_KEY environment variables (S3-like auth).
+
+    Always prefer authenticated queries over anonymous ones to access restricted items and reduce 429/throughput issues.
+
+- context: "Internet Archive Operational Intelligence"
+  instruction: |
+    IA endpoint selection (pick the right data source for the question):
+
+    1) Time-sliced analytics (by day/month; counts by statuscode/domain)
+       - Prefer: internal ES/OpenSearch or internal aggregates (time-first, supports group-by).
+       - Avoid: public CDX enumeration for time-sliced analytics unless no time-first store exists.
+
+    2) Playback / captures for a URL
+       - Use: CDX API (lookup by exact URL, prefix, host, or domain).
+       - Note: CDX is URL-key ordered (playback-optimized), not time-ordered.
+
+    3) Ingestion accounting (what arrived yesterday)
+       - Use: Databox/Petabox queries by addeddate + mediatype=web to list items uploaded on date X.
+       - Then: download per-item CDX/CDXJ files and aggregate locally by domain/status.
+       - Caveat: addeddate != capture timestamp. Recent days are eventually consistent; allow rolling backfills and LABEL outputs as upload-day rollups (not capture-day truth).
+
+    CDX-specific rules:
+    - CDX Ordering Bias: for matchType=domain/host/prefix, results are ordered by URL-key, NOT capture time. limit=2000 is a lexically biased triage sample, not most recent. Treat fast scans as triage only; confirm via deep paging or time-first sources.
+    - Two-phase reporting:
+      a) Fast Scan (triage): small capped sample per domain to find candidates.
+      b) Deep Measure (forensics): only for flagged domains; page through full result set with showResumeKey.
+    - Volume pre-pass: estimate workload from result pages (pages * ~6000 captures/page); isolate huge domains.
+    - Parallelism: run process-per-domain jobs with bounded concurrency (start 5–10), tune based on VM I/O and timeouts.
+    - Batching: when paging, request moderate batches (e.g., 10–20 pages worth of work) and adapt downward if 503/504/IncompleteRead rises.
+    - Reliability: expect 503/504/timeouts/IncompleteRead; retry with exponential backoff + jitter; checkpoint frequently; run under tmux; log to file (tee).
+
+    Analysis dimensions:
+    - When possible, track capture method/collection separately (e.g., SPN vs other pipelines) because block rates can differ by method.
+
+- context: "Projects: EOT Transparency Metrics"
+  instruction: "The ia-documents project (documents.govtools.org) renders public Google Docs with a fixed Update metrics bar. It uses a YAML registry for metrics, IndexedDB for local storage, and prioritizes a doc-first reading experience. Updates should preserve the print-friendly layout and rigorous provenance display (Source, Archive, Fallback)."
+
+- context: "EOT Metrics: Preferred Data Methods"
+  instruction: "When computing By The Numbers metrics for EOT2024 or WARC collections, prioritize approaches in this order. For status-code analytics/time series (e.g., 403/429/5xx), prefer Tier 1 time-first aggregates (ES/OpenSearch, ingestion rollups) over Tier 2 raw CDX enumeration."
+  preferred_methods:
+    - id: index_first_zipnum_cdx_parquet
+      title: "Index-First derivatives (CDXJ/ZipNum/Parquet)"
+      priority_order: 1
+      when_to_use: "Default approach for any volume or trend analysis."
+      why: "Avoids expensive raw fetches; leverages existing indices."
+      cost_tier: "tier1"
+      primary_method: "Query Parquet or ZipNum indices."
+      fallback_method: "CDX Cache or Local Snapshot."
+      normalization_or_validation_steps: "Filter likely HTML by extension; verify MIME and earliest capture via CDX API."
+      sampling_policy: "Every-6000th ZipNum sampling + log downsampling."
+      implementation_hints: "Start from index-like derivatives (CDXJ/ZipNum/Parquet), reduce via heuristics, confirm via CDX API, only then do expensive checks."
+      example_queries_or_pipeline_steps: "ZipNum sampled from CDX by taking every 6,000th entry; filter likely HTML by extension; verify MIME and earliest capture via CDX API; balance popular domains via logarithmic downsampling."
+      outputs: "{ count: number, size: bytes, breakdown: object }"
+      citations: "JCDL25_WBM_URL_Sampling.pdf: every-6000th ZipNum sampling + log downsampling; JCDL25_WBM_Temporal_Trends.pdf."
+
+    - id: timemap_metadata_volatility_metrics
+      title: "TimeMap/CDX Metadata Volatility"
+      priority_order: 2
+      when_to_use: "For computing offline/online signals and stability."
+      why: "Metadata is cheaper than body fetches."
+      cost_tier: "tier1"
+      primary_method: "Compute using TimeMaps/CDX metadata without full-body fetch."
+      fallback_method: "Last known volatility score."
+      normalization_or_validation_steps: "archival_span = t_last - t_first; archival_rate = memento_count/span_years; resilience = stability of HTTP status; fixity = payload digest stability."
+      implementation_hints: "Use ZipNum sampling + CDX API for millions of URIs."
+      example_queries_or_pipeline_steps: "TimeMaps for 27.3M URIs via ZipNum sampling + CDX API."
+      outputs: "{ archival_span: days, archival_rate: number, resilience: score, fixity: score }"
+      citations: "JCDL25_WBM_Temporal_Trends.pdf"
+
+    - id: preprocessing_revisit_rehydration_and_surt_fix
+      title: "Revisit Rehydration & SURT Fix"
+      priority_order: 3
+      when_to_use: "When analyzing WARC/revisit records or inconsistent canonicalization."
+      why: "Ensures accurate status codes and deduplication."
+      cost_tier: "tier2"
+      primary_method: "Rehydrate warc/revisit records using LRU cache."
+      fallback_method: "Skip malformed records."
+      normalization_or_validation_steps: "Correct SURT canonicalization issues; restore missing HTTP status codes."
+      implementation_hints: "Make this a reusable normalizer step referenced by other metrics."
+      outputs: "{ hydrated_status: code, corrected_surt: string }"
+      citations: "JCDL25_WBM_Temporal_Trends.pdf"
+
+    - id: domain_balanced_sampling_log_rule
+      title: "Domain-Balanced Sampling (Log Rule)"
+      priority_order: 4
+      when_to_use: "For agency/top-site dashboards to prevent domain dominance."
+      why: "Preserves diversity by downsampling overrepresented domains."
+      cost_tier: "tier1"
+      sampling_policy: "reduced_urls = min(N, round(K * log(N) + C)) with C=1; K tuned per bin."
+      implementation_hints: "Handle long-tail single-URL domains separately. Explicitly mark as preferred policy for top affected dashboards."
+      outputs: "{ balanced_sample: array<url> }"
+      citations: "JCDL25_WBM_URL_Sampling.pdf"
+
+    - id: budgeted_expensive_analysis_precrawl_pattern
+      title: "Budgeted Expensive Analysis (Pre-Crawl Pattern)"
+      priority_order: 5
+      when_to_use: "When live checks (HTTP HEAD/GET) are absolutely necessary."
+      why: "Caps costs while ensuring representative sampling."
+      cost_tier: "tier2"
+      primary_method: "Cheap checks (CDX/HEAD) -> Domain-stratified sampling (1/domain) -> Fixed budget K."
+      fallback_method: "Local Snapshot."
+      normalization_or_validation_steps: "Two-pass scoring; EMA rolling stats for domain reputation."
+      implementation_hints: "Store results to Parquet/DB/TSV. Default budget K=6500."
+      example_queries_or_pipeline_steps: "LightGBM outcome: clean rate improved to 99.63% on 25.5M URL test set."
+      outputs: "{ live_status: code, clean_rate: percent }"
+      citations: "JCDL25_PreCrawl_Seed_Prioritization.pdf"
+
+    - id: eot_derivatives_lineage_pipeline
+      title: "EOT Derivatives Lineage Pipeline"
+      priority_order: 6
+      when_to_use: "For full dataset reconstruction or deep SQL analysis."
+      why: "Provides full provenance and queryability."
+      cost_tier: "tier1 (Query) / tier2 (Rebuild)"
+      primary_method: "WARC -> WAT/WET/CDXJ + META -> Merge -> ZipNum -> Parquet."
+      implementation_hints: "Publish path files. Expose lineage: Parquet query -> path file -> segment directory."
+      example_queries_or_pipeline_steps: "1,216,991 WARC files, 2.3 PB total, by partner."
+      outputs: "{ derivative_paths: list, parquet_tables: list }"
+      citations: "JCDL25_EOT24_Dataset.pdf"
+
+    - id: pdf_url_extract_and_classify_oads
+      title: "PDF URL Extract & Classify (OADS)"
+      priority_order: 7
+      when_to_use: "For analyzing PDF content for datasets vs software."
+      why: "Context extraction yields better classification than URL heuristics."
+      cost_tier: "tier2"
+      primary_method: "Extract URLs from WET/PDF; classify using SciBERT-style context window."
+      implementation_hints: "Track distinct external URLs and live availability (404/vanish). Use prev/current/next sentence context."
+      outputs: "{ classification: 'dataset'|'software', context_score: number }"
+      citations: "JCDL25_OADS_URL_Classification.pdf"
+
+    - id: decentralized_snapshot_replication_iparo_optional
+      title: "Decentralized Snapshot Replication (IPARO)"
+      priority_order: 8
+      when_to_use: "Optional: For resilient mirroring of metric snapshots."
+      why: "Ensures By-The-Numbers site remains resilient."
+      cost_tier: "tier2/experimental"
+      primary_method: "Publish snapshots as content-addressed objects with latest pointer (IPNS)."
+      implementation_hints: "Keep mutable latest pointer; link to prior snapshots."
+      outputs: "{ ipfs_hash: string, ipns_key: string }"
+      citations: "JCDL25_IPARO_Linking_Strategies.pdf"
+
+    - id: update_loop_preference
+      title: "Update Loop Preference Policy"
+      priority_order: 9
+      when_to_use: "When defining the behavior of the Update button."
+      why: "Standardizes UX and cost management."
+      implementation_hints: "Tier 0 (Show Local) -> Tier 1 (Derived Query in seconds) -> Tier 2 (Budgeted Live Check). Ensure every method biases toward index-first approaches."
+
+- context: "Projects: EOT 2024 Verified Data Sources"
+  instruction: "Use these confirmed URLs and patterns for specific data points:"
+  sources:
+    - metric: "Webpages Archived"
+      url: "https://web.archive.org/collection-search/EndOfTerm2024WebCrawls/"
+      note: "Text 'Search [number] web pages' is in the header. Use 'is_dead:true' or 'is_dead:false' to filter by liveness."
+    - metric: "Nominators Count"
+      url: "https://digital2.library.unt.edu/nomination/eth2024/"
+      note: "Look for button/text 'Number of Nominators: [count]'. Links to '/reports/metadata/nominator/'."
+    - metric: "Nomination Seeds (URLs)"
+      url: "https://digital2.library.unt.edu/nomination/eth2024/"
+      note: "Look for button/text 'Number of URLs Nominated: [count]'. Links to '/reports/urls/'."
+    - metric: "Nomination Reports"
+      url: "https://digital2.library.unt.edu/nomination/eth2024/reports/"
+      note: "Hub for diverse reports: Unique URLs, SURTs, URL Scores, URL Nominations, URL Dates."
+    - metric: "EOT Partners"
+      url: "https://web.archive.org/web/20250125045108/https://eotarchive.org/partners/"
+      note: "Source for EOT 2024 partner lists. Use 20210125... for 2020 and 20170125... for 2016."
+    - metric: "Gov Domains (GSA)"
+      url: "https://raw.githubusercontent.com/GSA/govt-urls/refs/heads/main/2_govt_urls_federal_only.csv"
+      note: "Source for .gov/.mil and non-standard federal domain counts."
+    - metric: "Misc Gov Domains (Non-Gov/Mil)"
+      url: "https://git.archive.org/antoine/eot2024-keyword-tracker/-/raw/4bd353c28af942e0a71955e56ee0fef6f9cb6528/gov_url_filter/non_govmil_federal_domains.txt"
+      note: "List of ~1000 known US Federal Government hostnames without .gov/.mil TLDs."
+    - metric: "USAGM Seeds (Domains/URLs)"
+      url: "https://docs.google.com/spreadsheets/d/1xTVbUkLYaab8avMfzC_OYEh8Ks1Ne3pmiCA82E3Rzc4/edit?gid=1781772063"
+      note: "USAGM Compiled Seeds. Tabs: Domain List and URLs Only."
+
+- context: "Wayback Machine URL Handling"
+  instruction: |
+    When a user provides a Wayback Machine URL (e.g., https://web.archive.org/web/YYYYMMDDHHMMSS/TARGET_URL):
+    1. Extract the TARGET URL (the original source) and use it for all content analysis, validation, and metadata extraction.
+    2. Treat the provided WBM URL as a "User-Provided Snapshot" and verify its availability.
+    3. Do NOT strip the WBM prefix without retaining the snapshot information; use it to avoid redundant archiving.
+    4. Populate "Original/Source URL" with the extracted TARGET URL, and "Archived URL" with the full WBM URL.

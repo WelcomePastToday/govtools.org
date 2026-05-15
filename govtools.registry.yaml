@@ -1,0 +1,56 @@
+# Central Registry of GovTools Applications
+# Single Source of Truth for Portals, Status, and Deployment Metadata
+
+apps:
+  - id: gov-posts
+    name: "Test Gov Posts Tracker"
+    description: "A dashboard for observing U.S. State Deptartment post counts"
+    path: "govtools-posts-tracker"
+    url: "/gov-posts"
+    status: active
+    project_info:
+      note: "Live Dashboard"
+      link_text: "View Analysis"
+      link_url: "/gov-posts"
+
+  - id: gov-web-edits
+    name: "Test Gov Document Change Monitor"
+    description: "Detects content changes in 383 federal government documents using Wayback Machine captures. Updated weekly."
+    path: "gov-web-edits"
+    url: "/gov-web-edits"
+    status: active
+    project_info:
+      note: "Weekly scan · 2024-01-01 to present"
+      link_text: "View Report"
+      link_url: "/gov-web-edits"
+
+  - id: govdoc-cataloger
+    name: "Test FDLP Cataloger"
+    description: "Archive and report government documents to the GPO."
+    path: "govdoc-cataloger"
+    url: "https://cataloger.govtools.org"
+    port: 3001
+    status: active
+    project_info:
+      note: "Source Code"
+      link_text: "GitHub"
+      link_url: "https://github.com/WelcomePastToday/govdoc-cataloger"
+
+  - id: ia-documents
+    name: "Auto Update Reports"
+    description: "Automated reporting pipeline for government document update tracking."
+    path: "ia-documents"
+    url: "https://documents.govtools.org"
+    port: 3003
+    status: active
+    hidden: true
+  - id: eot-explorer
+    name: "EOT Explorer 2024"
+    description: "Multi-archiver forensic audit of the 2024 End Of Term web crawl. Deduplicating billions of government records."
+    path: "eot-explorer"
+    url: "/eot/contributors"
+    status: active
+    project_info:
+      note: "Live Dashboard: 3.6B+ Baseline"
+      link_text: "View Forensic Audit"
+      link_url: "/eot/contributors"

@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.DS_Store
+.env*
+*.local
+public/DNI
+public/backups
+public/2026-04-29_DNI_PDFs - DNI_PDFs.csv

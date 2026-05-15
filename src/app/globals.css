@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  /* Swiss International Style Palette (v2.0) */
+  /* Neutral Canvas */
+  --color-paper: #FFFFFF;
+  --color-panel: #F9F9F9;
+  /* Off-white for subtle banding */
+  --color-ink: #171717;
+  /* Almost black, high contrast */
+  --color-text-primary: #171717;
+  --color-text-secondary: #737373;
+  /* Mid-gray for meta */
+  --color-text-muted: #A3A3A3;
+  /* Light gray for placeholders */
+  --color-border: #E5E5E5;
+  /* Crisp, light dividers */
+
+  /* Functional Accents */
+  --color-link: #0050FF;
+  /* International Blue */
+  --color-link-hover: #0039B3;
+  /* Darker Blue */
+  --color-accent: #0050FF;
+
+  /* Status Indicators (Sparingly used) */
+  --color-status-success: #15803D;
+  /* Forest Green */
+  --color-status-warning: #B45309;
+  /* Deep Orange */
+  --color-status-error: #DC2626;
+  /* Swiss Red */
+}
+
+:root {
+  --background: var(--color-paper);
+  --foreground: var(--color-text-primary);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  /* Fallback to system stack if Geist fails, but prioritize clean grots */
+  font-family: var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  /* Tighter leading for data density */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Scale & Tracking */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-bold text-ink tracking-tight;
+  /* -0.02em tracking for display sizes */
+  letter-spacing: -0.02em;
+}
+
+/* Data Tables: Swiss Precision */
+table {
+  @apply w-full border-collapse;
+}
+
+th {
+  @apply text-left text-xs uppercase tracking-wider font-medium text-text-secondary py-3 px-4 border-b border-border bg-panel;
+}
+
+td {
+  @apply py-3 px-4 border-b border-border text-sm align-top;
+  /* Tabular numbers for alignment */
+  font-variant-numeric: tabular-nums;
+}
+
+tr:hover td {
+  @apply bg-panel;
+}
+
+/* Layout Utilities */
+.max-content {
+  max-width: 1200px;
+  /* Stricter width for readability */
+  @apply mx-auto px-6;
+}
+
+/* Utility: Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Recharts Focus Overrides */
+.recharts-wrapper, .recharts-surface, .recharts-responsive-container {
+  outline: none !important;
+}
