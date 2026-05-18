@@ -54,3 +54,13 @@ apps:
       note: "Live Dashboard: 3.6B+ Baseline"
       link_text: "View Forensic Audit"
       link_url: "/eot/contributors"
+
+  - id: to-do-list-manager
+    name: "To-Do List Manager"
+    description: "Mark's collaborative to-do list manager."
+    path: "to-do-list-manager"
+    url: "/todos"
+    port: 5001
+    status: active
+    hidden: true
+
