@@ -55,6 +55,17 @@ apps:
       link_text: "View Forensic Audit"
       link_url: "/eot/contributors"
 
+  - id: erschliessung
+    name: "Erschließung — Archival Evidence for Open Models"
+    description: "Pipeline turning archival PDFs into compact, structured evidence packages that open-source AI models can use directly. Tests whether evidence packaging materially improves open-tier table reasoning on Internet Archive collections."
+    path: "Erschliessung"
+    url: "/erschliessung"
+    status: active
+    project_info:
+      note: "Diagnostic benchmark · 13 questions across 3 archival documents"
+      link_text: "View Report"
+      link_url: "/erschliessung"
+
   - id: to-do-list-manager
     name: "To-Do List Manager"
     description: "Mark's collaborative to-do list manager."
