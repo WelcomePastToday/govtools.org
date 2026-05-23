@@ -380,16 +380,23 @@ export const VARIANTS: Variant[] = [
       determinism: "deterministic",
     },
     results: {
-      typicalCardSize: "V27: 28 KB index map | V35: 28 KB | NOAA: 5 KB",
-      relativeToBaseline: "not yet wired into the harness — two-shot retrieval is a future evaluation mode",
+      bestOpenModelScore: "5/13 (Qwen2.5-7B, Granite-3.3-8B with M3-IDX two-shot mode)",
+      bestOpenModels: ["Qwen2.5-7B", "Granite-3.3-8B"],
+      avgOpenTierPassRate: "~25% across the 7 open models (vs ~55% under M3-L4 oracle)",
+      typicalCardSize: "V27: 17 KB index map | V35: 18 KB | NOAA: 3 KB",
+      cycleNumber: 31,
+      relativeToBaseline: "Evaluated in cycle 31 via the new M3-IDX two-shot retrieval harness mode. Result: every model loses 2-6 cells vs the cycle 17 M3-L4 oracle ceiling. The strongest open models (Qwen-7B, Granite-8B) lose the most (-6 each) because the open-tier breakthrough was the oracle removing retrieval. Three structural failure modes surfaced: caption-quality bottleneck (Q-NAT-INT-001 had 0% retrieval — all V27 phosphorus-table captions read 'No caption detected.'), pipeline mis-label propagation (Q-NAT-012 had 5/8 models pick `table_124` instead of `table_125` because the pipeline mis-labels nauplii data as 'cyprid'), and negative-control retrieval immunity (Q-NOAA-NEG-001 had 0% retrieval but 88% pass because no table has 1948 data).",
     },
     outputLocation: "card_sets/pipeline-v0.7-doc-index/",
     cardCount: "3 maps (one per document)",
     caveats: [
-      "Not yet evaluated in the harness — current evaluation uses oracle-mode (M3-L4) which assumes the right table is pre-selected. A two-shot harness mode would feed this index first, then the model-selected card.",
+      "Many V27/V35 entries read `'No caption detected.'` because Docling couldn't OCR a caption for that table — the model has to guess from `rows × cols` and `type` columns. This is the dominant bottleneck cycle 31 exposed.",
+      "Pipeline mis-labels (a wrong caption assigned to a table) cause retrieval failures across every model. Q-NAT-012's 0% retrieval is entirely due to the table_124 caption saying 'cyprid' when the data is actually nauplii — same mis-label first caught in cycle 2.",
+      "Negative-control questions are retrieval-immune: when no table has the answer, picking the wrong table still produces a correct refusal. Q-NOAA-NEG-001 had 0% retrieval correct but 88% verdict pass.",
+      "Recommended next variant: enriched doc-index with 2-3 sample rows + column headers + scope info per table entry. Index size grows ~3× but stays well under any context limit.",
     ],
-    introducedIn: "v0.7 map structures, 2026-05-22.",
-    relatedSlugs: ["pipeline-v0.6.1-stitch-map", "pipeline-v0.6.1-csv-only"],
+    introducedIn: "v0.7 map structures, 2026-05-22. Evaluated via M3-IDX mode, 2026-05-23.",
+    relatedSlugs: ["pipeline-v0.6.1-stitch-map", "pipeline-v0.6.1-csv-only", "mode-m3-idx"],
   },
 
   {
@@ -436,7 +443,28 @@ export const VARIANTS: Variant[] = [
       determinism: "deterministic",
     },
     introducedIn: "Cycle 2.1, 2026-05-20.",
-    relatedSlugs: ["mode-m2c", "mode-m2a", "mode-m3-ac"],
+    relatedSlugs: ["mode-m2c", "mode-m2a", "mode-m3-ac", "mode-m3-idx"],
+  },
+
+  {
+    slug: "mode-m3-idx",
+    name: "M3-IDX — Two-shot retrieval mode",
+    category: "mode",
+    status: "experimental",
+    oneLine: "Model picks a table from a per-document index, then receives that table. Tests retrieval + reading together; isolates the cost of removing the oracle.",
+    description: "Two model calls per question. Call 1: serve the doc-index map (`pipeline-v0.7-doc-index/<sha>/doc-index.map.md`, ~3-18 KB) with the question; the model responds with `CHOICE: table_NNN`. Call 2: load the model-selected table card and serve it under the existing M3-L4 prompt; the model answers. The verdict is whether the answer passes the scorer. An additional metric, `retrieval_correct`, records whether the model's choice matched the oracle card_id — separating retrieval failure from reading failure. If the model fails to return a parseable choice, the cell is marked fail (no oracle fallback). Designed to expose the model's own ability to find the correct table, which the M3-L4 oracle mode hides.",
+    generation: {
+      inputSources: ["pipeline-v0.7-doc-index variant", "raw pipeline-v0.6.1 cards for the model-selected table", "Question registry (harness/core.py QUERIES dict — used only to validate retrieval correctness, NOT to choose the card)"],
+      generatorScript: "evaluation_runs/cycle_runner.py:run_cell_idx + build_idx_call_1_prompt + build_idx_call_2_prompt + parse_chosen_table_id",
+      aiUsed: false,
+      aiUsageNote: "The harness itself is deterministic. The MODEL is the AI doing two calls per cell — that's the test, not a pipeline choice.",
+      ocrUsed: "inherits-from-pipeline",
+      processingTime: "~20-30 seconds per cell on local 7-8B open models (two model calls per cell). ~60 minutes for 8 models × 13 questions.",
+      resourceIntensity: "medium",
+      determinism: "deterministic",
+    },
+    introducedIn: "Cycle 31, 2026-05-23.",
+    relatedSlugs: ["mode-m3-l4", "pipeline-v0.6.1-doc-index"],
   },
 
   {
