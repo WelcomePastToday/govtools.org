@@ -83,16 +83,13 @@ export default function PublicInterestPage() {
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-16 mb-16 border-b border-border">
           <div className="lg:pr-12">
             <div className="text-xs text-text-secondary uppercase tracking-widest mb-4">
-              Public-interest open models — per-question results
+              The unit of access shift, in evidence
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6 text-ink">
-              What Apertus and ClimateGPT actually answered correctly.
+              The compact CSV card unlocks answers the raw PDF and the giant JSON cannot deliver.
             </h1>
             <p className="text-lg text-text-secondary leading-relaxed">
-              Per-cell results for two mission-aligned open models on the
-              Erschließung 13-question diagnostic, with the compact CSV-format
-              evidence card served via oracle retrieval. The questions shown
-              are the ones at least one of these two models answered correctly.
+              Two open public-interest models — Apertus 8B Instruct (Swiss AI Initiative) and ClimateGPT 13B (climate-domain Llama-2 fine-tune) — answered <strong className="text-ink font-medium">7 of the 13 diagnostic questions correctly</strong> when handed a ~1.5 KB compact CSV evidence card. They could not use the raw PDF (text-only models cannot ingest PDF binaries) or the raw Docling JSON (~30 MB decompressed; their 4–8 K context windows overflow). The unit of access is the evidence slice, not the document.
             </p>
           </div>
           <div className="lg:pt-8">
@@ -339,7 +336,7 @@ export default function PublicInterestPage() {
             <p className="text-sm leading-relaxed text-ink">
               Cycle 17 ran 14 models × 13 questions on the csv-only variant —
               see the{" "}
-              <Link href="/erschliessung/evaluation_runs/cycles/heatmap.html" className="text-accent hover:text-link-hover">
+              <Link href="/erschliessung/heatmap.html" className="text-accent hover:text-link-hover">
                 cycle heatmap
               </Link>{" "}
               for the full panel. The cycle 17 scores were later understood as

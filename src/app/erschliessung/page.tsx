@@ -133,7 +133,7 @@ export default function ErschliessungPage() {
               Interpolation
             </Link>
             <a
-              href="/erschliessung/evaluation_runs/cycles/heatmap.html"
+              href="/erschliessung/heatmap.html"
               className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
             >
               Cycle heatmap
@@ -144,25 +144,25 @@ export default function ErschliessungPage() {
 
       <main className="max-w-5xl mx-auto px-6 py-16">
 
-        {/* ─────────── Hero (asymmetric) ─────────── */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-16 mb-16 border-b border-border">
-          <div className="lg:pr-12">
+        {/* ─────────── Hero ─────────── */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-16 mb-16 border-b border-border">
+          <div className="lg:col-span-8">
             <div className="text-xs text-text-secondary uppercase tracking-widest mb-4">
-              Compact archival evidence for open models
+              Erschließung · Archival evidence packaging for open models
             </div>
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6 text-ink">
-              Docling extracts the structure. The pipeline turns it into evidence that open models can use.
+              Evidence packaging changes what open models can do with archives.
             </h1>
-          </div>
-          <div className="lg:pt-8">
-            <p className="text-lg text-text-secondary leading-relaxed mb-6">
-              Compact Docling-derived evidence packages help open models answer difficult table questions from archival documents — without loading the full PDF or relying on a proprietary API workflow.
+            <p className="text-lg text-text-secondary leading-relaxed">
+              Docling extracts the structure. The pipeline turns that structure into compact, citable evidence packages — and changing the format alone lifts open-tier pass rate on a 13-question diagnostic from 27% to 55%, without fine-tuning or a proprietary API workflow.
             </p>
+          </div>
+          <div className="lg:col-span-4 lg:pt-2">
             <div className="text-xs text-text-secondary uppercase tracking-widest mb-3">
-              Primary takeaway
+              The unit of access shifts
             </div>
-            <p className="text-base font-medium leading-relaxed pt-4 border-t border-border">
-              The most important variable is not only model size. It is whether the archive presents evidence in a form the model can actually use.
+            <p className="text-base font-medium leading-relaxed pt-4 border-t border-border text-ink">
+              Not the whole PDF. Not the giant Docling JSON. The specific table or evidence slice a model needs to answer a question.
             </p>
           </div>
         </section>
@@ -183,91 +183,8 @@ export default function ErschliessungPage() {
           </div>
         </section>
 
-        {/* ─────────── What this project tests ─────────── */}
-        <Section title="What this project tests" tag="Method · 01">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-            <div>
-              <p className="mb-4 text-sm leading-relaxed text-ink">
-                This project tests whether archival PDFs — particularly those already preserved by the Internet Archive — can be transformed into compact, structured evidence packages that open models can use to answer real questions about table data.
-              </p>
-              <p className="text-sm leading-relaxed text-ink">
-                The central finding: evidence packaging can materially improve open-model performance without requiring the full original PDF or a closed-source API workflow.
-              </p>
-            </div>
-            <div>
-              <p className="mb-4 text-sm leading-relaxed text-ink">
-                The diagnostic benchmark uses 13 carefully authored questions across three archival source documents: two scanned marine biology journals (1947–48, 1956) and one born-digital NOAA fisheries report.
-              </p>
-              <p className="text-sm leading-relaxed text-ink">
-                Each question tests a different rubric — direct cell lookup, multi-cell arithmetic, interpolation, negative-control refusal, and pattern inference.
-              </p>
-            </div>
-          </div>
-        </Section>
-
-        {/* ─────────── PDF → Docling outputs tree ─────────── */}
-        <Section title="What Docling produces from one PDF" tag="Outputs · 02">
-          <p className="text-sm leading-relaxed mb-3 text-ink">
-            Every source PDF is processed once. The pipeline writes its outputs to a content-addressed directory keyed by the PDF&apos;s SHA-256, so the same input always produces the same on-disk tree.
-          </p>
-          <p className="text-sm leading-relaxed mb-6 text-ink">
-            Of everything below, only <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> is canonical: it contains the full structural extraction Docling produced in-memory — layout, table cell structure, captions, headings, figure bounding boxes, reading order. Every other file is a derivative our pipeline writes for convenience and can be regenerated from the JSON alone. An archive that only publishes <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> (the Internet Archive&apos;s likely case) gives downstream consumers everything they need to reconstitute card variants, table CSVs, and indexes themselves.
-          </p>
-          <pre className="border border-border rounded-sm bg-panel/40 px-5 py-4 overflow-x-auto text-[11.5px] leading-[1.55] font-mono whitespace-pre text-ink mb-4">
-            {OUTPUT_TREE}
-          </pre>
-          <p className="text-xs text-text-secondary leading-relaxed">
-            Card variants do not re-run Docling — they only reshape the per-table card (what to keep, strip, or rewrite). That is why the variant comparison further down is a fair head-to-head: the underlying extraction is identical across all rows.
-          </p>
-        </Section>
-
-        {/* ─────────── Open-model results ─────────── */}
-        <Section title="Open-model results" tag="Diagnostic · 03">
-          <p className="text-sm leading-relaxed mb-6 text-ink">
-            All models evaluated under identical conditions: each received exactly one compact CSV-formatted evidence card per question (the relevant table only), plus the question and a single-sentence system instruction. No proprietary tooling was required to produce the cards.
-          </p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
-              <thead>
-                <tr>
-                  <th>Model</th>
-                  <th>Model type</th>
-                  <th className="text-right">Highest Score</th>
-                  <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {MODEL_ROWS.map((r, i) => (
-                  <tr
-                    key={i}
-                    className={r.highlight ? "[&_td]:bg-panel font-medium" : ""}
-                  >
-                    <td className={r.highlight || r.emphasis ? "font-medium text-ink" : ""}>{r.model}</td>
-                    <td className="text-text-secondary">{r.type}</td>
-                    <td className="text-right tabular-nums font-medium">{r.score}</td>
-                    <td className="text-text-secondary">{r.notes}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p className="text-xs text-text-secondary mt-4 leading-relaxed">
-            Two 7–8B-class open-weight models reach 11/13 on this diagnostic — strong open-model performance that approaches the closed reference baseline. The one-cell gap is a known pipeline issue (a table split across a page break) that is addressable on the pipeline side, not a model capability limit.
-          </p>
-        </Section>
-
-        {/* ─────────── Core insight callout ─────────── */}
-        <section className="mb-16 border-t border-b border-border py-8">
-          <div className="text-xs text-text-secondary uppercase tracking-widest mb-2">
-            Core insight
-          </div>
-          <p className="text-base font-medium text-ink leading-relaxed">
-            Several open and open-weight models perform strongly when the table is delivered as a compact CSV-formatted evidence card rather than a full-document derivative. A 3-billion-parameter open model can outperform a 13-billion-parameter domain-oriented open model on the same task when the smaller model receives a better-shaped evidence package.
-          </p>
-        </section>
-
         {/* ─────────── How CSV-format cards lifted open-tier ─────────── */}
-        <Section title="How CSV-format cards lifted open-tier performance" tag="Variant comparison · 04">
+        <Section title="How CSV-format cards lifted open-tier performance" tag="Evidence packaging · 01">
           <p className="text-sm leading-relaxed mb-6 text-ink">
             Across the full 13-question diagnostic, evidence packaging measurably lifts the average open-tier pass rate:
           </p>
@@ -306,8 +223,123 @@ export default function ErschliessungPage() {
           </div>
         </Section>
 
+        {/* ─────────── Open-model results ─────────── */}
+        <Section title="Open-model results" tag="Diagnostic · 02">
+          <p className="text-sm leading-relaxed mb-6 text-ink">
+            All models evaluated under identical conditions: each received exactly one compact CSV-formatted evidence card per question (the relevant table only), plus the question and a single-sentence system instruction. No proprietary tooling was required to produce the cards.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-[13px]">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Model type</th>
+                  <th className="text-right">Highest Score</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {MODEL_ROWS.map((r, i) => (
+                  <tr
+                    key={i}
+                    className={r.highlight ? "[&_td]:bg-panel font-medium" : ""}
+                  >
+                    <td className={r.highlight || r.emphasis ? "font-medium text-ink" : ""}>{r.model}</td>
+                    <td className="text-text-secondary">{r.type}</td>
+                    <td className="text-right tabular-nums font-medium">{r.score}</td>
+                    <td className="text-text-secondary">{r.notes}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-text-secondary mt-4 leading-relaxed">
+            Two 7–8B-class open-weight models reach 11/13 on this diagnostic — strong open-model performance approaching the closed reference baseline. The one-cell gap is a known pipeline issue (a table split across a page break) that is addressable on the pipeline side, not a model capability limit.
+          </p>
+        </Section>
+
+        {/* ─────────── Core insight callout ─────────── */}
+        <section className="mb-16 border-t border-b border-border py-8">
+          <div className="text-xs text-text-secondary uppercase tracking-widest mb-2">
+            Core insight
+          </div>
+          <p className="text-base font-medium text-ink leading-relaxed">
+            Several open and open-weight models perform strongly when the table is delivered as a compact CSV-formatted evidence card rather than a full-document derivative. A 3-billion-parameter open model can outperform a 13-billion-parameter domain-oriented open model on the same task when the smaller model receives a better-shaped evidence package.
+          </p>
+        </section>
+
+        {/* ─────────── Where the project stands ─────────── */}
+        <section className="mb-16">
+          <div className="flex items-baseline justify-between border-b border-border pb-2 mb-6">
+            <h2 className="text-lg font-bold text-ink tracking-tight">Where the project stands</h2>
+            <span className="text-xs text-text-secondary uppercase tracking-widest">Status · 03</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="border-l-2 border-status-success pl-4">
+              <div className="text-xs uppercase tracking-widest mb-2 text-status-success font-medium">
+                Saturated
+              </div>
+              <p className="text-sm leading-relaxed text-ink mb-2 font-medium">
+                Oracle-retrieval evidence cards.
+              </p>
+              <p className="text-sm leading-relaxed text-text-secondary">
+                When the right table is pre-selected for the model (mode M3-L4), top open models reach 11/13 on the diagnostic. The remaining one-cell gap is a known pipeline issue — Q-NOAA-CALC-001, a table the pipeline splits at a PDF page break — not a model capability limit.
+              </p>
+            </div>
+            <div className="border-l-2 border-status-warning pl-4">
+              <div className="text-xs uppercase tracking-widest mb-2 text-status-warning font-medium">
+                Next bottleneck
+              </div>
+              <p className="text-sm leading-relaxed text-ink mb-2 font-medium">
+                Non-oracle retrieval on the known corpus.
+              </p>
+              <p className="text-sm leading-relaxed text-text-secondary">
+                The system must select the right evidence package itself before asking the model. Two-shot table-of-contents lookup (M3-IDX) and vector retrieval over pre-embedded cards (M3-HYDE) are the candidate mechanisms. Reaching oracle parity here is the gate before any held-out scaling pilot becomes meaningful.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* ─────────── What this project tests ─────────── */}
+        <Section title="What this project tests" tag="Method · 04">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+            <div>
+              <p className="mb-4 text-sm leading-relaxed text-ink">
+                This project tests whether archival PDFs — particularly those already preserved by the Internet Archive — can be transformed into compact, structured evidence packages that open models can use to answer real questions about table data.
+              </p>
+              <p className="text-sm leading-relaxed text-ink">
+                The central finding: evidence packaging can materially improve open-model performance without requiring the full original PDF or a closed-source API workflow.
+              </p>
+            </div>
+            <div>
+              <p className="mb-4 text-sm leading-relaxed text-ink">
+                The diagnostic benchmark uses 13 carefully authored questions across three archival source documents: two scanned marine biology journals (1947–48, 1956) and one born-digital NOAA fisheries report.
+              </p>
+              <p className="text-sm leading-relaxed text-ink">
+                Each question tests a different rubric — direct cell lookup, multi-cell arithmetic, interpolation, negative-control refusal, and pattern inference.
+              </p>
+            </div>
+          </div>
+        </Section>
+
+        {/* ─────────── PDF → Docling outputs tree ─────────── */}
+        <Section title="What Docling produces from one PDF" tag="Outputs · 05">
+          <p className="text-sm leading-relaxed mb-3 text-ink">
+            Every source PDF is processed once. The pipeline writes its outputs to a content-addressed directory keyed by the PDF&apos;s SHA-256, so the same input always produces the same on-disk tree.
+          </p>
+          <p className="text-sm leading-relaxed mb-6 text-ink">
+            Of everything below, only <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> is canonical: it contains the full structural extraction Docling produced in-memory — layout, table cell structure, captions, headings, figure bounding boxes, reading order. Every other file is a derivative our pipeline writes for convenience and can be regenerated from the JSON alone. An archive that only publishes <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> (the Internet Archive&apos;s likely case) gives downstream consumers everything they need to reconstitute card variants, table CSVs, and indexes themselves.
+          </p>
+          <pre className="border border-border rounded-sm bg-panel/40 px-5 py-4 overflow-x-auto text-[11.5px] leading-[1.55] font-mono whitespace-pre text-ink mb-4">
+            {OUTPUT_TREE}
+          </pre>
+          <p className="text-xs text-text-secondary leading-relaxed">
+            Card variants do not re-run Docling — they only reshape the per-table card (what to keep, strip, or rewrite). The variant comparison above is a fair head-to-head because the underlying extraction is identical across all rows.
+          </p>
+        </Section>
+
         {/* ─────────── Possible actions forward ─────────── */}
-        <Section title="Possible actions forward" tag="Roadmap · 05">
+        <Section title="Possible actions forward" tag="Roadmap · 06">
           <div className="border-t border-border">
             {OPTIONS.map((o) => (
               <div key={o.key} className="grid grid-cols-[80px_1fr] gap-6 py-6 border-b border-border">
@@ -324,7 +356,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Caveats ─────────── */}
-        <Section title="Caveats" tag="Scope · 06">
+        <Section title="Caveats" tag="Scope · 07">
           <div className="border-l-2 border-status-warning pl-4 py-1 text-sm leading-relaxed text-ink">
             This is a small diagnostic benchmark — 13 questions across 3 documents — not yet proof of broad generalization. Non-oracle retrieval (Option A) needs to reach oracle parity on the known corpus before any held-out scaling test (Option F) becomes meaningful. The benchmark is designed to surface pipeline failure modes and isolate the evidence-packaging variable; it is not a comprehensive evaluation of open-model capability for all archival use cases.
           </div>
