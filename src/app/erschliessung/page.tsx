@@ -130,7 +130,7 @@ export default function ErschliessungPage() {
               href="/erschliessung/interpolation"
               className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
             >
-              Apertus + ClimateGPT
+              Interpolation
             </Link>
             <a
               href="/erschliessung/evaluation_runs/cycles/heatmap.html"

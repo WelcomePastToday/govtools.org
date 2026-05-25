@@ -68,11 +68,11 @@ export default function PublicInterestPage() {
                 Erschließung
               </Link>
               <span className="mx-2">›</span>
-              Public-interest passes
+              Interpolation
             </span>
           </div>
           <div className="text-xs font-medium text-text-secondary uppercase tracking-widest">
-            Apertus + ClimateGPT
+            Interpolation
           </div>
         </div>
       </header>
