@@ -22,11 +22,9 @@ for (const r of PUBLIC_INTEREST_PASSES) {
 const orderedQids = Array.from(new Set(PUBLIC_INTEREST_PASSES.map((r) => r.qid)));
 
 const totalRows = PUBLIC_INTEREST_PASSES.length;
-const cardCorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.cardEvaluation === "correct").length;
-const cardIncorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.cardEvaluation === "incorrect").length;
-const jsonCorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.jsonEvaluation === "correct").length;
-const jsonIncorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.jsonEvaluation === "incorrect").length;
-const jsonNa = PUBLIC_INTEREST_PASSES.filter((r) => r.jsonEvaluation === "n/a").length;
+const distinctQuestions = new Set(PUBLIC_INTEREST_PASSES.map((r) => r.qid)).size;
+const apertusRows = PUBLIC_INTEREST_PASSES.filter((r) => r.modelLabel.startsWith("Apertus")).length;
+const climateRows = PUBLIC_INTEREST_PASSES.filter((r) => r.modelLabel.startsWith("ClimateGPT")).length;
 
 // Background shading for response cells. Tints reflect each cell's own
 // evaluation independently — same row can be green for the card column
@@ -103,26 +101,26 @@ export default function PublicInterestPage() {
             </div>
             <div className="pt-4 border-t border-border space-y-2 text-sm leading-relaxed text-ink">
               <p>
-                Each row carries the same model and question with three
-                different inputs. The cell tint shows each input&apos;s outcome
-                independently.
+                Each row shows one question that these two public-interest open
+                models <em>can</em> answer correctly when handed the compact
+                Erschließung evidence card, and the failure modes of the same
+                question under raw PDF and raw Docling JSON inputs.
               </p>
               <ul className="space-y-1 pt-2">
                 <li>
                   <span className="font-medium">Raw PDF:</span>{" "}
                   <span className="text-text-secondary">{totalRows} N/A</span>{" "}
-                  — Apertus and ClimateGPT are text-only.
+                  — text-only models can&apos;t ingest PDFs directly.
                 </li>
                 <li>
                   <span className="font-medium">Raw Docling JSON:</span>{" "}
-                  <span className="text-text-secondary">{jsonCorrect} correct · {jsonIncorrect} incorrect · {jsonNa} N/A</span>{" "}
-                  — the IA-default Docling JSON for V27/V35 is on the order of 1 GB; the model&apos;s context window can&apos;t hold it.
+                  <span className="text-text-secondary">{totalRows} N/A</span>{" "}
+                  — ~1 GB JSON overflows the 4K-8K token context window.
                 </li>
                 <li>
                   <span className="font-medium">Compact CSV card:</span>{" "}
-                  <span className="text-status-success">{cardCorrect} correct</span>{" "}
-                  · <span className="text-text-secondary">{cardIncorrect} incorrect</span>{" "}
-                  — the Erschließung pipeline output.
+                  <span className="text-status-success">{totalRows} correct</span>{" "}
+                  — {apertusRows} from Apertus 8B, {climateRows} from ClimateGPT 13B, across {distinctQuestions} distinct questions.
                 </li>
               </ul>
             </div>
@@ -159,7 +157,7 @@ export default function PublicInterestPage() {
             </DetailRow>
             <DetailRow label="Filter">
               <span className="text-sm leading-relaxed text-ink">
-                Questions where AT LEAST ONE of the two models was correct on the compact-card input ({PUBLIC_INTEREST_PASSES_META.questionCountWithAtLeastOnePass} of 13). Questions where neither model passed any input are not shown.
+                One row per (model, question) cell where the model answered correctly on the compact-card input. Incorrect cells and cells where the model wasn&apos;t tested are not shown — this is a positive-evidence table.
               </span>
             </DetailRow>
           </DetailGrid>
@@ -210,18 +208,18 @@ export default function PublicInterestPage() {
                         <span className="text-ink">{row.question}</span>
                       </td>
 
-                      {/* PDF input cell */}
+                      {/* PDF input cell — brief N/A, narrow column */}
                       <td
-                        className="py-3 px-3 text-xs leading-snug max-w-[200px]"
+                        className="py-3 px-3 text-xs leading-snug w-[140px]"
                         style={{ backgroundColor: EVAL_BG[row.pdfEvaluation] }}
                       >
                         <div className="mb-1.5">{evalChip(row.pdfEvaluation)}</div>
                         <div className="text-text-secondary italic">{row.pdfResponse}</div>
                       </td>
 
-                      {/* Docling JSON input cell */}
+                      {/* Docling JSON input cell — brief N/A, narrow column */}
                       <td
-                        className="py-3 px-3 text-xs leading-snug max-w-[220px]"
+                        className="py-3 px-3 text-xs leading-snug w-[160px]"
                         style={{ backgroundColor: EVAL_BG[row.jsonEvaluation] }}
                       >
                         <div className="mb-1.5">{evalChip(row.jsonEvaluation)}</div>
@@ -230,13 +228,13 @@ export default function PublicInterestPage() {
                         </div>
                       </td>
 
-                      {/* Compact CSV card cell */}
+                      {/* Compact CSV card cell — the actual response, wide */}
                       <td
-                        className="py-3 px-3 text-xs leading-snug max-w-[300px]"
+                        className="py-3 px-3 text-sm leading-snug min-w-[420px]"
                         style={{ backgroundColor: EVAL_BG[row.cardEvaluation] }}
                       >
                         <div className="mb-1.5">{evalChip(row.cardEvaluation)}</div>
-                        <div className="font-mono whitespace-pre-wrap text-ink">{row.cardResponse}</div>
+                        <div className="font-mono text-xs whitespace-pre-wrap text-ink">{row.cardResponse}</div>
                       </td>
 
                       <td className="py-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
