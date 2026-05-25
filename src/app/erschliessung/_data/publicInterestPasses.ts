@@ -27,7 +27,7 @@ export const PUBLIC_INTEREST_PASSES_META = {
   cardSizeNote: "Compact CSV-format card, typically ~1.5 KB per question",
   jsonMode: "M2a (raw decompressed docling.json — the IA-default Docling derivative)",
   pdfMode: "N/A — Apertus 8B and ClimateGPT 13B are text-only and cannot ingest a PDF binary directly",
-  questionCountWithAtLeastOnePass: 5,
+  questionCountWithAtLeastOnePass: 6,
 } as const;
 
 export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
@@ -71,6 +71,20 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonResponse: "Context overflow \u2014 ~1 GB JSON vs 4K-8K window.",
     jsonEvaluation: "n/a",
     cardResponse: "Based on the provided data, I will interpolate between the depths of 30 meters (6.1 mg P/m\u00b3) and 40 meters (4.4 mg P/m\u00b3). The organic phosphorus concentration at 35 meters would be estimated as approximately **5.2 mg P/m\u00b3**. This estimate is based on linear interpolation, considering the change in concentration between these two depths.",
+    cardEvaluation: "correct",
+  },
+  {
+    model: "hf.co/bartowski/swiss-ai_Apertus-8B-Instruct-2509-GGUF:Q4_K_M",
+    modelLabel: "Apertus 8B Instruct (Swiss AI)",
+    qid: "Q-NAT-INT-002",
+    question: "If the exact value is missing but the required source values are present, calculate or infer the answer and show the method. A marine biologist examining the offshore phosphorus measurements 3 miles south of the Eddystone Lighthouse on 23 July 1947 wants the organic phosphorus concentration at 25 meters. What would they conclude?",
+    groundTruth: "Unscaffolded interpolation test: 7.85 mg P/m\u00b3; 20m=9.6, 30m=6.1.",
+    iaUrl: "https://archive.org/details/marine-biological-association-uk-journal_1947-1948_27/page/n378/mode/1up",
+    pdfResponse: "Text-only model \u2014 PDF must be pre-converted.",
+    pdfEvaluation: "n/a",
+    jsonResponse: "Context overflow \u2014 ~1 GB JSON vs 4K-8K window.",
+    jsonEvaluation: "n/a",
+    cardResponse: "To find the organic phosphorus concentration at 25 meters, we can interpolate from the given data.\n\nThe closest depth to 25 meters is 30 meters (6.1 mg P per m\u00b3). The next lower depth is 20 meters (9.6 mg P per m\u00b3).\n\nUsing linear interpolation:\n- At 30 meters: Organic = 6.1\n- At 20 meters: Organic = 9.6\n\nThe difference in depth between 30 and 25 meters is 5 meters.\n\nLet's calculate the organic phosphorus concentration at 25 meters using a simple linear interpolation formula:\nOrganic at 25 m \u2248 (6.1 + (9.6 - 6.1) * (25 - 30)) / (20 - 30)\n\nCalculating this gives us approximately 7.8 mg P per m\u00b3.\n\nSo, the marine biologist would conclude that the organic phosphorus concentration at 25 meters is approximately 7.8 mg P per m\u00b3. This conclusion is based on interpolation from the given data in Table III.",
     cardEvaluation: "correct",
   },
   {
