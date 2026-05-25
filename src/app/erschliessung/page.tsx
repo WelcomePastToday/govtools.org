@@ -137,6 +137,12 @@ export default function ErschliessungPage() {
             >
               Variants
             </Link>
+            <Link
+              href="/erschliessung/public-interest"
+              className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
+            >
+              Apertus + ClimateGPT
+            </Link>
             <a
               href="/erschliessung/evaluation_runs/cycles/heatmap.html"
               className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
