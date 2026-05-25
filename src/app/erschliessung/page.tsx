@@ -44,8 +44,6 @@ const MODEL_ROWS: ModelRow[] = [
   { model: "Phi-3-Mini 3.8B", type: "Open-weight, small", access: "Local / reproducible (≤2.5 GB)", score: "4/13", notes: "" },
   { model: "ClimateGPT-70B", type: "Domain-oriented open model", access: "Collaboration / batch run", score: "3/13", notes: "Larger climate-domain Llama-2 variant." },
   { model: "ClimateGPT-7B", type: "Domain-oriented open model", access: "Collaboration / batch run", score: "3/13", notes: "Smaller climate-domain Llama-2 variant." },
-  { model: "PublicAI model endpoint", type: "Public-interest endpoint", access: "Partner endpoint", score: "—", notes: "Evaluation planned. Will be included when tested." },
-  { model: "Closed reference baseline", type: "Proprietary reference", access: "External comparator only", score: "12/13", notes: "Included only to contextualize the diagnostic ceiling. Not the focus of this work.", comparator: true },
 ];
 
 const BENEFITS = [
