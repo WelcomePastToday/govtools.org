@@ -167,7 +167,18 @@ export default function PublicInterestPage() {
         <Section title="Per-cell results" tag="Evidence · 02">
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
+            <table className="w-full text-sm border-collapse" style={{ tableLayout: "auto" }}>
+              {/* Column hints: browser auto-layout picks the actual width from content,
+                  but min-width hints keep narrow columns from being squeezed when one
+                  column's text is dramatically longer than the others. */}
+              <colgroup>
+                <col style={{ minWidth: "110px" }} />     {/* Model */}
+                <col style={{ minWidth: "320px" }} />     {/* Question — widest of the prose cells */}
+                <col style={{ minWidth: "150px", width: "150px" }} />   {/* PDF (brief N/A) */}
+                <col style={{ minWidth: "170px", width: "170px" }} />   {/* JSON (brief N/A) */}
+                <col style={{ minWidth: "380px" }} />     {/* Card response — the actual answer */}
+                <col style={{ minWidth: "130px" }} />     {/* Correct answer */}
+              </colgroup>
               <thead>
                 <tr className="border-b-2 border-ink">
                   <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">Model</th>
@@ -203,23 +214,23 @@ export default function PublicInterestPage() {
                         <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
                         <div className="text-text-secondary">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
                       </td>
-                      <td className="py-3 pr-3 text-sm leading-snug max-w-[200px]">
+                      <td className="py-3 pr-3 text-sm leading-snug">
                         <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{qid}</span>
                         <span className="text-ink">{row.question}</span>
                       </td>
 
-                      {/* PDF input cell — brief N/A, narrow column */}
+                      {/* PDF input cell — brief N/A */}
                       <td
-                        className="py-3 px-3 text-xs leading-snug w-[140px]"
+                        className="py-3 px-3 text-xs leading-snug"
                         style={{ backgroundColor: EVAL_BG[row.pdfEvaluation] }}
                       >
                         <div className="mb-1.5">{evalChip(row.pdfEvaluation)}</div>
                         <div className="text-text-secondary italic">{row.pdfResponse}</div>
                       </td>
 
-                      {/* Docling JSON input cell — brief N/A, narrow column */}
+                      {/* Docling JSON input cell — brief N/A */}
                       <td
-                        className="py-3 px-3 text-xs leading-snug w-[160px]"
+                        className="py-3 px-3 text-xs leading-snug"
                         style={{ backgroundColor: EVAL_BG[row.jsonEvaluation] }}
                       >
                         <div className="mb-1.5">{evalChip(row.jsonEvaluation)}</div>
@@ -228,16 +239,16 @@ export default function PublicInterestPage() {
                         </div>
                       </td>
 
-                      {/* Compact CSV card cell — the actual response, wide */}
+                      {/* Compact CSV card cell — the actual response */}
                       <td
-                        className="py-3 px-3 text-sm leading-snug min-w-[420px]"
+                        className="py-3 px-3 text-sm leading-snug"
                         style={{ backgroundColor: EVAL_BG[row.cardEvaluation] }}
                       >
                         <div className="mb-1.5">{evalChip(row.cardEvaluation)}</div>
                         <div className="font-mono text-xs whitespace-pre-wrap text-ink">{row.cardResponse}</div>
                       </td>
 
-                      <td className="py-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
+                      <td className="py-3 text-sm tabular-nums text-ink font-medium">
                         {row.iaUrl ? (
                           <a
                             href={row.iaUrl}
