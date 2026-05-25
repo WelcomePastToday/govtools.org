@@ -53,6 +53,15 @@ function evalChip(ev: PublicInterestPassRow["evaluation"]) {
   }
 }
 
+// Background shading for the model-response + evaluation cells.
+// Soft tints that read clearly under the Swiss-style neutral palette.
+const EVAL_BG: Record<PublicInterestPassRow["evaluation"], string> = {
+  correct:   "#e6f4ec", // soft green
+  incorrect: "#fbeae8", // soft red/coral
+  partial:   "#fff4dc", // soft amber
+  "n/a":     "#f0f0f0", // soft gray
+};
+
 export default function PublicInterestPage() {
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
@@ -150,44 +159,53 @@ export default function PublicInterestPage() {
                 <tr className="border-b-2 border-ink">
                   <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Model</th>
                   <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary">Question</th>
-                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Correct answer</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary">Model response</th>
                   <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Evaluation</th>
-                  <th className="text-left py-2 font-medium text-xs uppercase tracking-widest text-text-secondary">Model response</th>
+                  <th className="text-left py-2 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Correct answer</th>
                 </tr>
               </thead>
               <tbody>
                 {orderedQids.map((qid) => {
                   const group = rowsByQid[qid] ?? [];
-                  return group.map((row, i) => (
-                    <tr
-                      key={`${qid}-${row.model}`}
-                      className={
-                        i === 0
-                          ? "border-t border-border align-top"
-                          : "border-t border-dotted border-border align-top"
-                      }
-                    >
-                      <td className="py-3 pr-3 text-xs">
-                        <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
-                        <div className="text-text-secondary">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
-                      </td>
-                      <td className="py-3 pr-3 text-sm leading-snug">
-                        <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{qid}</span>
-                        <span className="text-ink">{row.question}</span>
-                      </td>
-                      <td className="py-3 pr-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
-                        {row.groundTruth}
-                      </td>
-                      <td className="py-3 pr-3 whitespace-nowrap">
-                        {evalChip(row.evaluation)}
-                      </td>
-                      <td className="py-3 text-sm text-ink leading-snug">
-                        <div className="font-mono text-xs whitespace-pre-wrap max-w-[460px] text-ink">
-                          {row.modelResponse}
-                        </div>
-                      </td>
-                    </tr>
-                  ));
+                  return group.map((row, i) => {
+                    const tintBg = EVAL_BG[row.evaluation];
+                    return (
+                      <tr
+                        key={`${qid}-${row.model}`}
+                        className={
+                          i === 0
+                            ? "border-t border-border align-top"
+                            : "border-t border-dotted border-border align-top"
+                        }
+                      >
+                        <td className="py-3 pr-3 text-xs">
+                          <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
+                          <div className="text-text-secondary">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
+                        </td>
+                        <td className="py-3 pr-3 text-sm leading-snug">
+                          <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{qid}</span>
+                          <span className="text-ink">{row.question}</span>
+                        </td>
+                        <td
+                          className="py-3 px-3 text-sm text-ink leading-snug"
+                          style={{ backgroundColor: tintBg }}
+                        >
+                          <div className="font-mono text-xs whitespace-pre-wrap max-w-[460px] text-ink">
+                            {row.modelResponse}
+                          </div>
+                        </td>
+                        <td
+                          className="py-3 px-3 whitespace-nowrap"
+                          style={{ backgroundColor: tintBg }}
+                        >
+                          {evalChip(row.evaluation)}
+                        </td>
+                        <td className="py-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
+                          {row.groundTruth}
+                        </td>
+                      </tr>
+                    );
+                  });
                 })}
               </tbody>
             </table>
