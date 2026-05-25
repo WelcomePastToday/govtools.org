@@ -18,9 +18,12 @@ export interface PublicInterestPassRow {
   jsonEvaluation: Evaluation;
   cardResponse: string;
   cardEvaluation: Evaluation;
-  // Deep links to the verbatim source on GitHub.
+  // Deep links to the verbatim source files hosted under
+  // public/erschliessung/artifacts/ on this same site.
   cardSourceUrl: string | null;
   promptSourceUrl: string | null;
+  // Optional external chat-share URL (e.g. climategpt.ai/shared/...).
+  chatUrl: string | null;
 }
 
 export const PUBLIC_INTEREST_PASSES_META = {
@@ -49,6 +52,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NAT-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    chatUrl: null,
   },
   {
     model: "hf.co/mradermacher/climategpt-13b-i1-GGUF:Q4_K_M",
@@ -65,6 +69,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_085.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NAT-006__M3-L4__ollama-climategpt-13b.prompt.txt",
+    chatUrl: "https://climategpt.ai/shared/perspective/f7bf88cd-9eb2-4e07-b556-b6781cf6888b",
   },
   {
     model: "hf.co/bartowski/swiss-ai_Apertus-8B-Instruct-2509-GGUF:Q4_K_M",
@@ -81,6 +86,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_096_corrected.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NAT-INT-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    chatUrl: null,
   },
   {
     model: "hf.co/bartowski/swiss-ai_Apertus-8B-Instruct-2509-GGUF:Q4_K_M",
@@ -97,6 +103,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_096_corrected.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle34_Q-NAT-INT-002__M3-L4__ollama-apertus-8b.prompt.txt",
+    chatUrl: null,
   },
   {
     model: "hf.co/bartowski/swiss-ai_Apertus-8B-Instruct-2509-GGUF:Q4_K_M",
@@ -113,6 +120,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    chatUrl: null,
   },
   {
     model: "hf.co/mradermacher/climategpt-13b-i1-GGUF:Q4_K_M",
@@ -129,6 +137,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-climategpt-13b.prompt.txt",
+    chatUrl: null,
   },
   {
     model: "hf.co/bartowski/swiss-ai_Apertus-8B-Instruct-2509-GGUF:Q4_K_M",
@@ -145,5 +154,6 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/noaa_table_017.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NOAA-NEG-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    chatUrl: null,
   },
 ];

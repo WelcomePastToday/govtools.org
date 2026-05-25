@@ -261,17 +261,30 @@ export default function PublicInterestPage() {
                       >
                         <div className="mb-1.5">{evalChip(row.cardEvaluation)}</div>
                         <div className="font-mono text-xs whitespace-pre-wrap text-ink">{row.cardResponse}</div>
-                        {row.cardSourceUrl && (
-                          <div className="mt-2 pt-1.5 border-t border-border/60">
-                            <a
-                              href={row.cardSourceUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
-                              title="Open the verbatim card the model was served on GitHub (new tab)"
-                            >
-                              view card content →
-                            </a>
+                        {(row.cardSourceUrl || row.chatUrl) && (
+                          <div className="mt-2 pt-1.5 border-t border-border/60 flex flex-wrap gap-x-4 gap-y-1">
+                            {row.cardSourceUrl && (
+                              <a
+                                href={row.cardSourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                                title="Open the verbatim card the model was served (new tab)"
+                              >
+                                view card content →
+                              </a>
+                            )}
+                            {row.chatUrl && (
+                              <a
+                                href={row.chatUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                                title="Open the shared chat session for this answer (new tab)"
+                              >
+                                view chat →
+                              </a>
+                            )}
                           </div>
                         )}
                       </td>
