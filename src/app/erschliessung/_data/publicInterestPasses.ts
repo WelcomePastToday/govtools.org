@@ -56,7 +56,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     qid: "Q-NAT-006",
     question: "Looking at the annual fish-catch table in Vol 27, how much less fish weight was caught in 1934 than the year before? Show both source values and the difference.",
     groundTruth: "Table subtraction test: 2,000 tons less; 1933=95,000, 1934=93,000.",
-    iaUrl: "https://archive.org/details/marine-biological-association-uk-journal_1947-1948_27/page/335/mode/1up",
+    iaUrl: "https://archive.org/details/marine-biological-association-uk-journal_1947-1948_27/page/358/mode/1up",
     pdfResponse: "Text-only model \u2014 PDF must be pre-converted.",
     pdfEvaluation: "n/a",
     jsonResponse: "Context overflow \u2014 ~1 GB JSON vs 4K-8K window.",
