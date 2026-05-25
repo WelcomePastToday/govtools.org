@@ -4,6 +4,7 @@ import {
   PUBLIC_INTEREST_PASSES,
   PUBLIC_INTEREST_PASSES_META,
   type PublicInterestPassRow,
+  type Evaluation,
 } from "../_data/publicInterestPasses";
 
 export const metadata: Metadata = {
@@ -21,46 +22,38 @@ for (const r of PUBLIC_INTEREST_PASSES) {
 const orderedQids = Array.from(new Set(PUBLIC_INTEREST_PASSES.map((r) => r.qid)));
 
 const totalRows = PUBLIC_INTEREST_PASSES.length;
-const correctCount = PUBLIC_INTEREST_PASSES.filter((r) => r.evaluation === "correct").length;
-const incorrectCount = PUBLIC_INTEREST_PASSES.filter((r) => r.evaluation === "incorrect").length;
+const cardCorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.cardEvaluation === "correct").length;
+const cardIncorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.cardEvaluation === "incorrect").length;
+const jsonCorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.jsonEvaluation === "correct").length;
+const jsonIncorrect = PUBLIC_INTEREST_PASSES.filter((r) => r.jsonEvaluation === "incorrect").length;
+const jsonNa = PUBLIC_INTEREST_PASSES.filter((r) => r.jsonEvaluation === "n/a").length;
 
-function evalChip(ev: PublicInterestPassRow["evaluation"]) {
-  switch (ev) {
-    case "correct":
-      return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-widest font-medium border border-status-success text-status-success">
-          ✓ correct
-        </span>
-      );
-    case "incorrect":
-      return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-widest font-medium border border-status-warning text-status-warning">
-          ✗ incorrect
-        </span>
-      );
-    case "partial":
-      return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-widest font-medium border border-border text-text-secondary">
-          ~ partial
-        </span>
-      );
-    default:
-      return (
-        <span className="inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-widest font-medium border border-border text-text-secondary">
-          n/a
-        </span>
-      );
-  }
-}
-
-// Background shading for the model-response + evaluation cells.
-// Soft tints that read clearly under the Swiss-style neutral palette.
-const EVAL_BG: Record<PublicInterestPassRow["evaluation"], string> = {
+// Background shading for response cells. Tints reflect each cell's own
+// evaluation independently — same row can be green for the card column
+// and gray for the JSON column.
+const EVAL_BG: Record<Evaluation, string> = {
   correct:   "#e6f4ec", // soft green
   incorrect: "#fbeae8", // soft red/coral
   partial:   "#fff4dc", // soft amber
   "n/a":     "#f0f0f0", // soft gray
 };
+
+function evalChip(ev: Evaluation, size: "sm" | "xs" = "xs") {
+  const cls =
+    size === "sm"
+      ? "inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-widest font-medium border"
+      : "inline-flex items-center px-1.5 py-0.5 text-[9px] uppercase tracking-widest font-medium border";
+  switch (ev) {
+    case "correct":
+      return <span className={`${cls} border-status-success text-status-success`}>✓ correct</span>;
+    case "incorrect":
+      return <span className={`${cls} border-status-warning text-status-warning`}>✗ incorrect</span>;
+    case "partial":
+      return <span className={`${cls} border-border text-text-secondary`}>~ partial</span>;
+    default:
+      return <span className={`${cls} border-border text-text-secondary`}>n/a</span>;
+  }
+}
 
 export default function PublicInterestPage() {
   return (
@@ -106,45 +99,67 @@ export default function PublicInterestPage() {
           </div>
           <div className="lg:pt-8">
             <div className="text-xs text-text-secondary uppercase tracking-widest mb-3">
-              At a glance
+              The input gradient at a glance
             </div>
-            <p className="text-sm leading-relaxed pt-4 border-t border-border text-ink">
-              <span className="font-medium">{correctCount} correct</span>{" "}
-              · <span className="font-medium">{incorrectCount} incorrect</span>{" "}
-              across {totalRows} model-question cells covering{" "}
-              {PUBLIC_INTEREST_PASSES_META.questionCountWithAtLeastOnePass}{" "}
-              questions. The same cell pattern recurs across other open and
-              open-weight models — see the{" "}
-              <Link href="/erschliessung/evaluation_runs/cycles/heatmap.html" className="text-accent hover:text-link-hover">
-                full heatmap
-              </Link>{" "}
-              for the multi-cycle view.
-            </p>
+            <div className="pt-4 border-t border-border space-y-2 text-sm leading-relaxed text-ink">
+              <p>
+                Each row carries the same model and question with three
+                different inputs. The cell tint shows each input&apos;s outcome
+                independently.
+              </p>
+              <ul className="space-y-1 pt-2">
+                <li>
+                  <span className="font-medium">Raw PDF:</span>{" "}
+                  <span className="text-text-secondary">{totalRows} N/A</span>{" "}
+                  — Apertus and ClimateGPT are text-only.
+                </li>
+                <li>
+                  <span className="font-medium">Raw Docling JSON:</span>{" "}
+                  <span className="text-text-secondary">{jsonCorrect} correct · {jsonIncorrect} incorrect · {jsonNa} N/A</span>{" "}
+                  — overflows the model context window in almost every case.
+                </li>
+                <li>
+                  <span className="font-medium">Compact CSV card:</span>{" "}
+                  <span className="text-status-success">{cardCorrect} correct</span>{" "}
+                  · <span className="text-text-secondary">{cardIncorrect} incorrect</span>{" "}
+                  — the Erschließung pipeline output.
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
 
         {/* Setup */}
         <Section title="Setup" tag="Method · 01">
           <DetailGrid>
-            <DetailRow label="Evaluation cycle">
-              <code className="text-xs bg-panel px-1.5 py-0.5">{PUBLIC_INTEREST_PASSES_META.cycle}</code>
-            </DetailRow>
-            <DetailRow label="Card variant">
-              <code className="text-xs bg-panel px-1.5 py-0.5">{PUBLIC_INTEREST_PASSES_META.variant}</code>
-              <span className="text-text-secondary text-xs ml-2">{PUBLIC_INTEREST_PASSES_META.cardSizeNote}</span>
-            </DetailRow>
-            <DetailRow label="Mode">
-              <span className="text-sm text-ink">{PUBLIC_INTEREST_PASSES_META.mode}</span>
-            </DetailRow>
             <DetailRow label="Models">
               <ul className="text-sm leading-relaxed text-ink space-y-1">
                 <li>· <span className="font-medium">Apertus 8B Instruct</span> — Swiss AI Initiative; mission-aligned for public-interest infrastructure</li>
                 <li>· <span className="font-medium">ClimateGPT 13B</span> — climate-domain Llama-2-13B fine-tune; 4 K native context</li>
               </ul>
             </DetailRow>
+            <DetailRow label="Three input columns">
+              <ul className="text-sm leading-relaxed text-ink space-y-2">
+                <li>
+                  <span className="font-medium">Raw PDF</span> —{" "}
+                  <span className="text-text-secondary">{PUBLIC_INTEREST_PASSES_META.pdfMode}</span>
+                </li>
+                <li>
+                  <span className="font-medium">Raw Docling JSON</span> —{" "}
+                  <span className="text-text-secondary">{PUBLIC_INTEREST_PASSES_META.jsonMode}.</span>{" "}
+                  The decompressed JSON for V27/V35 is on the order of 30 MB; the model&apos;s context window is 4 K-8 K tokens.
+                </li>
+                <li>
+                  <span className="font-medium">Compact CSV card</span> —{" "}
+                  <code className="bg-panel px-1.5 py-0.5 text-xs">{PUBLIC_INTEREST_PASSES_META.cardVariant}</code>{" "}
+                  under {PUBLIC_INTEREST_PASSES_META.cardMode}. {PUBLIC_INTEREST_PASSES_META.cardSizeNote}. Sourced from cycle{" "}
+                  <code className="bg-panel px-1.5 py-0.5 text-xs">{PUBLIC_INTEREST_PASSES_META.cycleForCardColumn}</code>.
+                </li>
+              </ul>
+            </DetailRow>
             <DetailRow label="Filter">
               <span className="text-sm leading-relaxed text-ink">
-                Questions where AT LEAST ONE of the two models was correct ({PUBLIC_INTEREST_PASSES_META.questionCountWithAtLeastOnePass} of 13). Questions where neither model passed are not shown.
+                Questions where AT LEAST ONE of the two models was correct on the compact-card input ({PUBLIC_INTEREST_PASSES_META.questionCountWithAtLeastOnePass} of 13). Questions where neither model passed any input are not shown.
               </span>
             </DetailRow>
           </DetailGrid>
@@ -157,69 +172,92 @@ export default function PublicInterestPage() {
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="border-b-2 border-ink">
-                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Model</th>
-                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary">Question</th>
-                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary">Model response</th>
-                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Evaluation</th>
-                  <th className="text-left py-2 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap">Correct answer</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">Model</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">Question</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
+                    <div>Raw PDF</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">input source</div>
+                  </th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
+                    <div>Raw Docling JSON</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">IA-default derivative</div>
+                  </th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
+                    <div>Compact CSV card</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">Erschließung pipeline output</div>
+                  </th>
+                  <th className="text-left py-2 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">Correct answer</th>
                 </tr>
               </thead>
               <tbody>
                 {orderedQids.map((qid) => {
                   const group = rowsByQid[qid] ?? [];
-                  return group.map((row, i) => {
-                    const tintBg = EVAL_BG[row.evaluation];
-                    return (
-                      <tr
-                        key={`${qid}-${row.model}`}
-                        className={
-                          i === 0
-                            ? "border-t border-border align-top"
-                            : "border-t border-dotted border-border align-top"
-                        }
+                  return group.map((row, i) => (
+                    <tr
+                      key={`${qid}-${row.model}`}
+                      className={
+                        i === 0
+                          ? "border-t border-border align-top"
+                          : "border-t border-dotted border-border align-top"
+                      }
+                    >
+                      <td className="py-3 pr-3 text-xs">
+                        <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
+                        <div className="text-text-secondary">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
+                      </td>
+                      <td className="py-3 pr-3 text-sm leading-snug max-w-[200px]">
+                        <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{qid}</span>
+                        <span className="text-ink">{row.question}</span>
+                      </td>
+
+                      {/* PDF input cell */}
+                      <td
+                        className="py-3 px-3 text-xs leading-snug max-w-[200px]"
+                        style={{ backgroundColor: EVAL_BG[row.pdfEvaluation] }}
                       >
-                        <td className="py-3 pr-3 text-xs">
-                          <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
-                          <div className="text-text-secondary">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
-                        </td>
-                        <td className="py-3 pr-3 text-sm leading-snug">
-                          <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{qid}</span>
-                          <span className="text-ink">{row.question}</span>
-                        </td>
-                        <td
-                          className="py-3 px-3 text-sm text-ink leading-snug"
-                          style={{ backgroundColor: tintBg }}
-                        >
-                          <div className="font-mono text-xs whitespace-pre-wrap max-w-[460px] text-ink">
-                            {row.modelResponse}
-                          </div>
-                        </td>
-                        <td
-                          className="py-3 px-3 whitespace-nowrap"
-                          style={{ backgroundColor: tintBg }}
-                        >
-                          {evalChip(row.evaluation)}
-                        </td>
-                        <td className="py-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
-                          {row.iaUrl ? (
-                            <a
-                              href={row.iaUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-accent hover:text-link-hover hover:underline"
-                              title={`Open the source page on the Internet Archive — ${row.iaUrl}`}
-                            >
-                              {row.groundTruth}
-                            </a>
-                          ) : (
-                            <span title="Source PDF is not currently on archive.org">
-                              {row.groundTruth}
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  });
+                        <div className="mb-1.5">{evalChip(row.pdfEvaluation)}</div>
+                        <div className="text-text-secondary italic">{row.pdfResponse}</div>
+                      </td>
+
+                      {/* Docling JSON input cell */}
+                      <td
+                        className="py-3 px-3 text-xs leading-snug max-w-[220px]"
+                        style={{ backgroundColor: EVAL_BG[row.jsonEvaluation] }}
+                      >
+                        <div className="mb-1.5">{evalChip(row.jsonEvaluation)}</div>
+                        <div className={row.jsonEvaluation === "n/a" ? "text-text-secondary italic" : "font-mono text-ink whitespace-pre-wrap"}>
+                          {row.jsonResponse}
+                        </div>
+                      </td>
+
+                      {/* Compact CSV card cell */}
+                      <td
+                        className="py-3 px-3 text-xs leading-snug max-w-[300px]"
+                        style={{ backgroundColor: EVAL_BG[row.cardEvaluation] }}
+                      >
+                        <div className="mb-1.5">{evalChip(row.cardEvaluation)}</div>
+                        <div className="font-mono whitespace-pre-wrap text-ink">{row.cardResponse}</div>
+                      </td>
+
+                      <td className="py-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
+                        {row.iaUrl ? (
+                          <a
+                            href={row.iaUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent hover:text-link-hover hover:underline"
+                            title={`Open the source page on the Internet Archive — ${row.iaUrl}`}
+                          >
+                            {row.groundTruth}
+                          </a>
+                        ) : (
+                          <span title="Source PDF is not currently on archive.org">
+                            {row.groundTruth}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ));
                 })}
               </tbody>
             </table>
