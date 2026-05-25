@@ -137,7 +137,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     cardEvaluation: "correct",
     cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
     promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-climategpt-13b.prompt.txt",
-    chatUrl: null,
+    chatUrl: "https://climategpt.ai/shared/perspective/01202f3c-81e5-4b00-b38d-bc757a88ceb0",
   },
   {
     model: "hf.co/bartowski/swiss-ai_Apertus-8B-Instruct-2509-GGUF:Q4_K_M",
