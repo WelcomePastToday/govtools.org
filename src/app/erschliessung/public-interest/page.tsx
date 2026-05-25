@@ -144,7 +144,7 @@ export default function PublicInterestPage() {
             </DetailRow>
             <DetailRow label="Filter">
               <span className="text-sm leading-relaxed text-ink">
-                Questions where AT LEAST ONE of the two models was correct ({PUBLIC_INTEREST_PASSES_META.questionCountWithAtLeastOnePass} of 13). The two questions excluded are Q-NAT-INT-001 and Q-NOAA-CALC-001, which neither model passed in this cycle.
+                Questions where AT LEAST ONE of the two models was correct ({PUBLIC_INTEREST_PASSES_META.questionCountWithAtLeastOnePass} of 13). Questions where neither model passed are not shown.
               </span>
             </DetailRow>
           </DetailGrid>
