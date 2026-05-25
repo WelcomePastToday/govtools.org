@@ -77,7 +77,7 @@ export default function PublicInterestPage() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-16">
+      <main className="max-w-7xl mx-auto px-6 py-16">
 
         {/* Hero */}
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-16 mb-16 border-b border-border">
@@ -168,16 +168,18 @@ export default function PublicInterestPage() {
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse" style={{ tableLayout: "auto" }}>
-              {/* Column hints: browser auto-layout picks the actual width from content,
-                  but min-width hints keep narrow columns from being squeezed when one
-                  column's text is dramatically longer than the others. */}
+              {/* Column hints chosen so the table fits a 13"+ MacBook viewport
+                  (~1280px effective) without horizontal scroll. Total ≈ 1130px;
+                  the max-w-7xl main container gives ~1232px after padding, so
+                  there's ~100px slack. Browser auto-layout grows columns from
+                  these minimums based on content. */}
               <colgroup>
-                <col style={{ minWidth: "110px" }} />     {/* Model */}
-                <col style={{ minWidth: "320px" }} />     {/* Question — widest of the prose cells */}
-                <col style={{ minWidth: "150px", width: "150px" }} />   {/* PDF (brief N/A) */}
-                <col style={{ minWidth: "170px", width: "170px" }} />   {/* JSON (brief N/A) */}
-                <col style={{ minWidth: "380px" }} />     {/* Card response — the actual answer */}
-                <col style={{ minWidth: "130px" }} />     {/* Correct answer */}
+                <col style={{ minWidth: "100px" }} />     {/* Model */}
+                <col style={{ minWidth: "280px" }} />     {/* Question */}
+                <col style={{ minWidth: "130px", width: "130px" }} />   {/* PDF (brief N/A) */}
+                <col style={{ minWidth: "150px", width: "150px" }} />   {/* JSON (brief N/A) */}
+                <col style={{ minWidth: "360px" }} />     {/* Card response */}
+                <col style={{ minWidth: "110px" }} />     {/* Correct answer */}
               </colgroup>
               <thead>
                 <tr className="border-b-2 border-ink">
@@ -273,34 +275,37 @@ export default function PublicInterestPage() {
           </div>
         </Section>
 
-        {/* Footnote */}
+        {/* Footnote — constrained to a comfortable reading width even
+            though the main container is widened for the table above. */}
         <Section title="Reading this table" tag="Notes · 03">
-          <p className="text-sm leading-relaxed text-ink mb-3">
-            Each row is one (model, question) cell from cycle 17 of the
-            Erschließung evaluation harness. The model was served exactly
-            one compact CSV-format evidence card per question (the relevant
-            table only), wrapped in a single-sentence system instruction.
-            No proprietary tooling was required to produce the cards.
-          </p>
-          <p className="text-sm leading-relaxed text-ink mb-3">
-            The "Correct answer" column shows the pre-registered ground
-            truth from <code className="bg-panel px-1.5 py-0.5 text-xs">ADVANCED_QUERIES.md</code>;
-            the scorer logic is a per-question regex/lambda frozen before
-            evaluation. The "Model response" column shows the model&apos;s
-            verbatim answer, lightly trimmed for display.
-          </p>
-          <p className="text-sm leading-relaxed text-ink">
-            Cycle 17 ran 14 models × 13 questions on the csv-only variant —
-            see the{" "}
-            <Link href="/erschliessung/evaluation_runs/cycles/heatmap.html" className="text-accent hover:text-link-hover">
-              cycle heatmap
-            </Link>{" "}
-            for the full panel. The cycle 17 scores were later understood as
-            an oracle ceiling (see cycle 31&apos;s reframing of the open-tier
-            breakthrough), but the per-cell answers shown here are
-            unchanged — they show what these models <em>can</em> answer
-            correctly when handed the right table.
-          </p>
+          <div className="max-w-3xl">
+            <p className="text-sm leading-relaxed text-ink mb-3">
+              Each row is one (model, question) cell from cycle 17 of the
+              Erschließung evaluation harness. The model was served exactly
+              one compact CSV-format evidence card per question (the relevant
+              table only), wrapped in a single-sentence system instruction.
+              No proprietary tooling was required to produce the cards.
+            </p>
+            <p className="text-sm leading-relaxed text-ink mb-3">
+              The "Correct answer" column shows the pre-registered ground
+              truth from <code className="bg-panel px-1.5 py-0.5 text-xs">ADVANCED_QUERIES.md</code>;
+              the scorer logic is a per-question regex/lambda frozen before
+              evaluation. The "Model response" column shows the model&apos;s
+              verbatim answer, lightly trimmed for display.
+            </p>
+            <p className="text-sm leading-relaxed text-ink">
+              Cycle 17 ran 14 models × 13 questions on the csv-only variant —
+              see the{" "}
+              <Link href="/erschliessung/evaluation_runs/cycles/heatmap.html" className="text-accent hover:text-link-hover">
+                cycle heatmap
+              </Link>{" "}
+              for the full panel. The cycle 17 scores were later understood as
+              an oracle ceiling (see cycle 31&apos;s reframing of the open-tier
+              breakthrough), but the per-cell answers shown here are
+              unchanged — they show what these models <em>can</em> answer
+              correctly when handed the right table.
+            </p>
+          </div>
         </Section>
 
         <section className="mt-16 pt-8 border-t border-border">
