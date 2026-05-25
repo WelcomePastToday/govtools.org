@@ -46,41 +46,43 @@ const MODEL_ROWS: ModelRow[] = [
 
 const OUTPUT_TREE = `source/original.pdf                ← archival PDF (preserved by Internet Archive)
 │
-└── Docling extraction
-    │
-    ├── docling/
-    │   ├── docling.json.gz        ← raw structured extraction (layout, tables, figures)
-    │   ├── docling.md             ← full-document linearized Markdown
-    │   └── docling_meta.json      ← extractor version, page count, run timing
-    │
-    ├── tables/                    ← one file per detected table
-    │   ├── table_NNN.csv          (table data only)
-    │   ├── table_NNN.parquet
-    │   ├── table_NNN.html
-    │   └── table_NNN.md
-    │
-    ├── table_context/             ← captions, headings, neighboring paragraphs
-    │   └── table_NNN.context.json
-    │
-    ├── table_cards/               ← compact per-table evidence (base v0.6.1)
-    │   └── table_NNN.card.md
-    │
-    ├── figures/                   ← cropped image regions
-    │   └── figure_NNNN.png
-    │
-    ├── indexes/                   ← document-level maps
-    │   ├── table_index.json / .jsonl
-    │   ├── figures_index.json
-    │   ├── entity_index.jsonl
-    │   └── extraction_warnings.jsonl
-    │
-    ├── manifest.json              ← top-level inventory + checksums
-    └── provenance.json            ← source URL, run metadata
-            │
-            └── card_sets/pipeline-v0.7-{variant}/<doc>/table_cards/
-                └── table_NNN.card.md   ← card reshaped per evaluation variant
-                                          (csv-only, micro-1k, table-only,
-                                           labeled, table-normalized, …)`;
+│   Docling.convert(pdf) → in-memory DoclingDocument (nothing written yet)
+│   The pipeline then writes all of the below:
+│
+├── docling/
+│   ├── docling.json.gz        ← doc.export_to_dict() → JSON → gzip stream
+│   │                            (no uncompressed .json ever hits disk)
+│   ├── docling.md             ← doc.export_to_markdown()
+│   └── docling_meta.json      ← pipeline-written: extractor version, timing, run id
+│
+├── tables/                    ← one file per detected table (derived from docling.json.gz)
+│   ├── table_NNN.csv          (table data only)
+│   ├── table_NNN.parquet
+│   ├── table_NNN.html
+│   └── table_NNN.md
+│
+├── table_context/             ← captions, headings, neighboring paragraphs
+│   └── table_NNN.context.json
+│
+├── table_cards/               ← compact per-table evidence (base v0.6.1)
+│   └── table_NNN.card.md
+│
+├── figures/                   ← cropped image regions
+│   └── figure_NNNN.png
+│
+├── indexes/                   ← document-level maps
+│   ├── table_index.json / .jsonl
+│   ├── figures_index.json
+│   ├── entity_index.jsonl
+│   └── extraction_warnings.jsonl
+│
+├── manifest.json              ← top-level inventory + checksums
+└── provenance.json            ← source URL, run metadata
+        │
+        └── card_sets/pipeline-v0.7-{variant}/<doc>/table_cards/
+            └── table_NNN.card.md   ← card reshaped per evaluation variant
+                                      (csv-only, micro-1k, table-only,
+                                       labeled, table-normalized, …)`;
 
 const VARIANTS = [
   { variant: "Project full v0.6.1 card (markdown + context envelope)", rate: "27%", size: "15–42 KB", slug: "pipeline-v0.6.1" },
