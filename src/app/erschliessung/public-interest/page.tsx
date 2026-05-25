@@ -201,7 +201,21 @@ export default function PublicInterestPage() {
                           {evalChip(row.evaluation)}
                         </td>
                         <td className="py-3 text-sm tabular-nums text-ink font-medium max-w-[180px]">
-                          {row.groundTruth}
+                          {row.iaUrl ? (
+                            <a
+                              href={row.iaUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-accent hover:text-link-hover hover:underline"
+                              title={`Open the source page on the Internet Archive — ${row.iaUrl}`}
+                            >
+                              {row.groundTruth}
+                            </a>
+                          ) : (
+                            <span title="Source PDF is not currently on archive.org">
+                              {row.groundTruth}
+                            </span>
+                          )}
                         </td>
                       </tr>
                     );
