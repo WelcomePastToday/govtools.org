@@ -296,12 +296,16 @@ export default function PublicInterestPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-accent hover:text-link-hover hover:underline"
-                            title={`Open the source page on the Internet Archive — ${row.iaUrl}`}
+                            title={
+                              row.iaUrl.includes("archive.org")
+                                ? `Open the source page on the Internet Archive — ${row.iaUrl}`
+                                : `Open the source PDF — ${row.iaUrl}`
+                            }
                           >
                             {row.groundTruth}
                           </a>
                         ) : (
-                          <span title="Source PDF is not currently on archive.org">
+                          <span title="Source not currently available online">
                             {row.groundTruth}
                           </span>
                         )}

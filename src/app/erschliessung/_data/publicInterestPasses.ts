@@ -145,7 +145,7 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     qid: "Q-NOAA-NEG-001",
     question: "How many cruises were conducted in 1948 according to the California Current fisheries database?",
     groundTruth: "Boundary test: not in source; database starts in 1950.",
-    iaUrl: null,
+    iaUrl: "/erschliessung/sources/noaa_32079.pdf#page=18",
     pdfResponse: "Text-only model \u2014 PDF must be pre-converted.",
     pdfEvaluation: "n/a",
     jsonResponse: "Context overflow \u2014 ~1 GB JSON vs 4K-8K window.",
