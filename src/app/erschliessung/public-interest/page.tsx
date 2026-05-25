@@ -116,7 +116,7 @@ export default function PublicInterestPage() {
                 <li>
                   <span className="font-medium">Raw Docling JSON:</span>{" "}
                   <span className="text-text-secondary">{jsonCorrect} correct · {jsonIncorrect} incorrect · {jsonNa} N/A</span>{" "}
-                  — overflows the model context window in almost every case.
+                  — the IA-default Docling JSON for V27/V35 is on the order of 1 GB; the model&apos;s context window can&apos;t hold it.
                 </li>
                 <li>
                   <span className="font-medium">Compact CSV card:</span>{" "}
