@@ -1,0 +1,30 @@
+[SYSTEM]
+You are answering a single information-extraction question. Use ONLY the supplied source material. Do not use prior knowledge. Give a clear, concrete answer with the specific number, name, year, or value asked for.
+
+[USER]
+--- SOURCE ARTIFACT (M3-L4 — corrected card) ---
+# Table 096 — **TABLE III. PHOSPHORUS IN OFFSHORE WATER**
+Position: 3 miles south of Eddystone Lighthouse. Depth: 67 m. Date: 23 July 1947.
+Units: **mg P per m³**
+
+PDF page: 378
+
+```csv
+Depth (m),Inorganic,Total,Organic
+5,2.2,11.6,9.4
+10,5.0,12.3,7.3
+20,3.0,12.6,9.6
+**30**,6.5,12.6,**6.1**
+**40**,7.4,11.8,**4.4**
+60,6.8,13.1,4.3
+65,6.78,14.2,7.4
+35 cm above sea floor,8.4,14.7,6.73
+6 cm above sea floor,8.8,24.0,16.2
+```
+
+--- END ARTIFACT ---
+
+Question:
+If the exact value is missing but the required source values are present, calculate or infer the answer and show the method. A marine biologist examining the offshore phosphorus measurements 3 miles south of the Eddystone Lighthouse on 23 July 1947 wants the organic phosphorus concentration at 25 meters. What would they conclude?
+
+Answer concisely. Cite the row/cell/section you used.

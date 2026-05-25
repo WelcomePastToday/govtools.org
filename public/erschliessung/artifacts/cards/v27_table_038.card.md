@@ -1,0 +1,34 @@
+# Table 038 — TaBLe I. List oF STRANDINGS OF PHYSALIA ON THE SHORES OF THE BRITISH 
+ BELGIUM i
+IsLES, NORTHERN AND WESTERN FRANCE AND BELGIUM
+
+PDF page: 154
+
+```csv
+Year,Season or month,Locality,Number,Wind,Reference
+1834,March,"Ardmore, Co. Waterford",One,,Thompson (1835)
+1852,-,La Rochelle,"Several, at least",S.-S.W. persistent,De Quatrefages (1854) ogers
+1862,Aug.,Isle of Wight,Hundreds Three,After gale,(1854) Rogers (1862) Gosse (1865)
+1862 1884,Summer Sept.,"Torbay, S. Devon Dunkerque",One dead,After storm,Théry (1887) Delap (1924)
+1907 1907,May,Valentia,One,,
+1907 1907,Aug.,"At sea, 50° 16’ N., 1? NY",One,,Stelfox (1936)
+I9I2,March,Roscoff,One,,"de Beauchamp (in Caullery, 1912)"
+1912,April,Boulogne,Dozen,After westerly gales,Caullery (1912)
+I9QI2,April,Knocke (Belgium),Three,After westerly gales,Lameere (1912)
+1912,March-— April,"Seaford, Rye, etc. to Ilfracombe",Thousands,After strong south to south-westerly winds,This paper
+1913,Feb.- April,"Bigbury Bay, Plymouth Sound, Looe, and Aberystwyth",Several,After strong south to west winds,This paper
+1919 1921,,"Guéethary Bantry, Co. Cork",Numerous Great shoal Several,,Pérez (1929) Delap (1924)
+1919 1921 1934,Jan.,Perranporth to,,After strong south to,This paper
+1921 1934,Oct.- Nov.,"Polzeath, N. Cornwall",,west and north-west winds,
+1934,Autumn,"Hook Tower Lighthouse, Co. Wexford",One,,Stelfox (1936)
+1934,,"Tragumina, Co, Cork",One,,Stelfox (1936)
+1935,,"Hook Tower Lighthouse, Co. Wexford",One,,Stelfox (1936)
+1935,Oct.,"Mullion Cove, S.W. Cornwall",One,After westerly winds,This paper
+1935,,"Newquay, N. Cornwall .",One,After strong westerly winds,This paper
+1945,Oct.,"Cornwall, Devon, S. and N. Wales, Eire",Large shoals,Fully dis cussed below,This paper
+1945,Oct.,Roscoff,Several,,Bocquet (private communication)
+1945,Aug.-,Concarneau,Large numbers,,Bouxin & Legendre (1946) his pap
+1945 1946,Sept. Dec.,"Mousehole, Cornwall Whitsand Bay, Cornwall and",Three A few,After S.W. Air S.W. gale,(1946) This paper This paper
+,July- Sept.,Guéthary to La Rochelle,,,
+1946,uly- Sept.,Penzance,Enormous swarm,,Weill (1946)
+```

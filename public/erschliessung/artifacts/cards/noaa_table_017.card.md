@@ -1,0 +1,18 @@
+# Table 017 — Table 13 . Abbreviated Individual Cruise Information From 1950 – – 1989. Information provided in this table has been extracted from each of the 40 hard copy Data Reports. Station and Sea Day counts are actual working days calculated from the Sea Survey Database excluding the traveling time.
+
+PDF page: 18
+
+```csv
+Cruise Number Total SEA,empty_header,DAY Total Station Dates,empty_header_1,Area covered,Nature of the survey & Techniques used
+50Y01,10,27,Jan 9 – – Jan 18,Point Conception Mexican Boundary,"Systematic surveys of the sardine population in Calif. & Baja Calif. Scouting through an area, sampling schools seen with dynamite and a few light stations and gill net sets."
+50Y02,6,8,Feb 21 – Mar 3,Point Conception Mexican Boundary,"Systematic surveys of the sardine population in Calif. & Baja Calif. Scouting through an area, sampling schools seen with dynamite and a few light stations and gill net sets."
+50Y03,6,10,Mar 14 – – Mar 20,Point Conception Mexican Boundary,"Systematic surveys of the sardine population in Calif. & Baja Calif. Scouting through an area, sampling schools seen with dynamite and a few light stations and gill net sets."
+50Y04,14,42,Apr 4 – – Apr 17,Cent. & S. Baja Calif.,"To establish sardine distribution in winter and spring. Used a variety of techniques, but with emphasis on gill nets."
+50Y05,17,45,May 8 – – May 24,Cent. & S. Calif.,To establish sardine distribution in winter and spring. Scouting and using dynamite to obtain samples.
+50Y06,11,44,Jun 7 – – Jun 18,Cent. & S. Calif. Farther offshore,To establish sardine distribution in winter and spring. Scouting and using dynamite to obtain samples. Collected considerable oceanographic data.
+50Y07,17,110,Jul 18 – – Aug 3,"Between Punta San Juanico, Baja Calif. & Bodega Head. S to N.","To establish distribution & abundance of young sardines. Night scouting, visual observation, by traces on fathometer, attract fish with light and used dynamite."
+50Y08,10,47,Aug 15 – – Aug 24,"Between Punta San Juanico, Baja Calif. & Bodega Head. S to N.","To establish distribution & abundance of young sardines. Night scouting, visual observation, by traces on fathometer, attract fish with light and used dynamite."
+50Y09,17,69,Sep 5 – – Sep 22,"Between Punta San Juanico, Baja Calif. & Bodega Head. S to N.","To establish distribution & abundance of young sardines. Night scouting, locate fish by visual observation, by traces on fathometer, attract fish with light and used dynamite."
+50Y10,17,113,Oct 2 – Oct 19,"Between Punta San Juanico, Baja Calif. & Bodega Head. S to N.","To establish distribution & abundance of young sardines. Night scouting, locate fish by visual observation, by traces on fathometer, attract fish with light and used dynamite."
+50Y11,15,51,Nov 8 – – Nov 22,S. & Cent. Calif.,Major emphasis was to measure environmental conditions in areas where sardines were found.
+```
