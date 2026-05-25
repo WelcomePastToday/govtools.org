@@ -46,14 +46,6 @@ const MODEL_ROWS: ModelRow[] = [
   { model: "ClimateGPT-7B", type: "Domain-oriented open model", access: "Collaboration / batch run", score: "3/13", notes: "Smaller climate-domain Llama-2 variant." },
 ];
 
-const BENEFITS = [
-  { key: "01", name: "Open access", desc: "Archival knowledge becomes usable by open models. No API gatekeeping between researchers and preserved collections." },
-  { key: "02", name: "Institutional control", desc: "Workflows can run on-premises or through trusted partners. Sensitive material never leaves controlled infrastructure." },
-  { key: "03", name: "Provenance", desc: "Answers remain tied to specific tables, page numbers, rows, and source documents. Every cited value is traceable." },
-  { key: "04", name: "Efficiency", desc: "Compact derivatives reduce the need to send full PDFs or large JSON files into model context — a ~2 KB card versus ~600 MB of source PDF and JSON." },
-  { key: "05", name: "Public-interest AI", desc: "Supports Apertus, ClimateGPT, PublicAI, EuroLLM, and other open or domain-specific systems aligned with non-commercial missions." },
-];
-
 const VARIANTS = [
   { variant: "Project full v0.6.1 card (markdown + context envelope)", rate: "27%", size: "15–42 KB", slug: "pipeline-v0.6.1" },
   { variant: "Compact 1K card (caption + table only)", rate: "40%", size: "~1.2 KB", slug: "pipeline-v0.6.1-micro-1k" },
@@ -165,11 +157,11 @@ export default function ErschliessungPage() {
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight mb-6 text-ink">
               Docling extracts the structure. The pipeline turns it into evidence that open models can use.
             </h1>
-            <p className="text-lg text-text-secondary leading-relaxed">
-              Compact Docling-derived evidence packages help open models answer difficult table questions from archival documents — without loading the full PDF or relying on a proprietary API workflow.
-            </p>
           </div>
           <div className="lg:pt-8">
+            <p className="text-lg text-text-secondary leading-relaxed mb-6">
+              Compact Docling-derived evidence packages help open models answer difficult table questions from archival documents — without loading the full PDF or relying on a proprietary API workflow.
+            </p>
             <div className="text-xs text-text-secondary uppercase tracking-widest mb-3">
               Primary takeaway
             </div>
@@ -269,24 +261,6 @@ export default function ErschliessungPage() {
             Several open and open-weight models perform strongly when the table is delivered as a compact CSV-formatted evidence card rather than a full-document derivative. A 3-billion-parameter open model can outperform a 13-billion-parameter domain-oriented open model on the same task when the smaller model receives a better-shaped evidence package.
           </p>
         </section>
-
-        {/* ─────────── Why this matters ─────────── */}
-        <Section title="Why this matters" tag="Rationale · 03">
-          <p className="text-sm leading-relaxed mb-8 text-ink">
-            Internet Archive and similar public-interest institutions need AI workflows that are auditable, reproducible, affordable, and not fully dependent on proprietary APIs. This project tests whether archival PDFs can be converted into compact evidence packages that open models can use directly. The results suggest that derivative design — choosing what to extract, how to package it, and how to expose it — can make preserved documents more accessible to open AI systems running in institutional environments.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 border-t border-border pt-8">
-            {BENEFITS.map((b, i) => (
-              <div key={b.key} className="flex flex-col">
-                <div className="text-xs text-text-secondary uppercase tracking-widest mb-3">
-                  {b.key}
-                </div>
-                <div className="text-base font-medium text-ink mb-2">{b.name}</div>
-                <div className="text-sm text-text-secondary leading-snug">{b.desc}</div>
-              </div>
-            ))}
-          </div>
-        </Section>
 
         {/* ─────────── Worked example ─────────── */}
         <Section title="Worked example: a domain-oriented open model reasons correctly" tag="Evidence · 04">
