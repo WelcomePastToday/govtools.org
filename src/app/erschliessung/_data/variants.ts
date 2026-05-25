@@ -396,7 +396,39 @@ export const VARIANTS: Variant[] = [
       "Recommended next variant: enriched doc-index with 2-3 sample rows + column headers + scope info per table entry. Index size grows ~3× but stays well under any context limit.",
     ],
     introducedIn: "v0.7 map structures, 2026-05-22. Evaluated via M3-IDX mode, 2026-05-23.",
-    relatedSlugs: ["pipeline-v0.6.1-stitch-map", "pipeline-v0.6.1-csv-only", "mode-m3-idx"],
+    relatedSlugs: ["pipeline-v0.6.1-stitch-map", "pipeline-v0.6.1-csv-only", "mode-m3-idx", "pipeline-v0.6.1-doc-index-enriched"],
+  },
+
+  {
+    slug: "pipeline-v0.6.1-doc-index-enriched",
+    name: "Enriched document-index map",
+    category: "map",
+    status: "experimental",
+    oneLine: "Per-document TOC with column headers + sample row labels + auto-detected scope. Designed to close the retrieval gap on tables with missing or uninformative captions.",
+    description: "Builds on the plain doc-index by adding three signals per TOC entry: cleaned column headers (joined with `/`), the first 2-3 row labels (often year/month/category names), and deterministic scope detection (year range like `y:1925-37`, monthly coverage, depth range, geographic markers like `geo:plymouth`). All signals derive from the raw CSV + regex — no LLM in the index build. Designed for cycle 31's three biggest retrieval failure modes: tables with caption `'No caption detected.'` (Q-NAT-INT-001 phosphorus depth, Q-NAT-006 fish-catch — 0% retrieval in cycle 31); tables where the existing caption is misleading (Q-NAT-012 cyprid larvae — 5/8 models picked `table_124` because its mis-labeled caption said 'cyprid'). Compact-encoded so V27/V35 fit a 32K-context model and NOAA fits a 4K-context model.",
+    generation: {
+      inputSources: ["pipeline-v0.6.1 cards (frontmatter, caption)", "Raw Docling table CSVs (column headers, row labels, sample values)"],
+      generatorScript: "evaluation_runs/generate_doc_index_enriched.py",
+      aiUsed: false,
+      ocrUsed: "inherits-from-pipeline",
+      processingTime: "~3 seconds for all 3 documents (407 tables aggregated).",
+      resourceIntensity: "low",
+      determinism: "deterministic",
+    },
+    results: {
+      typicalCardSize: "V27: 24 KB | V35: 27 KB | NOAA: 5 KB. V27/V35 require an 8K+ context; NOAA fits in 4K.",
+      cycleNumber: 32,
+      relativeToBaseline: "Cycle 32 evaluation via M3-IDX two-shot mode. Compared to cycle 31 plain doc-index, the enriched index surfaces column headers and scope signals that allow models to match question keywords to table structure (e.g. a question about 'phosphorus at 35m depth' can now match a table whose column headers include `Depth in m.` and `Organic` even when the caption is missing).",
+    },
+    outputLocation: "card_sets/pipeline-v0.7-doc-index-enriched/",
+    cardCount: "3 maps (one per document)",
+    caveats: [
+      "Index size is 24-27 KB for V27/V35 — requires Ollama num_ctx ≥ 16K (set OLLAMA_NUM_CTX=32768 for the harness). ClimateGPT-13B has a native 4K context cap so it can only use this variant on NOAA (5 KB).",
+      "Still cannot fix pipeline mis-label cases — the table_124-vs-125 problem (caption swap) needs pipeline-side correction, not index enrichment.",
+      "OCR-garbled column headers propagate to the index. Tables where Docling read column 0 as `i i i Depth in m.` will surface that garble in the enriched entry — readable to humans, partially readable to models.",
+    ],
+    introducedIn: "v0.7 retrieval response to cycle 31 findings, 2026-05-23.",
+    relatedSlugs: ["pipeline-v0.6.1-doc-index", "mode-m3-idx"],
   },
 
   {
@@ -444,6 +476,31 @@ export const VARIANTS: Variant[] = [
     },
     introducedIn: "Cycle 2.1, 2026-05-20.",
     relatedSlugs: ["mode-m2c", "mode-m2a", "mode-m3-ac", "mode-m3-idx"],
+  },
+
+  {
+    slug: "mode-m3-hyde",
+    name: "M3-HYDE — Vector retrieval (HyDE) mode",
+    category: "mode",
+    status: "experimental",
+    oneLine: "Vector similarity over pre-embedded cards. A small independent model writes a hypothetical answer; that answer is embedded and matched against the corpus. Works for any model size — no TOC navigation required.",
+    description: "Three-stage retrieval flow. (1) A small independent generator model (default qwen2.5:3b) writes a 1-3 sentence hypothetical answer in the style of a real archival answer — naming the value, row, column. The generator does not know the real answer; the hypothetical is purely a search query. (2) The hypothetical answer is embedded with `nomic-embed-text` (open-weight, 768-dim, ~270 MB, runs locally via Ollama). (3) Cosine similarity against the pre-built card index (`evaluation_runs/hyde/card_index.jsonl`, 407 entries, ~6.5 MB) — top-1 card is then served to the evaluation model under the existing M3-L4 prompt. The evaluation model never sees the hypothetical answer; only the retrieved card reaches it. Key advantage over M3-IDX two-shot: a 3B local model can do the retrieval for any size evaluator, including ClimateGPT-13B whose 4K context can't hold the V27/V35 indexes.",
+    generation: {
+      inputSources: [
+        "Pre-built card embedding index at evaluation_runs/hyde/card_index.jsonl (built once via build_card_embeddings.py)",
+        "Per-query hypothetical answer generated by qwen2.5:3b (HyDE generator)",
+        "nomic-embed-text (768-dim) for both card-side and query-side embedding",
+      ],
+      generatorScript: "evaluation_runs/cycle_runner.py:run_cell_hyde + evaluation_runs/hyde/retrieve.py:retrieve",
+      aiUsed: true,
+      aiUsageNote: "Two small AI calls per query: (a) hypothetical-answer generation by qwen2.5:3b (~1.5 sec), (b) embedding of that hypothetical by nomic-embed-text (~50ms). Plus the evaluation model's one call to read the retrieved card. The hypothetical-answer hallucinates a value — that's by design; it never reaches the evaluator.",
+      ocrUsed: "inherits-from-pipeline",
+      processingTime: "~2 seconds per cell for retrieval pipeline + the evaluation model's normal call time. Index build: ~15 seconds for 407 cards.",
+      resourceIntensity: "low",
+      determinism: "deterministic-with-llm-step",
+    },
+    introducedIn: "Cycle 33, 2026-05-24.",
+    relatedSlugs: ["mode-m3-idx", "mode-m3-l4", "pipeline-v0.6.1-doc-index"],
   },
 
   {
