@@ -22,28 +22,65 @@ interface ModelRow {
   score: string;
   notes: string;
   highlight?: boolean;
-  comparator?: boolean;
   emphasis?: boolean;
 }
 
 const MODEL_ROWS: ModelRow[] = [
-  { model: "Qwen2.5-7B",          type: "Open-weight",                       score: "11/13", notes: "Matches frontier capability at 1/8 the parameter count when given the compact CSV card.", highlight: true },
-  { model: "Granite-3.3-8B",      type: "Open-weight",                       score: "11/13", notes: "IBM open-weight — matches Qwen at the same scale.", highlight: true },
-  { model: "Qwen2.5-Coder-7B",    type: "Open-weight, code-tuned",           score: "10/13", notes: "" },
-  { model: "Llama-3 8B",          type: "Open-weight",                       score: "9/13",  notes: "" },
-  { model: "DeepSeek-R1 8B",      type: "Open-weight, reasoning-tuned",      score: "8/13",  notes: "" },
-  { model: "Apertus 70B",         type: "Open / Swiss public-interest model", score: "7/13",  notes: "", emphasis: true },
-  { model: "EuroLLM 9B",          type: "Open / EU public-interest model",   score: "7/13",  notes: "", emphasis: true },
-  { model: "Gemma-2 9B",          type: "Open-weight",                       score: "7/13",  notes: "" },
-  { model: "Apertus 8B Instruct", type: "Open / Swiss public-interest model", score: "6/13",  notes: "Swiss AI Initiative — mission-aligned for public-interest infrastructure.", emphasis: true },
-  { model: "Mistral 7B",          type: "Open-weight",                       score: "6/13",  notes: "" },
-  { model: "Qwen2.5-3B",          type: "Open-weight, small",                score: "6/13",  notes: "3 B parameters (~2 GB) — outperforms ClimateGPT-13B at 1/4 the size." },
-  { model: "ClimateGPT-13B",      type: "Domain-oriented open model",        score: "5/13",  notes: "Climate-domain Llama-2 fine-tune; 4K context cap constrains larger artifacts.", emphasis: true },
-  { model: "OLMo-2 7B",           type: "Open / fully-open (AI2)",           score: "4/13",  notes: "Fully open weights, data, and training code." },
-  { model: "Phi-3-Mini 3.8B",     type: "Open-weight, small",                score: "4/13",  notes: "" },
-  { model: "ClimateGPT-70B",      type: "Domain-oriented open model",        score: "3/13",  notes: "" },
-  { model: "ClimateGPT-7B",       type: "Domain-oriented open model",        score: "3/13",  notes: "" },
+  { model: "Qwen2.5-7B",          type: "Open-weight",                  score: "11/13", notes: "", highlight: true },
+  { model: "Granite-3.3-8B",      type: "Open model",                   score: "11/13", notes: "", highlight: true },
+  { model: "Qwen2.5-Coder-7B",    type: "Open-weight, code-tuned",      score: "10/13", notes: "" },
+  { model: "Llama-3 8B",          type: "Open-weight",                  score: "9/13",  notes: "" },
+  { model: "DeepSeek-R1 8B",      type: "Open-weight, reasoning-tuned", score: "8/13",  notes: "" },
+  { model: "Apertus 70B",         type: "Open model",                   score: "7/13",  notes: "", emphasis: true },
+  { model: "EuroLLM 9B",          type: "Open model",                   score: "7/13",  notes: "", emphasis: true },
+  { model: "Gemma-2 9B",          type: "Open-weight",                  score: "7/13",  notes: "" },
+  { model: "Apertus 8B Instruct", type: "Open model",                   score: "6/13",  notes: "", emphasis: true },
+  { model: "Mistral 7B",          type: "Open-weight",                  score: "6/13",  notes: "" },
+  { model: "Qwen2.5-3B",          type: "Open-weight, small",           score: "6/13",  notes: "3B parameters; outperforms ClimateGPT-13B." },
+  { model: "ClimateGPT-13B",      type: "Open-weight, domain-tuned",    score: "5/13",  notes: "Climate-domain Llama-2 fine-tune; 4K context cap.", emphasis: true },
+  { model: "OLMo-2 7B",           type: "Open model",                   score: "4/13",  notes: "Weights, training data, and training code all released." },
+  { model: "Phi-3-Mini 3.8B",     type: "Open-weight, small",           score: "4/13",  notes: "" },
+  { model: "ClimateGPT-70B",      type: "Open-weight, domain-tuned",    score: "3/13",  notes: "" },
+  { model: "ClimateGPT-7B",       type: "Open-weight, domain-tuned",    score: "3/13",  notes: "" },
 ];
+
+const OUTPUT_TREE = `source/original.pdf                ← archival PDF (preserved by Internet Archive)
+│
+└── Docling extraction
+    │
+    ├── docling/
+    │   ├── docling.json.gz        ← raw structured extraction (layout, tables, figures)
+    │   ├── docling.md             ← full-document linearized Markdown
+    │   └── docling_meta.json      ← extractor version, page count, run timing
+    │
+    ├── tables/                    ← one file per detected table
+    │   ├── table_NNN.csv          (table data only)
+    │   ├── table_NNN.parquet
+    │   ├── table_NNN.html
+    │   └── table_NNN.md
+    │
+    ├── table_context/             ← captions, headings, neighboring paragraphs
+    │   └── table_NNN.context.json
+    │
+    ├── table_cards/               ← compact per-table evidence (base v0.6.1)
+    │   └── table_NNN.card.md
+    │
+    ├── figures/                   ← cropped image regions
+    │   └── figure_NNNN.png
+    │
+    ├── indexes/                   ← document-level maps
+    │   ├── table_index.json / .jsonl
+    │   ├── figures_index.json
+    │   ├── entity_index.jsonl
+    │   └── extraction_warnings.jsonl
+    │
+    ├── manifest.json              ← top-level inventory + checksums
+    └── provenance.json            ← source URL, run metadata
+            │
+            └── card_sets/pipeline-v0.7-{variant}/<doc>/table_cards/
+                └── table_NNN.card.md   ← card reshaped per evaluation variant
+                                          (csv-only, micro-1k, table-only,
+                                           labeled, table-normalized, …)`;
 
 const VARIANTS = [
   { variant: "Project full v0.6.1 card (markdown + context envelope)", rate: "27%", size: "15–42 KB", slug: "pipeline-v0.6.1" },
@@ -56,51 +93,13 @@ const VARIANTS = [
 ];
 
 const OPTIONS = [
-  { key: "A", name: "Continue open-model benchmarking", desc: "Evaluate Apertus 8B, Apertus 70B, ClimateGPT, PublicAI endpoints, and other open or open-weight models across the same evidence tiers. Build out the open-tier capability map." },
-  { key: "B", name: "Standardize a minimal open-model evidence set", desc: "Define the canonical small set of derivatives institutions should publish alongside preserved PDFs. Likely candidates: table CSV, table card, csv-only card, table index, provenance manifest." },
-  { key: "C", name: "Run a 5,000-document open-model pilot", desc: "Test whether the results generalize across government reports, scientific journals, and archival PDFs at scale — covering varied document structures, languages, and conditions." },
-  { key: "D", name: "Prioritize multi-page table stitching", desc: "Close the known Q-NOAA-CALC-001 gap — a table the pipeline splits at a page break, which no model in this study can answer. Fixing this at the pipeline layer closes the gap for every model tier simultaneously." },
-  { key: "E", name: "Build an open-model access layer", desc: "Expose cards, maps, indexes, and provenance through API, MCP server, or local retrieval tooling so open models can discover and request evidence on demand." },
-  { key: "F", name: "Explore multimodal evidence for open models", desc: "Test whether figure crops and image-aware cards improve performance for open models that accept visual input (Qwen2.5-VL, InternVL, Molmo-2-O, Gemma-SEA-LION-VL, EuroLLM-VL)." },
+  { key: "A", name: "Make non-oracle retrieval work on the known corpus", desc: "Oracle retrieval (M3-L4) is saturated at 11/13 for top open models. The next milestone is end-to-end: the system selects the correct table from a document map and then answers — without the human pointing to the evidence. M3-IDX (two-shot table-of-contents lookup) and M3-HYDE (vector retrieval via nomic-embed-text) are the candidate mechanisms. Reach oracle parity on the 13-question diagnostic before testing new documents." },
+  { key: "B", name: "Close the multi-page table stitching gap", desc: "Q-NOAA-CALC-001 fails for every model in this study because the pipeline splits the underlying table at a page break. Fixing this at the pipeline layer (the stitch-map variant is a start) closes the gap uniformly for every model tier — pipeline work that pays off across the entire panel." },
+  { key: "C", name: "Standardize a minimal evidence-derivative set", desc: "Define the small set of derivatives institutions should publish alongside preserved PDFs. Likely candidates: docling.json.gz, per-table CSV, csv-only card, table_index, and provenance.json. Aim is one clear specification so any archive — IA or otherwise — can produce evidence packages open models can use." },
+  { key: "D", name: "Build an open-model access layer for the derivatives", desc: "Expose cards, maps, indexes, and provenance through an HTTP API or MCP server so an open model running locally (Ollama, llama.cpp) can discover and request the right card on demand. Pairs naturally with the M3-IDX work in Option A." },
+  { key: "E", name: "Explore multimodal evidence for VL-capable open models", desc: "Test whether figure crops and image-aware cards improve performance for open vision-language models (Qwen2.5-VL, InternVL, Molmo-2-O, Gemma-SEA-LION-VL, EuroLLM-VL). Useful where OCR introduces noise the text-only pipeline cannot recover." },
+  { key: "F", name: "Held-out scaling pilot — gated on Option A", desc: "Once non-oracle retrieval reaches oracle parity on the known corpus, run a multi-document pilot to test generalization across government reports, scientific journals, and archival PDFs of varying scan quality and structure. Premature without A — scaling a system whose retrieval doesn't yet work just scales the failure mode." },
 ];
-
-const PROMPT_TEXT = `[SYSTEM]
-You are answering a single information-extraction question. Use ONLY the supplied source material. Do not use prior knowledge. Give a clear, concrete answer with the specific number, name, year, or value asked for.
-
-[USER]
---- SOURCE ARTIFACT (M3-L4 — corrected card) ---
-# Table 085 — No caption detected.
-
-PDF page: 355
-
-\`\`\`csv
-Year,Weight of fish landed (tons),Edible phosphorus in fish landed (tons),Phosphorus available for growth in Channel (tons),Usable phosphorus landed as percentage of phosphorus available for growth (Ch)
-1925,"81,000",115,"I1I1I,000",O-104
-1926,"79,000",103,"137,000",0-075
-1927,"74,000",96,"100,000",0-096
-1928,"71,000",92,"126,000",0:073
-1929,"95,000",123,"126,000",0-098
-1930 1931,"58,000 76,000",75 99,"== 5,000",== -104
-1930 1931,"58,000 76,000",75 99,"== 95,000",== 0-104
-1932,"88,000",II4,"86,000",0°133
-1933,"95,000",123,"97,000",O'127
-1934,"93,000",121,"88,000",0'137
-1935,"65,000",85,"77,000",O-IIO
-1936,"79,000",103,"86,000",0-120
-1937,"76,000",99,"88,000",O-1I2
-\`\`\`
-
---- END ARTIFACT ---
-
-Question:
-Looking at the annual fish-catch table in Vol 27, how much less fish weight was caught in 1934 than the year before? Show both source values and the difference.
-
-Answer concisely. Cite the row/cell/section you used.`;
-
-const RESPONSE_TEXT = `Source:
-1934: 93,000 tons
-1933: 95,000 tons
-Difference: 2,000 tons less`;
 
 // ─────────────────────── Page ───────────────────────
 
@@ -115,9 +114,6 @@ export default function ErschliessungPage() {
             <Link href="/" className="text-xl font-bold tracking-tight text-ink hover:text-accent transition-colors">
               GovTools
             </Link>
-            <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Erschließung · Archival Evidence for Open Models
-            </span>
           </div>
           <div className="flex items-center gap-6">
             <Link
@@ -138,9 +134,6 @@ export default function ErschliessungPage() {
             >
               Cycle heatmap
             </a>
-            <div className="text-xs font-medium text-text-secondary uppercase tracking-widest">
-              Diagnostic benchmark · 2026-05-25
-            </div>
           </div>
         </div>
       </header>
@@ -188,7 +181,7 @@ export default function ErschliessungPage() {
 
         {/* ─────────── What this project tests ─────────── */}
         <Section title="What this project tests" tag="Method · 01">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
             <div>
               <p className="mb-4 text-sm leading-relaxed text-ink">
                 This project tests whether archival PDFs — particularly those already preserved by the Internet Archive — can be transformed into compact, structured evidence packages that open models can use to answer real questions about table data.
@@ -208,8 +201,21 @@ export default function ErschliessungPage() {
           </div>
         </Section>
 
+        {/* ─────────── PDF → Docling outputs tree ─────────── */}
+        <Section title="What Docling produces from one PDF" tag="Outputs · 02">
+          <p className="text-sm leading-relaxed mb-6 text-ink">
+            Every source PDF is processed once. The pipeline writes its outputs to a content-addressed directory keyed by the PDF&apos;s SHA-256 — so the same input always produces the same on-disk tree. All evaluation-mode views (M3-L4 oracle, M3-AC all-cards, M2c full Markdown, M2a raw JSON) and all card variants are derived from this base tree.
+          </p>
+          <pre className="border border-border rounded-sm bg-panel/40 px-5 py-4 overflow-x-auto text-[11.5px] leading-[1.55] font-mono whitespace-pre text-ink mb-4">
+            {OUTPUT_TREE}
+          </pre>
+          <p className="text-xs text-text-secondary leading-relaxed">
+            Card variants do not re-run Docling — they only reshape the per-table card (what to keep, strip, or rewrite). That is why the variant comparison further down is a fair head-to-head: the underlying extraction is identical across all rows.
+          </p>
+        </Section>
+
         {/* ─────────── Open-model results ─────────── */}
-        <Section title="Open-model results" tag="Diagnostic · 02">
+        <Section title="Open-model results" tag="Diagnostic · 03">
           <p className="text-sm leading-relaxed mb-6 text-ink">
             All models evaluated under identical conditions: each received exactly one compact CSV-formatted evidence card per question (the relevant table only), plus the question and a single-sentence system instruction. No proprietary tooling was required to produce the cards.
           </p>
@@ -219,7 +225,7 @@ export default function ErschliessungPage() {
                 <tr>
                   <th>Model</th>
                   <th>Model type</th>
-                  <th className="text-right">Score</th>
+                  <th className="text-right">Highest Score</th>
                   <th>Notes</th>
                 </tr>
               </thead>
@@ -227,13 +233,7 @@ export default function ErschliessungPage() {
                 {MODEL_ROWS.map((r, i) => (
                   <tr
                     key={i}
-                    className={
-                      r.comparator
-                        ? "italic text-text-secondary [&_td]:border-t-2 [&_td]:border-t-ink"
-                        : r.highlight
-                          ? "[&_td]:bg-panel font-medium"
-                          : ""
-                    }
+                    className={r.highlight ? "[&_td]:bg-panel font-medium" : ""}
                   >
                     <td className={r.highlight || r.emphasis ? "font-medium text-ink" : ""}>{r.model}</td>
                     <td className="text-text-secondary">{r.type}</td>
@@ -259,52 +259,8 @@ export default function ErschliessungPage() {
           </p>
         </section>
 
-        {/* ─────────── Worked example ─────────── */}
-        <Section title="Worked example: a domain-oriented open model reasons correctly" tag="Evidence · 04">
-          <p className="text-sm leading-relaxed mb-6 text-ink">
-            The strongest demonstration of the evidence-packaging hypothesis is showing a 13-billion-parameter open model — specifically a domain-oriented Llama-2-based model with a 4,096-token context cap — execute a multi-step reasoning task correctly when given only a 1.9 KB CSV-formatted evidence card.
-          </p>
-
-          <SubHead>The question (Q-NAT-006)</SubHead>
-          <div className="border-l-2 border-ink pl-4 py-1 text-sm mb-6 leading-relaxed text-ink font-medium">
-            Looking at the annual fish-catch table in Vol 27, how much less fish weight was caught in 1934 than the year before? Show both source values and the difference.
-          </div>
-          <p className="text-xs text-text-secondary mb-8">
-            <span className="uppercase tracking-widest mr-2">Ground truth</span>
-            2,000 less; 1933 = 95,000; 1934 = 93,000.
-          </p>
-
-          <SubHead>The complete input the open model received</SubHead>
-          <pre className="border-t border-border pt-4 pb-6 overflow-x-auto text-xs leading-relaxed font-mono whitespace-pre mb-2 text-text-secondary">
-            {PROMPT_TEXT}
-          </pre>
-          <p className="text-xs text-text-secondary mb-8">
-            Total prompt: 1,920 characters (~480 tokens). Fits in a 4K-context open model. OCR noise is visible in derived columns — the relevant 1933 and 1934 cells in column 2 are clean.
-          </p>
-
-          <SubHead>The open model&apos;s verbatim response</SubHead>
-          <pre className="border-l-2 border-status-success pl-4 py-2 text-xs leading-relaxed font-mono whitespace-pre mb-2 text-ink font-medium">
-            {RESPONSE_TEXT}
-          </pre>
-          <p className="text-xs uppercase tracking-widest mb-6 text-status-success font-medium">
-            ✓ Verdict: pass
-          </p>
-
-          <p className="text-sm leading-relaxed mb-3 text-ink">The 13B open model successfully:</p>
-          <ul className="text-sm leading-relaxed text-ink list-disc list-inside space-y-1 mb-4">
-            <li>Located the 1933 row and read column 2: <span className="font-medium">95,000 tons</span></li>
-            <li>Located the 1934 row and read column 2: <span className="font-medium">93,000 tons</span></li>
-            <li>Computed the difference: <span className="font-medium">95,000 − 93,000 = 2,000</span></li>
-            <li>Identified the direction: <em>less</em> (because 1934 &lt; 1933)</li>
-            <li>Cited both source values per the question&apos;s instruction</li>
-          </ul>
-          <p className="text-sm leading-relaxed text-ink">
-            That is multi-step table reasoning by an open 13B model on a 4K context window — using only a 1.9 KB CSV-formatted evidence card derived from the IA-preservation pipeline.
-          </p>
-        </Section>
-
         {/* ─────────── How CSV-format cards lifted open-tier ─────────── */}
-        <Section title="How CSV-format cards lifted open-tier performance" tag="Variant comparison · 05">
+        <Section title="How CSV-format cards lifted open-tier performance" tag="Variant comparison · 04">
           <p className="text-sm leading-relaxed mb-6 text-ink">
             Across the full 13-question diagnostic, evidence packaging measurably lifts the average open-tier pass rate:
           </p>
@@ -344,7 +300,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Possible actions forward ─────────── */}
-        <Section title="Possible actions forward" tag="Roadmap · 06">
+        <Section title="Possible actions forward" tag="Roadmap · 05">
           <div className="border-t border-border">
             {OPTIONS.map((o) => (
               <div key={o.key} className="grid grid-cols-[80px_1fr] gap-6 py-6 border-b border-border">
@@ -361,21 +317,9 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Caveats ─────────── */}
-        <Section title="Caveats" tag="Scope · 07">
+        <Section title="Caveats" tag="Scope · 06">
           <div className="border-l-2 border-status-warning pl-4 py-1 text-sm leading-relaxed text-ink">
-            This is a small diagnostic benchmark — 13 questions across 3 documents — not yet proof of broad generalization. Results from the held-out scaling test (Option C) will be needed before any operational claim about IA-scale extraction. The benchmark is designed to surface pipeline failure modes and isolate the evidence-packaging variable; it is not a comprehensive evaluation of open-model capability for all archival use cases.
-          </div>
-        </Section>
-
-        {/* ─────────── Conclusion ─────────── */}
-        <Section title="Conclusion" tag="Synthesis · 08">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <p className="text-sm leading-relaxed text-ink">
-              This project reveals a practical path from preservation derivatives to open-model evidence infrastructure. Docling gives the Internet Archive a rich structural substrate. The pipeline adds the context, provenance, indexing, and packaging that open models need to answer table-grounded questions.
-            </p>
-            <p className="text-sm leading-relaxed text-ink">
-              The strategic decision is not whether to replace Docling or chase proprietary model capability. It is which downstream evidence derivatives the Internet Archive should standardize, evaluate, store, and expose so open models can use archival collections responsibly at scale.
-            </p>
+            This is a small diagnostic benchmark — 13 questions across 3 documents — not yet proof of broad generalization. Non-oracle retrieval (Option A) needs to reach oracle parity on the known corpus before any held-out scaling test (Option F) becomes meaningful. The benchmark is designed to surface pipeline failure modes and isolate the evidence-packaging variable; it is not a comprehensive evaluation of open-model capability for all archival use cases.
           </div>
         </Section>
 
@@ -385,7 +329,7 @@ export default function ErschliessungPage() {
       <footer className="border-t border-border mt-16 py-8">
         <div className="max-w-5xl mx-auto px-6">
           <p className="text-xs text-text-secondary leading-relaxed">
-            Source: cycle 17 of the Erschließung evaluation harness, run 2026-05-22. Card variant: <code className="bg-panel px-1.5 py-0.5">pipeline-v0.7-csv-only</code>. Mode: <code className="bg-panel px-1.5 py-0.5">M3-L4</code> (oracle retrieval — one card per question). Question set: 13 active queries across V27, V35, NOAA-32079, pre-registered in <code className="bg-panel px-1.5 py-0.5">ADVANCED_QUERIES.md</code> before model evaluation. Worked example is the verbatim prompt and response from the open project repository at <a href="https://github.com/WelcomePastToday/Erschliessung" className="text-accent hover:text-link-hover">github.com/WelcomePastToday/Erschliessung</a>.
+            Source: cycle 17 of the Erschließung evaluation harness, run 2026-05-22. Card variant: <code className="bg-panel px-1.5 py-0.5">pipeline-v0.7-csv-only</code>. Mode: <code className="bg-panel px-1.5 py-0.5">M3-L4</code> (oracle retrieval — one card per question). Question set: 13 active queries across V27, V35, NOAA-32079, pre-registered in <code className="bg-panel px-1.5 py-0.5">ADVANCED_QUERIES.md</code> before model evaluation. Project repository: <a href="https://github.com/WelcomePastToday/Erschliessung" className="text-accent hover:text-link-hover">github.com/WelcomePastToday/Erschliessung</a>.
           </p>
         </div>
       </footer>
@@ -408,8 +352,3 @@ function Section({ title, tag, children }: { title: string; tag: string; childre
   );
 }
 
-function SubHead({ children }: { children: React.ReactNode }) {
-  return (
-    <h3 className="text-base font-medium text-ink mt-8 mb-3 tracking-tight">{children}</h3>
-  );
-}
