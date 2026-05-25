@@ -110,7 +110,7 @@ export default function VariantsIndexPage() {
                   <li key={v.slug}>
                     <Link
                       href={`/erschliessung/variants/${v.slug}`}
-                      className="grid grid-cols-1 md:grid-cols-[1fr_120px_140px] gap-2 md:gap-6 py-5 border-b border-border hover:bg-panel transition-colors"
+                      className="grid grid-cols-1 md:grid-cols-[1fr_100px_220px] lg:grid-cols-[1fr_120px_280px] gap-2 md:gap-6 py-5 border-b border-border hover:bg-panel transition-colors"
                     >
                       <div>
                         <div className="text-base font-medium text-ink mb-1">{v.name}</div>
@@ -123,8 +123,8 @@ export default function VariantsIndexPage() {
                           {STATUS_LABEL[v.status]}
                         </span>
                       </div>
-                      <div className="hidden md:flex items-start justify-end">
-                        <span className="text-xs text-text-secondary tabular-nums whitespace-nowrap">
+                      <div className="hidden md:flex items-start justify-end text-right">
+                        <span className="text-xs text-text-secondary tabular-nums leading-relaxed">
                           {v.results?.bestOpenModelScore
                             ? `Best: ${v.results.bestOpenModelScore}`
                             : v.results?.avgOpenTierPassRate

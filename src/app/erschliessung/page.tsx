@@ -47,7 +47,9 @@ const MODEL_ROWS: ModelRow[] = [
 const OUTPUT_TREE = `source/original.pdf                ← archival PDF (preserved by Internet Archive)
 │
 │   Docling.convert(pdf) → in-memory DoclingDocument (nothing written yet)
-│   The pipeline then writes all of the below:
+│   The pipeline may write any of the below; only docling.json.gz is
+│   canonical, everything else is a derivative that can be regenerated
+│   from it.
 │
 ├── docling/
 │   ├── docling.json.gz        ← doc.export_to_dict() → JSON → gzip stream
@@ -125,7 +127,7 @@ export default function ErschliessungPage() {
               Variants
             </Link>
             <Link
-              href="/erschliessung/public-interest"
+              href="/erschliessung/interpolation"
               className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
             >
               Apertus + ClimateGPT
@@ -205,8 +207,11 @@ export default function ErschliessungPage() {
 
         {/* ─────────── PDF → Docling outputs tree ─────────── */}
         <Section title="What Docling produces from one PDF" tag="Outputs · 02">
+          <p className="text-sm leading-relaxed mb-3 text-ink">
+            Every source PDF is processed once. The pipeline writes its outputs to a content-addressed directory keyed by the PDF&apos;s SHA-256, so the same input always produces the same on-disk tree.
+          </p>
           <p className="text-sm leading-relaxed mb-6 text-ink">
-            Every source PDF is processed once. The pipeline writes its outputs to a content-addressed directory keyed by the PDF&apos;s SHA-256 — so the same input always produces the same on-disk tree. All evaluation-mode views (M3-L4 oracle, M3-AC all-cards, M2c full Markdown, M2a raw JSON) and all card variants are derived from this base tree.
+            Of everything below, only <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> is canonical: it contains the full structural extraction Docling produced in-memory — layout, table cell structure, captions, headings, figure bounding boxes, reading order. Every other file is a derivative our pipeline writes for convenience and can be regenerated from the JSON alone. An archive that only publishes <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> (the Internet Archive&apos;s likely case) gives downstream consumers everything they need to reconstitute card variants, table CSVs, and indexes themselves.
           </p>
           <pre className="border border-border rounded-sm bg-panel/40 px-5 py-4 overflow-x-auto text-[11.5px] leading-[1.55] font-mono whitespace-pre text-ink mb-4">
             {OUTPUT_TREE}
