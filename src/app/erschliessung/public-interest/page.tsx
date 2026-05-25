@@ -219,6 +219,19 @@ export default function PublicInterestPage() {
                       <td className="py-3 pr-3 text-sm leading-snug">
                         <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{qid}</span>
                         <span className="text-ink">{row.question}</span>
+                        {row.promptSourceUrl && (
+                          <div className="mt-1.5">
+                            <a
+                              href={row.promptSourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                              title="Open the full system + user prompt on GitHub (new tab)"
+                            >
+                              view full prompt →
+                            </a>
+                          </div>
+                        )}
                       </td>
 
                       {/* PDF input cell — brief N/A */}
@@ -248,6 +261,19 @@ export default function PublicInterestPage() {
                       >
                         <div className="mb-1.5">{evalChip(row.cardEvaluation)}</div>
                         <div className="font-mono text-xs whitespace-pre-wrap text-ink">{row.cardResponse}</div>
+                        {row.cardSourceUrl && (
+                          <div className="mt-2 pt-1.5 border-t border-border/60">
+                            <a
+                              href={row.cardSourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                              title="Open the verbatim card the model was served on GitHub (new tab)"
+                            >
+                              view card content →
+                            </a>
+                          </div>
+                        )}
                       </td>
 
                       <td className="py-3 text-sm tabular-nums text-ink font-medium">
