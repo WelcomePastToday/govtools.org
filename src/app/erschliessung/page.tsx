@@ -19,7 +19,6 @@ const KEY_METRICS = [
 interface ModelRow {
   model: string;
   type: string;
-  access: string;
   score: string;
   notes: string;
   highlight?: boolean;
@@ -28,22 +27,22 @@ interface ModelRow {
 }
 
 const MODEL_ROWS: ModelRow[] = [
-  { model: "Qwen2.5-7B", type: "Open-weight", access: "Local / reproducible", score: "11/13", notes: "Strong result with compact evidence packages.", highlight: true },
-  { model: "Granite-3.3-8B", type: "Open-weight", access: "Local / reproducible", score: "11/13", notes: "Strong result with compact evidence packages.", highlight: true },
-  { model: "Qwen2.5-Coder-7B", type: "Open-weight, code-tuned", access: "Local / reproducible", score: "10/13", notes: "Code-tuning did not beat the general 7B variant on this benchmark." },
-  { model: "Llama-3 8B", type: "Open-weight", access: "Local / reproducible", score: "9/13", notes: "Consistent across most evidence variants." },
-  { model: "DeepSeek-R1 8B", type: "Open-weight, reasoning-tuned", access: "Local / reproducible", score: "8/13", notes: "Reasoning fine-tuning gave a modest lift." },
-  { model: "Apertus 70B", type: "Open / Swiss public-interest model", access: "Local or hosted endpoint", score: "7/13", notes: "Swiss AI Initiative. Larger Apertus variant.", emphasis: true },
-  { model: "EuroLLM 9B", type: "Open / EU public-interest model", access: "Local / reproducible", score: "7/13", notes: "UTTER consortium. European public-interest tier coverage.", emphasis: true },
-  { model: "Gemma-2 9B", type: "Open-weight", access: "Local / reproducible", score: "7/13", notes: "" },
-  { model: "Apertus 8B Instruct", type: "Open / Swiss public-interest model", access: "Local or hosted endpoint", score: "6/13", notes: "Swiss AI Initiative. Mission-aligned for public-interest infrastructure.", emphasis: true },
-  { model: "Mistral 7B", type: "Open-weight", access: "Local / reproducible", score: "6/13", notes: "" },
-  { model: "Qwen2.5-3B", type: "Open-weight, small", access: "Local / reproducible (≤2 GB)", score: "6/13", notes: "3-billion-parameter model outperforms 13B domain model." },
-  { model: "ClimateGPT-13B", type: "Domain-oriented open model", access: "Collaboration / batch run", score: "5/13", notes: "Climate-domain Llama-2 fine-tune. 4K context cap constrains larger artifacts.", emphasis: true },
-  { model: "OLMo-2 7B", type: "Open / fully-open (AI2)", access: "Local / reproducible", score: "4/13", notes: "Fully open weights, data, and training code." },
-  { model: "Phi-3-Mini 3.8B", type: "Open-weight, small", access: "Local / reproducible (≤2.5 GB)", score: "4/13", notes: "" },
-  { model: "ClimateGPT-70B", type: "Domain-oriented open model", access: "Collaboration / batch run", score: "3/13", notes: "Larger climate-domain Llama-2 variant." },
-  { model: "ClimateGPT-7B", type: "Domain-oriented open model", access: "Collaboration / batch run", score: "3/13", notes: "Smaller climate-domain Llama-2 variant." },
+  { model: "Qwen2.5-7B",          type: "Open-weight",                       score: "11/13", notes: "Matches frontier capability at 1/8 the parameter count when given the compact CSV card.", highlight: true },
+  { model: "Granite-3.3-8B",      type: "Open-weight",                       score: "11/13", notes: "IBM open-weight — matches Qwen at the same scale.", highlight: true },
+  { model: "Qwen2.5-Coder-7B",    type: "Open-weight, code-tuned",           score: "10/13", notes: "" },
+  { model: "Llama-3 8B",          type: "Open-weight",                       score: "9/13",  notes: "" },
+  { model: "DeepSeek-R1 8B",      type: "Open-weight, reasoning-tuned",      score: "8/13",  notes: "" },
+  { model: "Apertus 70B",         type: "Open / Swiss public-interest model", score: "7/13",  notes: "", emphasis: true },
+  { model: "EuroLLM 9B",          type: "Open / EU public-interest model",   score: "7/13",  notes: "", emphasis: true },
+  { model: "Gemma-2 9B",          type: "Open-weight",                       score: "7/13",  notes: "" },
+  { model: "Apertus 8B Instruct", type: "Open / Swiss public-interest model", score: "6/13",  notes: "Swiss AI Initiative — mission-aligned for public-interest infrastructure.", emphasis: true },
+  { model: "Mistral 7B",          type: "Open-weight",                       score: "6/13",  notes: "" },
+  { model: "Qwen2.5-3B",          type: "Open-weight, small",                score: "6/13",  notes: "3 B parameters (~2 GB) — outperforms ClimateGPT-13B at 1/4 the size." },
+  { model: "ClimateGPT-13B",      type: "Domain-oriented open model",        score: "5/13",  notes: "Climate-domain Llama-2 fine-tune; 4K context cap constrains larger artifacts.", emphasis: true },
+  { model: "OLMo-2 7B",           type: "Open / fully-open (AI2)",           score: "4/13",  notes: "Fully open weights, data, and training code." },
+  { model: "Phi-3-Mini 3.8B",     type: "Open-weight, small",                score: "4/13",  notes: "" },
+  { model: "ClimateGPT-70B",      type: "Domain-oriented open model",        score: "3/13",  notes: "" },
+  { model: "ClimateGPT-7B",       type: "Domain-oriented open model",        score: "3/13",  notes: "" },
 ];
 
 const VARIANTS = [
@@ -220,7 +219,6 @@ export default function ErschliessungPage() {
                 <tr>
                   <th>Model</th>
                   <th>Model type</th>
-                  <th>Access mode</th>
                   <th className="text-right">Score</th>
                   <th>Notes</th>
                 </tr>
@@ -239,7 +237,6 @@ export default function ErschliessungPage() {
                   >
                     <td className={r.highlight || r.emphasis ? "font-medium text-ink" : ""}>{r.model}</td>
                     <td className="text-text-secondary">{r.type}</td>
-                    <td className="text-text-secondary">{r.access}</td>
                     <td className="text-right tabular-nums font-medium">{r.score}</td>
                     <td className="text-text-secondary">{r.notes}</td>
                   </tr>
