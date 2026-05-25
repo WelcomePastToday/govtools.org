@@ -137,8 +137,14 @@ export default function ErschliessungPage() {
             >
               Variants
             </Link>
+            <a
+              href="/erschliessung/evaluation_runs/cycles/heatmap.html"
+              className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
+            >
+              Cycle heatmap
+            </a>
             <div className="text-xs font-medium text-text-secondary uppercase tracking-widest">
-              Diagnostic benchmark · 2026-05-23
+              Diagnostic benchmark · 2026-05-25
             </div>
           </div>
         </div>
@@ -171,12 +177,9 @@ export default function ErschliessungPage() {
 
         {/* ─────────── Key metrics ─────────── */}
         <section className="mb-16">
-          <div className="grid grid-cols-1 md:grid-cols-4 border-t border-b border-border">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 border-t border-b border-border py-8">
             {KEY_METRICS.map((m, i) => (
-              <div
-                key={i}
-                className={`p-6 ${i < KEY_METRICS.length - 1 ? "md:border-r border-border" : ""}`}
-              >
+              <div key={i} className="flex flex-col">
                 <div className="text-3xl font-bold leading-none tracking-tight mb-2 text-ink">
                   {m.num}
                 </div>
@@ -216,7 +219,7 @@ export default function ErschliessungPage() {
             All models evaluated under identical conditions: each received exactly one compact CSV-formatted evidence card per question (the relevant table only), plus the question and a single-sentence system instruction. No proprietary tooling was required to produce the cards.
           </p>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-[13px]">
               <thead>
                 <tr>
                   <th>Model</th>
@@ -254,7 +257,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Core insight callout ─────────── */}
-        <section className="mb-16 border-l-2 border-status-success bg-panel p-6">
+        <section className="mb-16 border-t border-b border-border py-8">
           <div className="text-xs text-text-secondary uppercase tracking-widest mb-2">
             Core insight
           </div>
@@ -268,12 +271,9 @@ export default function ErschliessungPage() {
           <p className="text-sm leading-relaxed mb-8 text-ink">
             Internet Archive and similar public-interest institutions need AI workflows that are auditable, reproducible, affordable, and not fully dependent on proprietary APIs. This project tests whether archival PDFs can be converted into compact evidence packages that open models can use directly. The results suggest that derivative design — choosing what to extract, how to package it, and how to expose it — can make preserved documents more accessible to open AI systems running in institutional environments.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-5 border-t border-border">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 border-t border-border pt-8">
             {BENEFITS.map((b, i) => (
-              <div
-                key={b.key}
-                className={`p-6 ${i < BENEFITS.length - 1 ? "md:border-r border-border" : ""}`}
-              >
+              <div key={b.key} className="flex flex-col">
                 <div className="text-xs text-text-secondary uppercase tracking-widest mb-3">
                   {b.key}
                 </div>
@@ -291,7 +291,7 @@ export default function ErschliessungPage() {
           </p>
 
           <SubHead>The question (Q-NAT-006)</SubHead>
-          <div className="border-l-2 border-accent bg-panel p-4 text-sm mb-6 leading-relaxed">
+          <div className="border-l-2 border-ink pl-4 py-1 text-sm mb-6 leading-relaxed text-ink font-medium">
             Looking at the annual fish-catch table in Vol 27, how much less fish weight was caught in 1934 than the year before? Show both source values and the difference.
           </div>
           <p className="text-xs text-text-secondary mb-8">
@@ -300,7 +300,7 @@ export default function ErschliessungPage() {
           </p>
 
           <SubHead>The complete input the open model received</SubHead>
-          <pre className="bg-panel border border-border p-6 overflow-x-auto text-xs leading-relaxed font-mono whitespace-pre mb-2 text-ink">
+          <pre className="border-t border-border pt-4 pb-6 overflow-x-auto text-xs leading-relaxed font-mono whitespace-pre mb-2 text-text-secondary">
             {PROMPT_TEXT}
           </pre>
           <p className="text-xs text-text-secondary mb-8">
@@ -308,7 +308,7 @@ export default function ErschliessungPage() {
           </p>
 
           <SubHead>The open model&apos;s verbatim response</SubHead>
-          <pre className="bg-panel border-l-2 border-status-success border-r border-y border-border p-6 text-xs leading-relaxed font-mono whitespace-pre mb-2 text-ink">
+          <pre className="border-l-2 border-status-success pl-4 py-2 text-xs leading-relaxed font-mono whitespace-pre mb-2 text-ink font-medium">
             {RESPONSE_TEXT}
           </pre>
           <p className="text-xs uppercase tracking-widest mb-6 text-status-success font-medium">
@@ -333,7 +333,7 @@ export default function ErschliessungPage() {
           <p className="text-sm leading-relaxed mb-6 text-ink">
             Across the full 13-question diagnostic, evidence packaging measurably lifts the average open-tier pass rate:
           </p>
-          <table className="w-full text-sm mb-6">
+          <table className="w-full text-[13px] mb-6">
             <thead>
               <tr>
                 <th>Evidence variant served to the open model</th>
@@ -363,7 +363,7 @@ export default function ErschliessungPage() {
             </Link>{" "}
             Each variant has a dedicated page documenting input sources, generator script, AI use, OCR tooling, approximate processing time, resource intensity, and evaluation results.
           </p>
-          <div className="border-l-2 border-status-warning bg-panel p-4 text-sm leading-relaxed text-ink">
+          <div className="border-l-2 border-ink pl-4 py-2 mt-8 text-sm leading-relaxed text-ink font-medium">
             CSV-format cards lift open-tier pass rate from 27% to 55% — a 28-percentage-point gain achieved purely by packaging the same extracted table data in a different format. No additional model fine-tuning. No proprietary tooling. The lift comes from how the archive presents the evidence.
           </div>
         </Section>
@@ -387,7 +387,7 @@ export default function ErschliessungPage() {
 
         {/* ─────────── Caveats ─────────── */}
         <Section title="Caveats" tag="Scope · 07">
-          <div className="border-l-2 border-status-warning bg-panel p-4 text-sm leading-relaxed text-ink">
+          <div className="border-l-2 border-status-warning pl-4 py-1 text-sm leading-relaxed text-ink">
             This is a small diagnostic benchmark — 13 questions across 3 documents — not yet proof of broad generalization. Results from the held-out scaling test (Option C) will be needed before any operational claim about IA-scale extraction. The benchmark is designed to surface pipeline failure modes and isolate the evidence-packaging variable; it is not a comprehensive evaluation of open-model capability for all archival use cases.
           </div>
         </Section>
