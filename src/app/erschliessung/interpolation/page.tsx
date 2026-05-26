@@ -52,6 +52,36 @@ const MODEL_ROWS: ModelRow[] = [
   { model: "ClimateGPT-7B",       type: "Open-weight, domain-tuned",    score: "3/13",  passes: 3  },
 ];
 
+// Provenance — answers "what work does each artifact need?" for an Internet Archive item
+interface ProvenanceRow {
+  artifact: string;
+  detail: string;
+  source: "ia-has-it" | "ia-derivable" | "rerun-docling" | "pipeline-only";
+}
+const PROVENANCE_ROWS: ProvenanceRow[] = [
+  { artifact: "The PDF itself",                                            source: "ia-has-it",     detail: "The archival document — the only thing the Internet Archive is guaranteed to hold for an item." },
+  { artifact: "docling.json.gz",                                           source: "ia-has-it",     detail: "Docling's full structural extraction: layout, tables, captions, headings, figure bounding boxes, reading order. The Internet Archive holds this for items it has already processed. For unprocessed items, the pipeline runs Docling on the PDF once and produces it." },
+  { artifact: "Per-table CSV / Parquet / HTML / Markdown",                 source: "ia-derivable",  detail: "One file per detected table, extracted from docling.json.gz. Pure transformation — no model needed, no second Docling pass needed." },
+  { artifact: "Table context envelopes",                                   source: "ia-derivable",  detail: "Captions, headings, and neighboring paragraphs for each table. All present in docling.json.gz; the pipeline just picks them out." },
+  { artifact: "Compact per-table evidence cards",                          source: "ia-derivable",  detail: "The 1–2 KB CSV-format cards that drive the headline result. Built from the per-table CSV + selected context. No Docling re-run; no extra Internet Archive fetch beyond the JSON." },
+  { artifact: "Card variants (csv-only, micro-1k, table-normalized, …)",   source: "ia-derivable",  detail: "Reshapes of the base card. Each variant changes what the model sees, never what was extracted. All derive from docling.json.gz." },
+  { artifact: "Document-level maps (table index, figures index, entity index)", source: "ia-derivable", detail: "Per-document summaries used for two-shot retrieval and discovery. Derived from docling.json.gz alone." },
+  { artifact: "Figure image crops (PNG)",                                  source: "rerun-docling", detail: "Cropped pixels for each detected figure. The bounding boxes are in docling.json.gz but the pixels are not — producing the PNGs requires either the original PDF + a crop step, or re-running Docling with extract_figures=True." },
+  { artifact: "manifest.json, provenance.json, docling_meta.json",         source: "pipeline-only", detail: "Pipeline metadata: source URL, content-addressed hashes, extractor version, run timing. The pipeline writes these; they do not exist anywhere upstream." },
+];
+const PROVENANCE_LABEL: Record<ProvenanceRow["source"], string> = {
+  "ia-has-it":     "On the Internet Archive",
+  "ia-derivable":  "Derivable from the JSON",
+  "rerun-docling": "Needs Docling re-run or PDF",
+  "pipeline-only": "Pipeline metadata only",
+};
+const PROVENANCE_CLASSES: Record<ProvenanceRow["source"], string> = {
+  "ia-has-it":     "border-status-success text-status-success",
+  "ia-derivable":  "border-border text-text-secondary",
+  "rerun-docling": "border-status-warning text-status-warning",
+  "pipeline-only": "border-border text-text-secondary",
+};
+
 // Soft tints for the per-cell evidence (matches the interpolation deep-dive page)
 const EVAL_BG: Record<Evaluation, string> = {
   correct:   "#e6f4ec", // soft green
@@ -140,6 +170,46 @@ export default function ErschliessungPage() {
           <p className="text-xs text-text-secondary mt-3 leading-relaxed">
             Sample: 7 (model, question) cells across {distinctQuestions} distinct questions on the 13-question diagnostic.
           </p>
+
+          {/* Provenance — collapsed by default; expands to show the PDF → derivatives chain */}
+          <details className="mt-6 border-t border-border pt-4 group">
+            <summary className="cursor-pointer text-xs uppercase tracking-widest text-text-secondary hover:text-ink select-none">
+              <span className="group-open:hidden">How each artifact relates to the source PDF and Docling output ↓</span>
+              <span className="hidden group-open:inline">Hide derivation table ↑</span>
+            </summary>
+            <div className="mt-4">
+              <p className="text-xs text-text-secondary mb-4 leading-relaxed max-w-4xl">
+                The practical question is not where files sit on disk — it is what work is needed to obtain each artifact. For an Internet Archive item that has already been Docling-processed, the JSON is a free download. The compact evidence cards, table CSVs, document indexes, and card variants are all derivable from that one file without re-running Docling. Only the figure pixel crops need either the source PDF or a Docling re-run with figure extraction enabled.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[13px]">
+                  <thead>
+                    <tr>
+                      <th>Artifact</th>
+                      <th className="w-[170px]">How to get it</th>
+                      <th>Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PROVENANCE_ROWS.map((r, i) => (
+                      <tr key={i}>
+                        <td className="font-medium text-ink align-top">{r.artifact}</td>
+                        <td className="align-top">
+                          <span className={`text-[10px] uppercase tracking-widest font-medium border px-2 py-0.5 inline-block ${PROVENANCE_CLASSES[r.source]}`}>
+                            {PROVENANCE_LABEL[r.source]}
+                          </span>
+                        </td>
+                        <td className="text-text-secondary align-top">{r.detail}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
+                <strong className="text-ink font-medium">Why this matters for scale.</strong> If the Internet Archive holds <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> for an item, every evidence package shown on this page — including the compact CSV cards — can be generated from that single file. No re-running Docling. No re-downloading the PDF.
+              </p>
+            </div>
+          </details>
         </Section>
 
         {/* ─────────── Per-cell evidence (full table from /interpolation) ─────────── */}
