@@ -10,13 +10,6 @@ export const metadata: Metadata = {
 
 // ─────────────────────── Data ───────────────────────
 
-const HEADLINE_METRICS = [
-  { num: "7/7",     label: "Questions Apertus + ClimateGPT answered with the compact CSV card" },
-  { num: "0/7",     label: "Same questions on raw PDF or raw Docling JSON" },
-  { num: "27 → 55%", label: "Open-tier pass-rate lift from CSV-format cards" },
-  { num: "≤2 KB",   label: "Typical compact evidence package per question" },
-];
-
 interface VariantBar {
   variant: string;
   rate: number; // percentage 0-100
@@ -58,33 +51,6 @@ const MODEL_ROWS: ModelRow[] = [
   { model: "ClimateGPT-70B",      type: "Open-weight, domain-tuned",    score: "3/13",  passes: 3  },
   { model: "ClimateGPT-7B",       type: "Open-weight, domain-tuned",    score: "3/13",  passes: 3  },
 ];
-
-interface OptionRow {
-  key: string;
-  name: string;
-  status: "next" | "near-term" | "longer-term" | "gated";
-}
-const OPTIONS: OptionRow[] = [
-  { key: "A", status: "next",        name: "Make non-oracle retrieval work on the known corpus (M3-IDX, M3-HYDE) — the next milestone now that oracle is saturated." },
-  { key: "B", status: "near-term",   name: "Close the multi-page table stitching gap (Q-NOAA-CALC-001) — fixed at the pipeline layer lifts every model tier at once." },
-  { key: "C", status: "near-term",   name: "Standardize a minimal evidence-derivative set archives publish alongside PDFs (docling.json.gz + csv-only card + table index + provenance)." },
-  { key: "D", status: "longer-term", name: "Build an open-model access layer (HTTP API or MCP server) so local models can request the right card on demand." },
-  { key: "E", status: "longer-term", name: "Explore multimodal evidence for VL-capable open models (Qwen2.5-VL, InternVL, Molmo-2-O, …)." },
-  { key: "F", status: "gated",       name: "Held-out scaling pilot — gated on A. Premature without working non-oracle retrieval." },
-];
-
-const OPTION_LABEL: Record<OptionRow["status"], string> = {
-  "next":        "Next",
-  "near-term":   "Near-term",
-  "longer-term": "Longer-term",
-  "gated":       "Gated",
-};
-const OPTION_CLASSES: Record<OptionRow["status"], string> = {
-  "next":        "border-status-success text-status-success",
-  "near-term":   "border-border text-text-secondary",
-  "longer-term": "border-border text-text-secondary",
-  "gated":       "border-status-warning text-status-warning",
-};
 
 // Soft tints for the per-cell evidence (matches the interpolation deep-dive page)
 const EVAL_BG: Record<Evaluation, string> = {
@@ -145,16 +111,6 @@ export default function ErschliessungPage() {
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight text-ink max-w-4xl">
             Many open models cannot receive PDF or full Docling JSON files. 1.5 KB CSV cards unlock answers.
           </h1>
-        </section>
-
-        {/* ─────────── Key metrics ─────────── */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-8 border-y border-border py-6 mb-12">
-          {HEADLINE_METRICS.map((m, i) => (
-            <div key={i}>
-              <div className="text-2xl md:text-3xl font-bold leading-none tracking-tight text-ink mb-2">{m.num}</div>
-              <div className="text-[11px] text-text-secondary uppercase tracking-widest leading-snug">{m.label}</div>
-            </div>
-          ))}
         </section>
 
         {/* ─────────── Input gradient (visual) ─────────── */}
@@ -313,26 +269,6 @@ export default function ErschliessungPage() {
             </div>
           </div>
         </Section>
-
-        {/* ─────────── Roadmap (compact) ─────────── */}
-        <Section title="Possible actions forward" tag="06">
-          <ul className="border-t border-border">
-            {OPTIONS.map((o) => (
-              <li key={o.key} className="grid grid-cols-[60px_100px_1fr] gap-3 items-baseline py-3 border-b border-border">
-                <span className="text-[11px] text-text-secondary uppercase tracking-widest font-medium">Option {o.key}</span>
-                <span className={`text-[10px] uppercase tracking-widest font-medium border px-2 py-0.5 inline-block ${OPTION_CLASSES[o.status]}`}>
-                  {OPTION_LABEL[o.status]}
-                </span>
-                <span className="text-sm text-ink leading-snug">{o.name}</span>
-              </li>
-            ))}
-          </ul>
-        </Section>
-
-        {/* ─────────── Caveat (one-line) ─────────── */}
-        <section className="border-l-2 border-status-warning pl-4 py-2 mb-4 text-sm text-ink leading-relaxed">
-          Small diagnostic benchmark — 13 questions × 3 documents. Non-oracle retrieval needs to reach oracle parity on the known corpus before a held-out scaling pilot is meaningful.
-        </section>
 
       </main>
 
