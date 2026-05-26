@@ -144,7 +144,7 @@ export default function ErschliessungPage() {
           </h1>
           <div className="text-sm leading-relaxed text-text-secondary max-w-4xl space-y-3">
             <p>
-              The Erschließung project tested 24 open/open-weight models, plus 6 closed-reference comparators, on a 13-question benchmark from three archival documents: two scanned marine biology journals and one born-digital NOAA fisheries report.
+              The Erschließung (archival processing) project tested 24 open/open-weight models, plus 6 closed-reference comparators, on a 13-question benchmark from three archival documents: two scanned marine biology journals and one born-digital NOAA fisheries report.
             </p>
             <p>
               Across 36 cycles, the project evaluated 28 evidence-derivative formats, from raw Docling JSON and full Markdown cards to compact CSV, micro-cards, table-only, stitched, normalized, and column-context variants. It also tested multiple retrieval modes, including oracle cards, all-cards, two-shot index retrieval, HYDE/vector retrieval, full-document Markdown, and raw Docling JSON.
