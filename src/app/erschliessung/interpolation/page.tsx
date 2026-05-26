@@ -170,46 +170,6 @@ export default function ErschliessungPage() {
           <p className="text-xs text-text-secondary mt-3 leading-relaxed">
             Sample: 7 (model, question) cells across {distinctQuestions} distinct questions on the 13-question diagnostic.
           </p>
-
-          {/* Provenance — collapsed by default; expands to show the PDF → derivatives chain */}
-          <details className="mt-6 border-t border-border pt-4 group">
-            <summary className="cursor-pointer text-xs uppercase tracking-widest text-text-secondary hover:text-ink select-none">
-              <span className="group-open:hidden">How each artifact relates to the source PDF and Docling output ↓</span>
-              <span className="hidden group-open:inline">Hide derivation table ↑</span>
-            </summary>
-            <div className="mt-4">
-              <p className="text-xs text-text-secondary mb-4 leading-relaxed max-w-4xl">
-                The practical question is not where files sit on disk — it is what work is needed to obtain each artifact. For an Internet Archive item that has already been Docling-processed, the JSON is a free download. The compact evidence cards, table CSVs, document indexes, and card variants are all derivable from that one file without re-running Docling. Only the figure pixel crops need either the source PDF or a Docling re-run with figure extraction enabled.
-              </p>
-              <div className="overflow-x-auto">
-                <table className="w-full text-[13px]">
-                  <thead>
-                    <tr>
-                      <th>Artifact</th>
-                      <th className="w-[170px]">How to get it</th>
-                      <th>Detail</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {PROVENANCE_ROWS.map((r, i) => (
-                      <tr key={i}>
-                        <td className="font-medium text-ink align-top">{r.artifact}</td>
-                        <td className="align-top">
-                          <span className={`text-[10px] uppercase tracking-widest font-medium border px-2 py-0.5 inline-block ${PROVENANCE_CLASSES[r.source]}`}>
-                            {PROVENANCE_LABEL[r.source]}
-                          </span>
-                        </td>
-                        <td className="text-text-secondary align-top">{r.detail}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
-                <strong className="text-ink font-medium">Why this matters for scale.</strong> If the Internet Archive holds <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> for an item, every evidence package shown on this page — including the compact CSV cards — can be generated from that single file. No re-running Docling. No re-downloading the PDF.
-              </p>
-            </div>
-          </details>
         </Section>
 
         {/* ─────────── Per-cell evidence (full table from /interpolation) ─────────── */}
@@ -341,6 +301,46 @@ export default function ErschliessungPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Provenance — collapsed by default; expands to show the PDF → derivatives chain */}
+          <details className="mt-6 border-t border-border pt-4 group">
+            <summary className="cursor-pointer text-xs uppercase tracking-widest text-text-secondary hover:text-ink select-none">
+              <span className="group-open:hidden">How each artifact relates to the source PDF and Docling output ↓</span>
+              <span className="hidden group-open:inline">Hide derivation table ↑</span>
+            </summary>
+            <div className="mt-4">
+              <p className="text-xs text-text-secondary mb-4 leading-relaxed max-w-4xl">
+                The practical question is not where files sit on disk — it is what work is needed to obtain each artifact. For an Internet Archive item that has already been Docling-processed, the JSON is a free download. The compact evidence cards, table CSVs, document indexes, and card variants are all derivable from that one file without re-running Docling. Only the figure pixel crops need either the source PDF or a Docling re-run with figure extraction enabled.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[13px]">
+                  <thead>
+                    <tr>
+                      <th>Artifact</th>
+                      <th className="w-[170px]">How to get it</th>
+                      <th>Detail</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PROVENANCE_ROWS.map((r, i) => (
+                      <tr key={i}>
+                        <td className="font-medium text-ink align-top">{r.artifact}</td>
+                        <td className="align-top">
+                          <span className={`text-[10px] uppercase tracking-widest font-medium border px-2 py-0.5 inline-block ${PROVENANCE_CLASSES[r.source]}`}>
+                            {PROVENANCE_LABEL[r.source]}
+                          </span>
+                        </td>
+                        <td className="text-text-secondary align-top">{r.detail}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
+                <strong className="text-ink font-medium">Why this matters for scale.</strong> If the Internet Archive holds <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> for an item, every evidence package shown on this page — including the compact CSV cards — can be generated from that single file. No re-running Docling. No re-downloading the PDF.
+              </p>
+            </div>
+          </details>
         </Section>
 
         {/* ─────────── Variant lift chart (horizontal bars) ─────────── */}
