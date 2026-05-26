@@ -3,9 +3,9 @@ import Link from "next/link";
 import { VARIANTS_BY_CATEGORY, type Variant } from "../_data/variants";
 
 export const metadata: Metadata = {
-  title: "Variants and evaluation modes — Erschließung | GovTools",
+  title: "Input variants — how evidence is shaped for the model | Erschließung",
   description:
-    "Detailed inputs, processing time, AI use, OCR, and results for every Erschließung pipeline variant, card variant, document map, and evaluation mode.",
+    "Every input form the open model can be handed: pipeline derivatives, per-table card variants, document-level maps, and evaluation modes. Each links to inputs, processing time, AI use, OCR, and results.",
 };
 
 const STATUS_BADGE_CLASSES: Record<Variant["status"], string> = {
@@ -44,11 +44,11 @@ export default function VariantsIndexPage() {
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
               <Link href="/erschliessung" className="hover:text-accent transition-colors">Erschließung</Link>
               <span className="mx-2">›</span>
-              Variants
+              Input variants
             </span>
           </div>
           <div className="text-xs font-medium text-text-secondary uppercase tracking-widest">
-            Variants index
+            Input variants
           </div>
         </div>
       </header>
@@ -57,10 +57,10 @@ export default function VariantsIndexPage() {
 
         <section className="pb-3 mb-4 border-b border-border flex items-baseline justify-between gap-4 flex-wrap">
           <h1 className="text-xl font-bold tracking-tight text-ink">
-            Variants and evaluation modes
+            Input variants — how evidence is shaped for the model
           </h1>
           <p className="text-xs text-text-secondary leading-snug max-w-2xl">
-            Every variant has a detail page documenting inputs, generator script, AI use, OCR tool, processing time, results, and known limitations.
+            Every form the open model can be handed. Each entry links to inputs, generator script, AI use, OCR tool, processing time, and results.
           </p>
         </section>
 
