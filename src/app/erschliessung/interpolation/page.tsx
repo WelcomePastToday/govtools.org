@@ -130,16 +130,27 @@ export default function ErschliessungPage() {
 
       <main className="max-w-7xl mx-auto px-6 py-10">
 
-        {/* ─────────── Hero (tight) ─────────── */}
+        {/* ─────────── Hero ─────────── */}
         <section className="pb-8 mb-8 border-b border-border">
           <div className="text-xs text-text-secondary uppercase tracking-widest mb-3">
             Archival evidence packaging for open models
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight text-ink max-w-4xl">
+          <h1 className="text-lg md:text-xl font-bold tracking-tight leading-snug text-ink max-w-4xl mb-6">
             Many open models cannot interpolate table data from PDF or full Docling.JSON files, the files are too large for the models context window.
             <br />
             1.5 KB CSV table cards can allow models to generate answers.
           </h1>
+          <div className="text-sm leading-relaxed text-text-secondary max-w-4xl space-y-3">
+            <p>
+              The Erschließung project tested 24 open/open-weight models, plus 6 closed-reference comparators, on a 13-question benchmark from three archival documents: two scanned marine biology journals and one born-digital NOAA fisheries report.
+            </p>
+            <p>
+              Across 36 cycles, the project evaluated 28 evidence-derivative formats, from raw Docling JSON and full Markdown cards to compact CSV, micro-cards, table-only, stitched, normalized, and column-context variants. It also tested multiple retrieval modes, including oracle cards, all-cards, two-shot index retrieval, HYDE/vector retrieval, full-document Markdown, and raw Docling JSON.
+            </p>
+            <p className="text-ink">
+              <strong className="font-medium">The headline finding:</strong> better evidence packaging lifted the open-tier pass rate from 27% to 55%, with two 7&ndash;8B open models reaching 11/13 on compact CSV cards.
+            </p>
+          </div>
         </section>
 
         {/* ─────────── Input gradient (visual) ─────────── */}
