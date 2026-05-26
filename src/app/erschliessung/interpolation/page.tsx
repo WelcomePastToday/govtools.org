@@ -136,7 +136,9 @@ export default function ErschliessungPage() {
             Archival evidence packaging for open models
           </div>
           <h1 className="text-lg md:text-xl font-bold tracking-tight leading-snug text-ink max-w-4xl mb-6">
-            Many open models cannot interpolate table data from PDF or full Docling.JSON files, the files are too large for the models context window.
+            Many open models cannot interpolate table data from PDF or full Docling.JSON files.
+            <br />
+            These files often exceed the size limit of many context windows.
             <br />
             1.5 KB CSV table cards can allow models to generate answers.
           </h1>
