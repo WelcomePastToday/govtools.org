@@ -108,7 +108,7 @@ export default function ErschliessungPage() {
         </section>
 
         {/* ─────────── Input gradient (visual) ─────────── */}
-        <Section title="Input gradient at a glance" tag="01">
+        <Section title="Input gradient at a glance">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border">
             <InputCard
               label="Raw PDF"
@@ -138,7 +138,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Per-cell evidence (full table from /interpolation) ─────────── */}
-        <Section title="Per-cell evidence" tag="02">
+        <Section title="Per-cell interpolation evidence">
           <div className="overflow-x-auto">
             <table className="w-full text-sm border-collapse" style={{ tableLayout: "auto" }}>
               <colgroup>
@@ -269,7 +269,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Variant lift chart (horizontal bars) ─────────── */}
-        <Section title="Open-tier pass rate by card variant" tag="03">
+        <Section title="Open-tier pass rate by card variant">
           <p className="text-xs text-text-secondary mb-4 leading-relaxed">
             The same 13-question diagnostic, the same model panel, the same source documents. Only the card format changes.
           </p>
@@ -299,7 +299,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Open-model scores ─────────── */}
-        <Section title="Open-model scores on CSV-only" tag="04">
+        <Section title="Open-model scores on CSV-only">
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
               <thead>
@@ -332,7 +332,7 @@ export default function ErschliessungPage() {
         </Section>
 
         {/* ─────────── Where the project stands ─────────── */}
-        <Section title="Where the project stands" tag="05">
+        <Section title="Where the project stands">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="border-l-2 border-status-success pl-4">
               <div className="text-[11px] uppercase tracking-widest mb-1 text-status-success font-medium">Saturated</div>
@@ -365,12 +365,11 @@ export default function ErschliessungPage() {
 
 // ─────────────────────── Subcomponents ───────────────────────
 
-function Section({ title, tag, children }: { title: string; tag: string; children: React.ReactNode }) {
+function Section({ title, children }: { title: string; tag?: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <div className="flex items-baseline justify-between border-b border-border pb-1 mb-4">
+      <div className="border-b border-border pb-1 mb-4">
         <h2 className="text-sm font-bold text-ink uppercase tracking-widest">{title}</h2>
-        <span className="text-[10px] text-text-secondary uppercase tracking-widest">{tag}</span>
       </div>
       {children}
     </section>
