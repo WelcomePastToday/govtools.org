@@ -42,7 +42,7 @@ export default function VariantsIndexPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              <Link href="/erschliessung" className="hover:text-accent transition-colors">Erschließung</Link>
+              <Link href="/erschliessung" className="hover:text-accent transition-colors">Interpolation</Link>
               <span className="mx-2">›</span>
               Input variants
             </span>
@@ -108,7 +108,7 @@ export default function VariantsIndexPage() {
 
         <section className="mt-4 pt-2 border-t border-border">
           <Link href="/erschliessung" className="text-xs text-accent hover:text-link-hover">
-            ← Back to Erschließung overview
+            ← Back to Interpolation overview
           </Link>
         </section>
 

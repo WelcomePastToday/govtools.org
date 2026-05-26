@@ -84,12 +84,12 @@ export default function ErschliessungPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Erschließung
+              Interpolation
             </span>
           </div>
           <div className="flex items-center gap-6">
             <a href="/erschliessung/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
-              Cycle heatmap
+              Tests heatmap
             </a>
           </div>
         </div>
