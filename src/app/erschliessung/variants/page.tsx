@@ -47,8 +47,13 @@ export default function VariantsIndexPage() {
               Input variants
             </span>
           </div>
-          <div className="text-xs font-medium text-text-secondary uppercase tracking-widest">
-            Input variants
+          <div className="flex items-center gap-6">
+            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Interpolation
+            </Link>
+            <a href="/erschliessung/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Tests heatmap
+            </a>
           </div>
         </div>
       </header>
