@@ -69,18 +69,18 @@ export default function VariantsIndexPage() {
           if (variants.length === 0) return null;
           const h = CATEGORY_HEADERS[category];
           return (
-            <section key={category} className="mb-4">
-              <div className="flex items-baseline justify-between border-b border-border pb-1 mb-1">
+            <section key={category} className="mb-6">
+              <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
                 <h2 className="text-xs font-bold text-ink uppercase tracking-widest">{h.title}</h2>
                 <span className="text-[10px] text-text-secondary uppercase tracking-widest">{h.tag}</span>
               </div>
 
-              <ul>
+              <ul className="pl-6 border-l border-border/60 ml-1">
                 {variants.map((v) => (
                   <li key={v.slug}>
                     <Link
                       href={`/erschliessung/variants/${v.slug}`}
-                      className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline py-1 border-b border-border/60 hover:bg-panel transition-colors text-xs leading-snug"
+                      className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline py-1.5 border-b border-border/60 hover:bg-panel transition-colors text-xs leading-snug"
                     >
                       <div className="min-w-0 flex items-baseline gap-2 flex-wrap">
                         <span className="font-medium text-ink truncate">{v.name}</span>
