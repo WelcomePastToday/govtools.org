@@ -96,14 +96,35 @@ const VARIANTS = [
   { variant: "Evidence-Preserving Table Normalization (cycle 30, net 0 — pulls up mid-tier, slight nudge down on top open models)", rate: "55%", size: "~1.5 KB", slug: "pipeline-v0.6.1-table-normalized" },
 ];
 
-const OPTIONS = [
-  { key: "A", name: "Make non-oracle retrieval work on the known corpus", desc: "Oracle retrieval (M3-L4) is saturated at 11/13 for top open models. The next milestone is end-to-end: the system selects the correct table from a document map and then answers — without the human pointing to the evidence. M3-IDX (two-shot table-of-contents lookup) and M3-HYDE (vector retrieval via nomic-embed-text) are the candidate mechanisms. Reach oracle parity on the 13-question diagnostic before testing new documents." },
-  { key: "B", name: "Close the multi-page table stitching gap", desc: "Q-NOAA-CALC-001 fails for every model in this study because the pipeline splits the underlying table at a page break. Fixing this at the pipeline layer (the stitch-map variant is a start) closes the gap uniformly for every model tier — pipeline work that pays off across the entire panel." },
-  { key: "C", name: "Standardize a minimal evidence-derivative set", desc: "Define the small set of derivatives institutions should publish alongside preserved PDFs. Likely candidates: docling.json.gz, per-table CSV, csv-only card, table_index, and provenance.json. Aim is one clear specification so any archive — IA or otherwise — can produce evidence packages open models can use." },
-  { key: "D", name: "Build an open-model access layer for the derivatives", desc: "Expose cards, maps, indexes, and provenance through an HTTP API or MCP server so an open model running locally (Ollama, llama.cpp) can discover and request the right card on demand. Pairs naturally with the M3-IDX work in Option A." },
-  { key: "E", name: "Explore multimodal evidence for VL-capable open models", desc: "Test whether figure crops and image-aware cards improve performance for open vision-language models (Qwen2.5-VL, InternVL, Molmo-2-O, Gemma-SEA-LION-VL, EuroLLM-VL). Useful where OCR introduces noise the text-only pipeline cannot recover." },
-  { key: "F", name: "Held-out scaling pilot — gated on Option A", desc: "Once non-oracle retrieval reaches oracle parity on the known corpus, run a multi-document pilot to test generalization across government reports, scientific journals, and archival PDFs of varying scan quality and structure. Premature without A — scaling a system whose retrieval doesn't yet work just scales the failure mode." },
+interface OptionRow {
+  key: string;
+  name: string;
+  desc: string;
+  status: "next" | "near-term" | "longer-term" | "gated";
+}
+
+const OPTIONS: OptionRow[] = [
+  { key: "A", status: "next",        name: "Make non-oracle retrieval work on the known corpus", desc: "Oracle retrieval (M3-L4) is saturated at 11/13 for top open models. The next milestone is end-to-end: the system selects the correct table from a document map and then answers — without the human pointing to the evidence. M3-IDX (two-shot table-of-contents lookup) and M3-HYDE (vector retrieval via nomic-embed-text) are the candidate mechanisms. Reach oracle parity on the 13-question diagnostic before testing new documents." },
+  { key: "B", status: "near-term",   name: "Close the multi-page table stitching gap",            desc: "Q-NOAA-CALC-001 fails for every model in this study because the pipeline splits the underlying table at a page break. Fixing this at the pipeline layer (the stitch-map variant is a start) closes the gap uniformly for every model tier — pipeline work that pays off across the entire panel." },
+  { key: "C", status: "near-term",   name: "Standardize a minimal evidence-derivative set",       desc: "Define the small set of derivatives institutions should publish alongside preserved PDFs. Likely candidates: docling.json.gz, per-table CSV, csv-only card, table_index, and provenance.json. Aim is one clear specification so any archive — IA or otherwise — can produce evidence packages open models can use." },
+  { key: "D", status: "longer-term", name: "Build an open-model access layer for the derivatives", desc: "Expose cards, maps, indexes, and provenance through an HTTP API or MCP server so an open model running locally (Ollama, llama.cpp) can discover and request the right card on demand. Pairs naturally with the M3-IDX work in Option A." },
+  { key: "E", status: "longer-term", name: "Explore multimodal evidence for VL-capable open models", desc: "Test whether figure crops and image-aware cards improve performance for open vision-language models (Qwen2.5-VL, InternVL, Molmo-2-O, Gemma-SEA-LION-VL, EuroLLM-VL). Useful where OCR introduces noise the text-only pipeline cannot recover." },
+  { key: "F", status: "gated",       name: "Held-out scaling pilot — gated on Option A",          desc: "Once non-oracle retrieval reaches oracle parity on the known corpus, run a multi-document pilot to test generalization across government reports, scientific journals, and archival PDFs of varying scan quality and structure. Premature without A — scaling a system whose retrieval doesn't yet work just scales the failure mode." },
 ];
+
+const OPTION_STATUS_LABEL: Record<OptionRow["status"], string> = {
+  "next":        "Next",
+  "near-term":   "Near-term",
+  "longer-term": "Longer-term",
+  "gated":       "Gated",
+};
+
+const OPTION_STATUS_CLASSES: Record<OptionRow["status"], string> = {
+  "next":        "border-status-success text-status-success",
+  "near-term":   "border-border text-text-secondary",
+  "longer-term": "border-border text-text-secondary",
+  "gated":       "border-status-warning text-status-warning",
+};
 
 // ─────────────────────── Page ───────────────────────
 
@@ -328,23 +349,37 @@ export default function ErschliessungPage() {
             Every source PDF is processed once. The pipeline writes its outputs to a content-addressed directory keyed by the PDF&apos;s SHA-256, so the same input always produces the same on-disk tree.
           </p>
           <p className="text-sm leading-relaxed mb-6 text-ink">
-            Of everything below, only <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> is canonical: it contains the full structural extraction Docling produced in-memory — layout, table cell structure, captions, headings, figure bounding boxes, reading order. Every other file is a derivative our pipeline writes for convenience and can be regenerated from the JSON alone. An archive that only publishes <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> (the Internet Archive&apos;s likely case) gives downstream consumers everything they need to reconstitute card variants, table CSVs, and indexes themselves.
+            Of everything the pipeline writes, only <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> is canonical: it contains the full structural extraction Docling produced in-memory — layout, table cell structure, captions, headings, figure bounding boxes, reading order. Every other file is a derivative the pipeline writes for convenience and can be regenerated from the JSON alone. An archive that publishes only <code className="bg-panel px-1.5 py-0.5">docling.json.gz</code> (the Internet Archive&apos;s likely case) gives downstream consumers everything they need to reconstitute card variants, table CSVs, and indexes themselves.
           </p>
-          <pre className="border border-border rounded-sm bg-panel/40 px-5 py-4 overflow-x-auto text-[11.5px] leading-[1.55] font-mono whitespace-pre text-ink mb-4">
-            {OUTPUT_TREE}
-          </pre>
-          <p className="text-xs text-text-secondary leading-relaxed">
-            Card variants do not re-run Docling — they only reshape the per-table card (what to keep, strip, or rewrite). The variant comparison above is a fair head-to-head because the underlying extraction is identical across all rows.
+          <p className="text-sm leading-relaxed mb-6 text-ink">
+            Card variants do not re-run Docling — they only reshape the per-table card (what to keep, strip, or rewrite). The variant comparison at the top of this page is a fair head-to-head because the underlying extraction is identical across all rows.
           </p>
+          <details className="border-t border-border pt-4 group">
+            <summary className="text-xs uppercase tracking-widest text-text-secondary cursor-pointer hover:text-ink select-none">
+              <span className="group-open:hidden">Show full on-disk tree →</span>
+              <span className="hidden group-open:inline">Hide on-disk tree</span>
+            </summary>
+            <pre className="border border-border rounded-sm bg-panel/40 px-5 py-4 overflow-x-auto text-[11.5px] leading-[1.55] font-mono whitespace-pre text-ink mt-4">
+              {OUTPUT_TREE}
+            </pre>
+          </details>
         </Section>
 
         {/* ─────────── Possible actions forward ─────────── */}
         <Section title="Possible actions forward" tag="Roadmap · 06">
+          <p className="text-xs text-text-secondary uppercase tracking-widest mb-6">
+            Sequenced by readiness — Option A is the next gate; the held-out scaling pilot waits on it.
+          </p>
           <div className="border-t border-border">
             {OPTIONS.map((o) => (
-              <div key={o.key} className="grid grid-cols-[80px_1fr] gap-6 py-6 border-b border-border">
+              <div key={o.key} className="grid grid-cols-[80px_100px_1fr] gap-6 py-6 border-b border-border items-baseline">
                 <div className="text-xs text-text-secondary uppercase tracking-widest font-medium">
                   Option {o.key}
+                </div>
+                <div>
+                  <span className={`text-[10px] uppercase tracking-widest font-medium border px-2 py-0.5 ${OPTION_STATUS_CLASSES[o.status]}`}>
+                    {OPTION_STATUS_LABEL[o.status]}
+                  </span>
                 </div>
                 <div>
                   <div className="text-base font-medium text-ink mb-1">{o.name}</div>
