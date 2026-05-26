@@ -78,7 +78,7 @@ export default function ErschliessungPage() {
 
       {/* ─────────── Header ─────────── */}
       <header className="border-b border-border bg-paper sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-baseline gap-4">
             <Link href="/" className="text-xl font-bold tracking-tight text-ink hover:text-accent transition-colors">
               GovTools
@@ -101,7 +101,7 @@ export default function ErschliessungPage() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
+      <main className="max-w-7xl mx-auto px-6 py-10">
 
         {/* ─────────── Hero (tight) ─────────── */}
         <section className="pb-8 mb-8 border-b border-border">
@@ -144,50 +144,138 @@ export default function ErschliessungPage() {
           </p>
         </Section>
 
-        {/* ─────────── Per-cell evidence (compact table) ─────────── */}
+        {/* ─────────── Per-cell evidence (full table from /interpolation) ─────────── */}
         <Section title="Per-cell evidence" tag="02">
           <div className="overflow-x-auto">
-            <table className="w-full text-[13px] border-collapse">
+            <table className="w-full text-sm border-collapse" style={{ tableLayout: "auto" }}>
+              <colgroup>
+                <col style={{ minWidth: "100px" }} />     {/* Model */}
+                <col style={{ minWidth: "280px" }} />     {/* Question */}
+                <col style={{ minWidth: "130px", width: "130px" }} />   {/* PDF */}
+                <col style={{ minWidth: "150px", width: "150px" }} />   {/* JSON */}
+                <col style={{ minWidth: "360px" }} />     {/* Card response */}
+                <col style={{ minWidth: "110px" }} />     {/* Correct answer */}
+              </colgroup>
               <thead>
                 <tr className="border-b-2 border-ink">
-                  <th className="text-left py-2 pr-3 text-[11px] uppercase tracking-widest text-text-secondary font-medium whitespace-nowrap">Model</th>
-                  <th className="text-left py-2 pr-3 text-[11px] uppercase tracking-widest text-text-secondary font-medium">Question</th>
-                  <th className="text-left py-2 pr-3 text-[11px] uppercase tracking-widest text-text-secondary font-medium" style={{ width: 90 }}>PDF</th>
-                  <th className="text-left py-2 pr-3 text-[11px] uppercase tracking-widest text-text-secondary font-medium" style={{ width: 110 }}>Docling JSON</th>
-                  <th className="text-left py-2 pr-3 text-[11px] uppercase tracking-widest text-text-secondary font-medium">Compact CSV card response</th>
-                  <th className="text-left py-2 text-[11px] uppercase tracking-widest text-text-secondary font-medium whitespace-nowrap">Ground truth</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">Model</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">Question</th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
+                    <div>Raw PDF</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">input source</div>
+                  </th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
+                    <div>Raw Docling JSON</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">IA-default derivative</div>
+                  </th>
+                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
+                    <div>Compact CSV card</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">Erschließung pipeline output</div>
+                  </th>
+                  <th className="text-left py-2 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">Correct answer</th>
                 </tr>
               </thead>
               <tbody>
-                {PUBLIC_INTEREST_PASSES.map((row) => (
-                  <tr key={`${row.qid}-${row.model}`} className="border-t border-border align-top">
-                    <td className="py-2 pr-3 text-xs">
-                      <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
-                      <div className="text-text-secondary text-[10px]">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
-                    </td>
-                    <td className="py-2 pr-3 text-xs leading-snug max-w-md">
-                      <span className="text-text-secondary uppercase tracking-widest text-[9px] mr-1">{row.qid}</span>
-                      <span className="text-ink">{row.question.length > 130 ? row.question.slice(0, 130) + "…" : row.question}</span>
-                    </td>
-                    <td className="py-2 px-2 text-[11px]" style={{ backgroundColor: EVAL_BG[row.pdfEvaluation] }}>{evalChip(row.pdfEvaluation)}</td>
-                    <td className="py-2 px-2 text-[11px]" style={{ backgroundColor: EVAL_BG[row.jsonEvaluation] }}>{evalChip(row.jsonEvaluation)}</td>
-                    <td className="py-2 px-2 text-xs leading-snug" style={{ backgroundColor: EVAL_BG[row.cardEvaluation] }}>
-                      <div className="mb-1">{evalChip(row.cardEvaluation)}</div>
-                      <div className="font-mono text-[11px] whitespace-pre-wrap text-ink line-clamp-3">{row.cardResponse}</div>
-                    </td>
-                    <td className="py-2 text-xs text-ink font-medium">
-                      {row.iaUrl ? (
-                        <a href={row.iaUrl} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-link-hover hover:underline">{row.groundTruth}</a>
-                      ) : row.groundTruth}
-                    </td>
-                  </tr>
-                ))}
+                {PUBLIC_INTEREST_PASSES.map((row, idx) => {
+                  const prevQid = idx > 0 ? PUBLIC_INTEREST_PASSES[idx - 1].qid : null;
+                  const isNewQ = row.qid !== prevQid;
+                  return (
+                    <tr
+                      key={`${row.qid}-${row.model}`}
+                      className={isNewQ ? "border-t border-border align-top" : "border-t border-dotted border-border align-top"}
+                    >
+                      <td className="py-3 pr-3 text-xs">
+                        <div className="font-medium text-ink">{row.modelLabel.split(" (")[0]}</div>
+                        <div className="text-text-secondary">{row.modelLabel.match(/\(([^)]+)\)/)?.[1]}</div>
+                      </td>
+                      <td className="py-3 pr-3 text-sm leading-snug">
+                        <span className="text-text-secondary uppercase tracking-widest text-[10px] mr-1">{row.qid}</span>
+                        <span className="text-ink">{row.question}</span>
+                        {row.promptSourceUrl && (
+                          <div className="mt-1.5">
+                            <a
+                              href={row.promptSourceUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                              title="Open the full system + user prompt on GitHub (new tab)"
+                            >
+                              view full prompt →
+                            </a>
+                          </div>
+                        )}
+                      </td>
+
+                      {/* PDF input cell */}
+                      <td className="py-3 px-3 text-xs leading-snug" style={{ backgroundColor: EVAL_BG[row.pdfEvaluation] }}>
+                        <div className="mb-1.5">{evalChip(row.pdfEvaluation)}</div>
+                        <div className="text-text-secondary italic">{row.pdfResponse}</div>
+                      </td>
+
+                      {/* Docling JSON input cell */}
+                      <td className="py-3 px-3 text-xs leading-snug" style={{ backgroundColor: EVAL_BG[row.jsonEvaluation] }}>
+                        <div className="mb-1.5">{evalChip(row.jsonEvaluation)}</div>
+                        <div className={row.jsonEvaluation === "n/a" ? "text-text-secondary italic" : "font-mono text-ink whitespace-pre-wrap"}>
+                          {row.jsonResponse}
+                        </div>
+                      </td>
+
+                      {/* Compact CSV card cell — the actual response */}
+                      <td className="py-3 px-3 text-sm leading-snug" style={{ backgroundColor: EVAL_BG[row.cardEvaluation] }}>
+                        <div className="mb-1.5">{evalChip(row.cardEvaluation)}</div>
+                        <div className="font-mono text-xs whitespace-pre-wrap text-ink">{row.cardResponse}</div>
+                        {(row.cardSourceUrl || row.chatUrl) && (
+                          <div className="mt-2 pt-1.5 border-t border-border/60 flex flex-wrap gap-x-4 gap-y-1">
+                            {row.cardSourceUrl && (
+                              <a
+                                href={row.cardSourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                                title="Open the verbatim card the model was served (new tab)"
+                              >
+                                view card content →
+                              </a>
+                            )}
+                            {row.chatUrl && (
+                              <a
+                                href={row.chatUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                                title="Open the shared chat session for this answer (new tab)"
+                              >
+                                view chat →
+                              </a>
+                            )}
+                          </div>
+                        )}
+                      </td>
+
+                      <td className="py-3 text-sm tabular-nums text-ink font-medium">
+                        {row.iaUrl ? (
+                          <a
+                            href={row.iaUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-accent hover:text-link-hover hover:underline"
+                            title={row.iaUrl.includes("archive.org") ? `Open the source page on the Internet Archive — ${row.iaUrl}` : `Open the source PDF — ${row.iaUrl}`}
+                          >
+                            {row.groundTruth}
+                          </a>
+                        ) : (
+                          <span title="Source not currently available online">{row.groundTruth}</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-text-secondary mt-3 leading-relaxed">
-            Positive-evidence table: rows are (model, question) cells where the compact CSV card produced a correct answer.{" "}
-            <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">Open the full per-cell deep dive →</Link>
+          <p className="text-xs text-text-secondary mt-3 leading-relaxed max-w-3xl">
+            Positive-evidence table: rows are (model, question) cells where the compact CSV card produced a correct answer.
+            Same data drives <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">the standalone interpolation page</Link>.
           </p>
         </Section>
 
@@ -274,7 +362,7 @@ export default function ErschliessungPage() {
 
       {/* ─────────── Footer ─────────── */}
       <footer className="border-t border-border mt-8 py-4">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6">
           <p className="text-[11px] text-text-secondary leading-relaxed">
             Source: cycle 17 evaluation, card variant <code className="bg-panel px-1.5 py-0.5">pipeline-v0.7-csv-only</code>, mode <code className="bg-panel px-1.5 py-0.5">M3-L4</code> oracle retrieval. Project repository: <a href="https://github.com/WelcomePastToday/Erschliessung" className="text-accent hover:text-link-hover">github.com/WelcomePastToday/Erschliessung</a>.
             See <a href="/erschliessung/heatmap.html" className="text-accent hover:text-link-hover">full models × cycles heatmap</a>.
