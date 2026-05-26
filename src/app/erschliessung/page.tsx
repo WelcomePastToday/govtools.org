@@ -88,12 +88,6 @@ export default function ErschliessungPage() {
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/erschliessung/variants" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
-              Input variants
-            </Link>
-            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
-              Interpolation deep dive
-            </Link>
             <a href="/erschliessung/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Cycle heatmap
             </a>
@@ -140,7 +134,6 @@ export default function ErschliessungPage() {
           </div>
           <p className="text-xs text-text-secondary mt-3 leading-relaxed">
             Sample: 7 (model, question) cells across {distinctQuestions} distinct questions on the 13-question diagnostic.
-            See <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">per-cell evidence ↓</Link>.
           </p>
         </Section>
 
@@ -273,10 +266,6 @@ export default function ErschliessungPage() {
               </tbody>
             </table>
           </div>
-          <p className="text-xs text-text-secondary mt-3 leading-relaxed max-w-3xl">
-            Positive-evidence table: rows are (model, question) cells where the compact CSV card produced a correct answer.
-            Same data drives <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">the standalone interpolation page</Link>.
-          </p>
         </Section>
 
         {/* ─────────── Variant lift chart (horizontal bars) ─────────── */}
