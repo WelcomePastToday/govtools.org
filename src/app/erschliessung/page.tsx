@@ -109,7 +109,7 @@ export default function ErschliessungPage() {
             Archival evidence packaging for open models
           </div>
           <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight text-ink max-w-4xl">
-            Many open models cannot receive PDF or full Docling JSON files. 1.5 KB CSV cards unlock answers.
+            Many open models cannot receive PDF or full Docling JSON files. 1.5 KB CSV table cards unlock answers.
           </h1>
         </section>
 
