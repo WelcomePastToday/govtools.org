@@ -54,10 +54,10 @@ const MODEL_ROWS: ModelRow[] = [
 
 // Soft tints for the per-cell evidence (matches the interpolation deep-dive page)
 const EVAL_BG: Record<Evaluation, string> = {
-  correct:   "#e6f4ec",
-  incorrect: "#fbeae8",
-  partial:   "#fff4dc",
-  "n/a":     "#f0f0f0",
+  correct:   "#e6f4ec", // soft green
+  incorrect: "#fbeae8", // soft red/coral
+  partial:   "#fff4dc", // soft amber
+  "n/a":     "#f5ebeb", // soft rose — slightly more red than the previous gray
 };
 function evalChip(ev: Evaluation) {
   const base = "inline-flex items-center px-1.5 py-0.5 text-[9px] uppercase tracking-widest font-medium border";
@@ -358,7 +358,7 @@ export default function ErschliessungPage() {
       <footer className="border-t border-border mt-8 py-4">
         <div className="max-w-7xl mx-auto px-6">
           <p className="text-[11px] text-text-secondary leading-relaxed">
-            Source: cycle 17 evaluation, card variant <code className="bg-panel px-1.5 py-0.5">pipeline-v0.7-csv-only</code>, mode <code className="bg-panel px-1.5 py-0.5">M3-L4</code> oracle retrieval. Project repository: <a href="https://github.com/WelcomePastToday/Erschliessung" className="text-accent hover:text-link-hover">github.com/WelcomePastToday/Erschliessung</a>.
+            Source: cycle 17 evaluation, card variant <code className="bg-panel px-1.5 py-0.5">pipeline-v0.7-csv-only</code>, mode <code className="bg-panel px-1.5 py-0.5">M3-L4</code> oracle retrieval.
           </p>
         </div>
       </footer>
