@@ -84,7 +84,7 @@ export default function ErschliessungPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Interpolation
+              Erschließung: Interpolation examples
             </span>
           </div>
           <div className="flex items-center gap-6">

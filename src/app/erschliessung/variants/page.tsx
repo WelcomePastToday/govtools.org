@@ -42,9 +42,7 @@ export default function VariantsIndexPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              <Link href="/erschliessung" className="hover:text-accent transition-colors">Interpolation</Link>
-              <span className="mx-2">›</span>
-              Input variants
+              Erschließung: Input variants
             </span>
           </div>
           <div className="flex items-center gap-6">
