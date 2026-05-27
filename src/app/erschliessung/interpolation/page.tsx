@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PUBLIC_INTEREST_PASSES, type Evaluation } from "../_data/publicInterestPasses";
+import { INTERP_ROWS, INTERP_META } from "../_data/interpBatchCandidates";
 
 export const metadata: Metadata = {
   title: "Erschließung — Archival evidence packaging for open models | GovTools",
@@ -354,6 +355,207 @@ export default function ErschliessungPage() {
               </p>
             </div>
           </details>
+        </Section>
+
+        {/* ─────────── Unified candidates + wording variants (merged 2026-05-27) ─────────── */}
+        <Section title="Interpolation candidates — original wording + curated variants × 3 open models">
+          <p className="text-xs text-text-secondary mb-3 leading-relaxed max-w-4xl">
+            Funnel: <span className="text-ink font-medium">{INTERP_META.totalTablesInCorpus} tables</span> in corpus →
+            <span className="text-ink font-medium"> {INTERP_META.candidatesGenerated} interpolation questions</span> written
+            ({((INTERP_META.candidatesGenerated / INTERP_META.totalTablesInCorpus) * 100).toFixed(1)}% of tables) →
+            <span className="text-ink font-medium"> {INTERP_META.tier1PassedCount} passed Tier-1</span> (grok-4, {INTERP_META.oracleMode}) →
+            <span className="text-ink font-medium"> {INTERP_META.tier2PassedCount} passed Tier-2</span> (≥1 of
+            Apertus 8B, ClimateGPT 13B, Qwen 2.5 7B in band). For each of those 12 we also tested ~3–5 curated
+            wording variants. Total cells shown below: <span className="text-ink font-medium">{INTERP_META.totalRows}</span>{' '}
+            (<span className="text-status-success">{INTERP_META.correctRows} correct</span>,
+            {' '}<span className="text-text-secondary">{INTERP_META.partialRows} partial</span>,
+            {' '}<span className="text-status-warning">{INTERP_META.incorrectRows} incorrect</span>).
+          </p>
+          <p className="text-xs text-text-secondary mb-4 leading-relaxed max-w-4xl">
+            <strong className="text-ink font-medium">Stricter scoring (2026-05-27):</strong> {INTERP_META.scoringNote}{' '}
+            For example, INT-042 brackets are <span className="font-mono">[0, 33]</span> (Jan 1970 = 33, Jan 1972 = 0),
+            so an asserted &quot;33&quot; is now downgraded from <em>correct</em> to <em>partial</em> — the model echoed an endpoint
+            instead of interpolating. <em>partial</em> rows are tinted amber so endpoint-echo passes stand out from
+            strict-midpoint passes (green).
+          </p>
+          {/* Group by qid; each qid has an 'original' variant followed by curated variants */}
+          {(() => {
+            const qids = Array.from(new Set(INTERP_ROWS.map((r) => r.qid)));
+            return qids.map((qid) => {
+              const qRows = INTERP_ROWS.filter((r) => r.qid === qid);
+              const variantIds = Array.from(new Set(qRows.map((r) => r.variant)));
+              const correctCount = qRows.filter((r) => r.derivedEval === 'correct').length;
+              const partialCount = qRows.filter((r) => r.derivedEval === 'partial').length;
+              const originalRow = qRows.find((r) => r.variant === 'original');
+              const primaryQuestion = originalRow?.question ?? '(primary question not found)';
+              const firstRow = qRows[0];
+
+              return (
+                <details key={qid} className="border-t border-border group/qid">
+                  <summary className="cursor-pointer py-3 hover:bg-panel/40 list-none select-none flex items-baseline gap-3">
+                    <span className="text-[11px] uppercase tracking-widest text-text-secondary whitespace-nowrap font-medium">
+                      {qid.replace('Q-NAT-', '')}
+                    </span>
+                    <span className="text-[10px] uppercase tracking-widest text-text-secondary whitespace-nowrap">
+                      {firstRow.doc} · table_{String(firstRow.tableNum).padStart(3, '0')}
+                    </span>
+                    <span className="text-sm text-ink flex-1 leading-snug">{primaryQuestion}</span>
+                    <span className="text-[11px] tabular-nums whitespace-nowrap text-text-secondary">
+                      <span className={correctCount > 0 ? 'text-status-success font-medium' : 'text-text-secondary'}>{correctCount}</span>
+                      {' '}correct · {partialCount} partial · {qRows.length} total
+                    </span>
+                    <span className="text-[10px] text-text-secondary uppercase tracking-widest group-open/qid:rotate-90 transition-transform">▸</span>
+                  </summary>
+
+                  <div className="pb-2 pl-4 border-l border-border/40 ml-2">
+                    {variantIds.map((vid) => {
+                      const vRows = qRows.filter((r) => r.variant === vid);
+                      const vCorrect = vRows.filter((r) => r.derivedEval === 'correct').length;
+                      const vPartial = vRows.filter((r) => r.derivedEval === 'partial').length;
+                      const vQuestion = vRows[0].question;
+                      const isOriginal = vid === 'original';
+                      const brackets = vRows[0].brackets;
+                      return (
+                        <details key={vid} className="border-t border-dotted border-border group/v">
+                          <summary className="cursor-pointer py-2 hover:bg-panel/30 list-none select-none flex items-baseline gap-3">
+                            <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap font-medium w-16 ${isOriginal ? 'text-ink' : 'text-text-secondary'}`}>
+                              {isOriginal ? '★ original' : vid}
+                            </span>
+                            <span className={`text-sm flex-1 leading-snug ${isOriginal ? 'text-ink' : 'text-ink italic'}`}>{vQuestion}</span>
+                            <span className="text-[11px] tabular-nums whitespace-nowrap">
+                              <span className={vCorrect > 0 ? 'text-status-success font-medium' : 'text-text-secondary'}>{vCorrect}</span>
+                              {' '}/ {vPartial} / {3 - vCorrect - vPartial}
+                            </span>
+                            <span className="text-[10px] text-text-secondary uppercase tracking-widest group-open/v:rotate-90 transition-transform">▸</span>
+                          </summary>
+
+                          <div className="overflow-x-auto pb-3">
+                            <table className="w-full text-sm border-collapse" style={{ tableLayout: "auto" }}>
+                              <colgroup>
+                                <col style={{ minWidth: "100px", width: "150px" }} />
+                                <col style={{ minWidth: "120px", width: "140px" }} />
+                                <col style={{ minWidth: "140px", width: "160px" }} />
+                                <col style={{ minWidth: "360px" }} />
+                                <col style={{ minWidth: "150px", width: "170px" }} />
+                              </colgroup>
+                              <thead>
+                                <tr className="border-b border-border">
+                                  <th className="text-left py-2 pr-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom">Model</th>
+                                  <th className="text-left py-2 pr-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom">Raw PDF</th>
+                                  <th className="text-left py-2 pr-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom">Raw Docling JSON</th>
+                                  <th className="text-left py-2 pr-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom">Compact CSV card</th>
+                                  <th className="text-left py-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">
+                                    <div>Ground truth</div>
+                                    <div className="font-normal normal-case text-[9px] mt-0.5">brackets &amp; source</div>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {vRows.map((row) => {
+                                  const cardEval: Evaluation = row.derivedEval;
+                                  return (
+                                    <tr key={row.modelAlias} className="border-t border-dotted border-border align-top">
+                                      <td className="py-3 pr-3 text-xs">
+                                        <div className="font-medium text-ink">{row.modelLabel}</div>
+                                        <div className="text-text-secondary">{row.modelType}</div>
+                                        {row.promptSourceUrl && (
+                                          <a
+                                            href={row.promptSourceUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline mt-1"
+                                            title="Open the full system + user prompt (new tab)"
+                                          >
+                                            view full prompt →
+                                          </a>
+                                        )}
+                                      </td>
+                                      <td className="py-3 px-3 text-xs leading-snug" style={{ backgroundColor: EVAL_BG["n/a"] }}>
+                                        <div className="mb-1.5">{evalChip("n/a")}</div>
+                                        <div className="text-text-secondary italic">Not tested.</div>
+                                      </td>
+                                      <td className="py-3 px-3 text-xs leading-snug" style={{ backgroundColor: EVAL_BG["n/a"] }}>
+                                        <div className="mb-1.5">{evalChip("n/a")}</div>
+                                        <div className="text-text-secondary italic">Not tested.</div>
+                                      </td>
+                                      <td className="py-3 px-3 text-sm leading-snug" style={{ backgroundColor: EVAL_BG[cardEval] }}>
+                                        <div className="mb-1.5 flex items-center gap-2 flex-wrap">
+                                          {evalChip(cardEval)}
+                                          <span className="text-[10px] text-text-secondary tabular-nums">
+                                            asserted: <span className="font-medium text-ink">{row.asserted ?? "?"}</span>
+                                          </span>
+                                          <span className="text-[10px] text-text-secondary tabular-nums">
+                                            band [{row.band[0]}, {row.band[1]}]{' '}<span className={row.bandPass ? 'text-status-success' : 'text-text-secondary'}>{row.bandPass ? '✓' : '✗'}</span>
+                                          </span>
+                                          {row.brackets[0] !== null && row.brackets[1] !== null && (
+                                            <span className="text-[10px] text-text-secondary tabular-nums">
+                                              midpoint ({row.brackets[0]}, {row.brackets[1]}){' '}
+                                              <span className={row.midpointPass ? 'text-status-success' : 'text-text-secondary'}>{row.midpointPass ? '✓' : '✗'}</span>
+                                            </span>
+                                          )}
+                                        </div>
+                                        <div className="font-mono text-xs whitespace-pre-wrap text-ink">{row.response}</div>
+                                        {row.cardSourceUrl && (
+                                          <div className="mt-2 pt-1.5 border-t border-border/60">
+                                            <a
+                                              href={row.cardSourceUrl}
+                                              target="_blank"
+                                              rel="noopener noreferrer"
+                                              className="inline-block text-[10px] uppercase tracking-widest text-accent hover:text-link-hover hover:underline"
+                                              title="Open the verbatim card the model was served (new tab)"
+                                            >
+                                              view card content →
+                                            </a>
+                                          </div>
+                                        )}
+                                      </td>
+                                      <td className="py-3 text-xs">
+                                        <div className="tabular-nums text-ink font-medium mb-1">GT {row.gt}</div>
+                                        {brackets[0] !== null && brackets[1] !== null && (
+                                          <div className="text-[10px] text-text-secondary tabular-nums mb-1">
+                                            brackets: {brackets[0]}, {brackets[1]}
+                                          </div>
+                                        )}
+                                        <a
+                                          href={row.iaPageUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-accent hover:text-link-hover hover:underline block"
+                                          title={`Open ${row.pageDisplay} in archive.org viewer (new tab)`}
+                                        >
+                                          view {row.pageDisplay} →
+                                        </a>
+                                        <a
+                                          href={row.pdfUrl}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="text-text-secondary hover:text-accent hover:underline block text-[11px] mt-0.5"
+                                          title={`Open PDF at ${row.pageLabel} (new tab)`}
+                                        >
+                                          direct PDF ({row.pageLabel}) →
+                                        </a>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </details>
+                      );
+                    })}
+                  </div>
+                </details>
+              );
+            });
+          })()}
+          <p className="text-xs text-text-secondary mt-6 leading-relaxed max-w-4xl">
+            <strong className="text-ink font-medium">How to read.</strong> Each top-level row is one question
+            (default-collapsed, showing the original phrasing). Expand to see every variant tested (★ original
+            + the curated wording variants). Expand a variant to see the three open-model responses.
+            Per-row chips show the band-pass result, the strict midpoint-pass result, the verbatim model
+            response, and links to the exact prompt + card the model received.
+          </p>
         </Section>
 
         {/* ─────────── Variant lift chart (horizontal bars) ─────────── */}

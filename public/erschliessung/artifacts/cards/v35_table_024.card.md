@@ -1,0 +1,11 @@
+# Table 024 — No caption detected.
+
+PDF page: 60
+
+```csv
+Date,:.: Species,Locality,No.,Average.(g),(%),Total carotenoids.pg/spec. pg/g,Total carotenoids.,"Average Total carotenoids weight Oil ———*———, f-caroten.(ug/g)"
+,"13. iii. 52, Aporrhais pes-pelecani",Loch Fyne,ZA,Ito ee,,2°6,23,fe)
+10. x. 50,Crepidula fornicata,Burnham-on-Crouch,80,1°42,07,24,17;,13
+,Il. xii. 50 C. fornicata,Burnham-on-Crouch,60,I:2I,0-7,36,30,1°8
+20. v. 53.,Cypraea spadicea,La Jolla,en,OK,16,49,8-0,Of37
+```

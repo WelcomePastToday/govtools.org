@@ -1,0 +1,53 @@
+[SYSTEM]
+You are answering a single information-extraction question. Use ONLY the supplied source material. Do not use prior knowledge. Give a clear, concrete answer with the specific number, name, year, or value asked for.
+
+[USER]
+--- SOURCE ARTIFACT (M3-L4) ---
+# Table 034 — Table 16. Catch statistics by Year by Species Table . 710 taxon have been caught, identified, or observed over the years. A 'Y' indicates the presence of the Taxon, and an 'N' represents its absence . The last column is the number of taxa present for that year, and the last row shows the number of years a particular taxon was observed. Due to space limitations, not all taxon are presented here. Listed are the 19 most frequently found species.
+
+PDF page: 51
+
+```csv
+empty_header,empty_header_1,N. ANCHOVYJ. MACKEREL,PAC.,empty_header_2,MACKERELPAC. SARDINEPAC. HAKEMARKET SQUID,empty_header_3,CAL.,empty_header_4,empty_header_5,empty_header_6,LIZARDFISHWHITE CROAKERQUEEN FISHUNIDEN. FISHUNIDEN. ROCKFISH,CAL._1,empty_header_7,BARRACUDAPAC. SAURYUNIDEN. PIPEFISH,PAC._1,POMPANOPELAGIC RED CRAB,empty_header_8,PAC. BONITOUNIDEN. PORPOISEBLUE SHARK# UNIQUE SPECIES,empty_header_9,empty_header_10,empty_header_11
+1950,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,N,Y,N,161,161
+1951,Y,Y,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,N,N,N,N,77,77
+1952,Y,Y,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,Y,N,Y,Y Y,,Y,168,168
+1953,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,93,93
+1954,Y,Y,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,126,126
+1955,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,N,Y,Y,Y N,,Y,88,88
+1956,Y,Y,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,N,Y,N,N N,,Y,104,104
+1957,Y,Y,Y,Y,N,N,N,Y,Y,Y,Y,N,Y,Y,N,Y,Y,N,N,46,46
+1958,Y,Y,Y,Y,N,N,Y,Y,N,Y,Y,Y,Y,Y,Y,N,Y,Y,Y,70,70
+1959,Y,Y,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,Y,N,Y,Y Y,,N,132,132
+1960,Y,Y,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,Y,N,Y,Y Y,,Y,99,99
+1961,Y,Y,Y,Y,N,N,Y,Y,Y,Y,N,,Y,Y,N,Y,Y Y,,N,139,139
+1962,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,N,160,160
+1963,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,N,142,142
+1964,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,131,131
+1965,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,N,149,149
+1966,Y,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,132,132
+1967,Y,Y,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,164,164
+1968,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,180,180
+1969,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,189,189
+1970,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,245,245
+1971,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,229,229
+1972,Y,Y,Y,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,142,142
+1973,Y,Y,Y,N,Y,Y,Y,Y,N,Y,Y,N,Y,Y,Y,Y,N Y,,Y,182,182
+1974,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,N,Y Y,,Y,142,142
+1975,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y Y,,Y,Y,Y,Y,Y,Y,Y,Y,216,216
+1976,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,Y,184,184
+1977,Y,Y,Y,N,Y,Y,Y,N,Y,Y,Y,N,Y,Y,Y,Y,Y Y,,Y,118,118
+1978,Y,Y,N,N,Y,Y,Y,Y,Y,Y,Y,Y,Y,N,Y,Y,Y,Y,Y,117,117
+1979,Y,Y,,,Y,,Y,Y,Y,Y,Y,Y,N,Y,Y N,Y N,Y Y,Y,,,87
+,Y,Y,Y,Y,Y,Y,Y,,Y,Y,Y,N,N,Y,,Y,Y,,Y,73,73
+1980,Y,,Y,N,,Y,,Y,Y,N Y,Y,Y,N,,Y,Y,N,Y,Y,76,76
+1981,,Y,Y,Y,Y,Y,Y,Y,,,,Y,,Y,Y,Y,Y,N,,Y,88
+1982,Y,Y,Y,Y,Y,Y,Y,Y,Y,,Y,,N,Y,,,,,,,
+```
+
+--- END ARTIFACT ---
+
+Question:
+If the 1979 species count is missing, what value is implied by the 1978 and 1980 counts?
+
+Answer concisely. Cite the row/cell/section you used. State your final numerical answer clearly.

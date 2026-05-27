@@ -1,0 +1,15 @@
+# Table 043 — TABLE V. AVERAGE FREQUENCY OF WIND DIRECTION FROM EIGHT POINTS FOR SEVEN STATIONS TO THE NEAREST WHOLE FREQUENCY
+
+PDF page: 162
+
+```csv
+0,1,2,3,4,5,6,7,8,9
+1945,N.,N.E.,BR,S.E.,S.,S.W.,W.,N.W.,Calm
+June,2,fe),I,I,3,8,8,4,I
+July,5,2,I,2,5,5,5,4,2
+Aug. Sept.,4 2,3 3,3 5,3 2,2 3,4 6,6 4,3 3,3 2
+Aug. Sept.,4 2,3 3,3 5,3 2,2 3,4 6,6 4,3 3,3 2
+Oct. Nov.,I I,3 3,of 10,3 6,4 2,4 I,4 I,I I,4 4
+Oct. Nov.,I I,3 3,of 10,3 6,4 2,4 I,4 I,I I,4 4
+Dec.,2,I,2,4,4,5,6,aS,I
+```

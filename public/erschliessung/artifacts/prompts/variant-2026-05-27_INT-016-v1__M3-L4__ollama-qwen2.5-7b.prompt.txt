@@ -1,0 +1,30 @@
+[SYSTEM]
+You are answering a single information-extraction question. Use ONLY the supplied source material. Do not use prior knowledge. Give a clear, concrete answer with the specific number, name, year, or value asked for.
+
+[USER]
+--- SOURCE ARTIFACT (M3-L4) ---
+# Table 045 — TABLE VII. AVERAGE WIND DIRECTION FREQUENCIES FROM EIGHT POINTS AT 
+09. AT 
+09.00 HR. G.M.T. GROUPED INTO FAVOURABLE AND UNFAVOURABLE WINDS 
+FOR NDS 
+FOR STRANDING ON THE ASSUMPTION THAT PHYSALIA MOVES IN A DIRECTION AT 45° TO THE LEFT OF THAT OF THE WIND
+
+PDF page: 164
+
+```csv
+1945,"Favourable “A =.W., N.W. and N. W., N.W and N.",Favourable “A =.S.W.,Favourable “A =.Total,Calm,"Unfavourable ASS =).iF ay S iF lay SB, and S.",Unfavourable ASS =).N.E.,Unfavourable ASS =).Total
+June,I4,8,22,I,6,°,6
+July Aug.,14 14,5 4,19 18,2 3,7 8,2 3,9 I
+July Aug.,14 14,5 4,19 18,2 3,7 8,2 3,9 II
+Sept.,9 7,6,15,2,ste),3,13
+Oct.,,4,II,4,13,3,16
+Nov. Dec,4,I,5,4,17,3,20
+v. Dec.,13,5,18,I,10,I,TE
+```
+
+--- END ARTIFACT ---
+
+Question:
+The wind table seems to combine July and August. Is there a reasonable estimate for July alone from the nearby entries?
+
+Answer concisely. Cite the row/cell/section you used. State your final numerical answer clearly.

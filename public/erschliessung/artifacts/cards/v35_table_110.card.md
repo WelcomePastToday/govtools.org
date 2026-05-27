@@ -1,0 +1,27 @@
+# Table 110 — TABLE V. LENGTH AND WIDTH OF BIDDULPHIA SINENSIS CELLS AT DIFFERENT TEMPERATURES
+
+PDF page: 411
+
+```csv
+Date,In erdschreiber- enriched seawater at 24°.,In erdschreiber enriched seawater at 10°C
+23. Vili.,II,15
+24. Vili.,20,16
+25. Vili.,27,22
+26. Viii.,33,38
+28. viii.,40,42
+29. Viii.,42,54
+30. Vili.,55,62
+31. Vili.,80,64
+iig.1bs¢,78,72
+De ibe,75,92
+4. ix,90,103
+5. ix 6. ix,a —,93 85
+5. ix 6. ix,a —,93 85
+“ahs 3D,92,90
+8. ix,9I,96
+Q. 1x,93,IOI
+Tr. 1X,98,108
+"1, 28S",95,98
+13. 1x,98,IOI
+14. ix,100,100
+```
