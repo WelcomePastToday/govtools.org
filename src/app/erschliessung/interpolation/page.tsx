@@ -392,7 +392,7 @@ export default function ErschliessungPage() {
 
               return (
                 <details key={qid} className="border-t border-border group/qid">
-                  <summary className="cursor-pointer py-3 hover:bg-panel/40 list-none select-none flex items-baseline gap-3">
+                  <summary className="cursor-pointer py-3 hover:bg-panel/40 list-none flex items-baseline gap-3">
                     <span className="text-[11px] uppercase tracking-widest text-text-secondary whitespace-nowrap font-medium">
                       {qid.replace('Q-NAT-', '')}
                     </span>
@@ -417,7 +417,7 @@ export default function ErschliessungPage() {
                       const brackets = vRows[0].brackets;
                       return (
                         <details key={vid} className="border-t border-dotted border-border group/v">
-                          <summary className="cursor-pointer py-2 hover:bg-panel/30 list-none select-none flex items-baseline gap-3">
+                          <summary className="cursor-pointer py-2 hover:bg-panel/30 list-none flex items-baseline gap-3">
                             <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap font-medium w-16 ${isOriginal ? 'text-ink' : 'text-text-secondary'}`}>
                               {isOriginal ? '★ original' : vid}
                             </span>
