@@ -156,6 +156,19 @@ export const OCR_METHODS: OcrMethod[] = [
     secondsPerPage: 25,
     notes: 'Open weights (Apache 2.0) but tested here via Mistral API. ~$0.0005-0.001/page at ~1.1K image tokens.',
   },
+  {
+    slug: 'none-direct-vision',
+    label: 'No OCR — direct vision',
+    vendor: 'Grok-4 + Gemini 2.5 Pro + GPT-4o (avg)',
+    family: 'vision-llm',
+    license: 'commercial-paid',
+    free: false,
+    localRunnable: false,
+    // Average of the three flagship vision rates ($0.012 + $0.0075 + ~$0.01 grok-4) / 3 ≈ $0.0098
+    costPerPageUSD: 0.0098,
+    secondsPerPage: 15,
+    notes: 'Flagship vision LLM sees the raw page image + the question — no OCR step. Only meaningful for flagship rows (open models can\'t see images).',
+  },
 ];
 
 export const LICENSE_LABEL: Record<License, string> = {

@@ -8,14 +8,24 @@ export const metadata: Metadata = {
   description: "Heatmap of open-model pass rates by OCR method on archival table questions, plus per-method cost and license.",
 };
 
-// The 3 open models that ran in the grid
-const MODELS = [
+// Open-tier models (Ollama local; can't see images)
+const OPEN_MODELS = [
   { slug: 'apertus-8b',     label: 'Apertus 8B',       vendor: 'Swiss AI' },
   { slug: 'climategpt-13b', label: 'ClimateGPT 13B',   vendor: 'climate-domain Llama-2' },
   { slug: 'qwen2.5-7b',     label: 'Qwen 2.5 7B',      vendor: 'Alibaba' },
 ] as const;
 
-const HEATMAP_METHODS_IN_GRID = ['docling-easyocr', 'mistral-ocr', 'gpt4o-vision', 'gemini-vision', 'pixtral-vision'];
+// Closed-tier flagship API models. Each gets two scoring modes:
+//   - text-only (reads the OCR-generated card) → fills the 5 OCR-method columns
+//   - direct vision (reads the raw page image) → fills the 6th "no OCR" column
+const FLAGSHIP_MODELS = [
+  { slug: 'grok-4',          label: 'Grok-4',           vendor: 'xAI' },
+  { slug: 'gemini-2.5-pro',  label: 'Gemini 2.5 Pro',   vendor: 'Google' },
+  { slug: 'gpt-4o',          label: 'GPT-4o',           vendor: 'OpenAI' },
+] as const;
+
+const OCR_METHODS_IN_GRID = ['docling-easyocr', 'mistral-ocr', 'gpt4o-vision', 'gemini-vision', 'pixtral-vision'];
+const FLAGSHIP_METHODS_IN_GRID = [...OCR_METHODS_IN_GRID, 'none-direct-vision'];
 
 function passColor(rate: number | null, q: number): string {
   if (rate === null) return '#f5f5f5';
@@ -49,7 +59,10 @@ function summarize(rows: readonly OcrGridCell[], model: string, method: string):
 }
 
 export default function OcrGridPage() {
-  const methods = HEATMAP_METHODS_IN_GRID
+  const ocrMethods = OCR_METHODS_IN_GRID
+    .map((slug) => OCR_METHODS.find((m) => m.slug === slug)!)
+    .filter(Boolean);
+  const flagshipMethods = FLAGSHIP_METHODS_IN_GRID
     .map((slug) => OCR_METHODS.find((m) => m.slug === slug)!)
     .filter(Boolean);
   const allMethods = OCR_METHODS; // for the license + cost table
@@ -94,8 +107,9 @@ export default function OcrGridPage() {
             <p>
               For each of the 12 final interpolation candidates (Tier-2 verified on{' '}
               <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">/interpolation</Link>),
-              we regenerated the table card using {methods.length} different OCR methods and re-ran the same 3 open
-              models on each card. {OCR_GRID_META.totalCells} (model × method × question) cells total,
+              we regenerated the table card using {ocrMethods.length} different OCR methods and re-ran 3 open
+              models + 3 closed flagship APIs on each card — plus a "no OCR, direct vision" column where the
+              flagship sees the page image directly. {OCR_GRID_META.totalCells} (model × method × question) cells total,
               {' '}<span className="text-status-success font-medium">{OCR_GRID_META.correctCells} correct</span> /
               {' '}<span className="text-text-secondary font-medium">{OCR_GRID_META.partialCells} partial</span> /
               {' '}<span className="text-status-warning font-medium">{OCR_GRID_META.incorrectCells} incorrect</span>.
@@ -107,81 +121,37 @@ export default function OcrGridPage() {
           </div>
         </section>
 
-        {/* ─────────── Heatmap grid ─────────── */}
-        <Section title="Pass-rate heatmap — open model × OCR method">
+        {/* ─────────── Heatmap grids — open + flagship ─────────── */}
+        <Section title="Pass-rate heatmap — open models × OCR method">
           <p className="text-xs text-text-secondary mb-4 leading-relaxed max-w-4xl">
             Each cell shows <strong>correct/total</strong> across the 12 interp questions for that
-            (model, OCR method) pair. Cells are tinted by correct-rate (red → amber → green). A
-            secondary "band-pass" row appears underneath for tools where partial credit matters
-            (endpoint-echo answers).
+            (model, OCR method) pair. Cells are tinted by correct-rate (red → amber → green). Local
+            open models can only read text, so they see the OCR-generated card — not the page image.
           </p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <colgroup>
-                <col style={{ minWidth: "160px" }} />
-                {methods.map((m) => <col key={m.slug} style={{ minWidth: "150px" }} />)}
-              </colgroup>
-              <thead>
-                <tr className="border-b-2 border-ink">
-                  <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">Model</th>
-                  {methods.map((m) => (
-                    <th key={m.slug} className="text-left py-2 px-2 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
-                      <div>{m.label}</div>
-                      <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">{m.vendor.split(' (')[0]}</div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {MODELS.map((mdl) => (
-                  <tr key={mdl.slug} className="border-t border-border align-top">
-                    <td className="py-3 pr-3 text-xs">
-                      <div className="font-medium text-ink">{mdl.label}</div>
-                      <div className="text-text-secondary">{mdl.vendor}</div>
-                    </td>
-                    {methods.map((m) => {
-                      const s = summarize(OCR_GRID_RESULTS, mdl.slug, m.slug);
-                      const correctRate = s.total > 0 ? s.correct / s.total : null;
-                      const bandRate = s.total > 0 ? s.band / s.total : null;
-                      const bg = passColor(correctRate, 0);
-                      return (
-                        <td key={m.slug} className="py-3 px-2 text-xs" style={{ backgroundColor: bg }}>
-                          {s.total === 0 ? (
-                            <div className="text-text-secondary italic">no data</div>
-                          ) : (
-                            <>
-                              <div className="text-ink font-medium tabular-nums text-sm">
-                                {((correctRate ?? 0) * 100).toFixed(0)}%
-                              </div>
-                              <div className="text-text-secondary tabular-nums text-[11px]">
-                                {s.correct}/{s.total} correct
-                              </div>
-                              {s.band > s.correct && (
-                                <div className="text-text-secondary tabular-nums text-[10px] mt-1">
-                                  +{s.band - s.correct} band-only
-                                </div>
-                              )}
-                              {s.errors > 0 && (
-                                <div className="text-status-warning tabular-nums text-[10px]">
-                                  {s.errors} err
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Heatmap models={OPEN_MODELS} methods={ocrMethods} />
           <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
             <strong className="text-ink font-medium">What to look for.</strong> Variance going across a row tells you
             how much the OCR method matters for that particular model. Variance going down a column tells you how
             the same OCR method serves different open models. If a column is roughly green across all three models,
             that OCR method is producing usable cards for the open-tier. If a row is consistently green, that open
             model is robust to OCR noise.
+          </p>
+        </Section>
+
+        <Section title="Pass-rate heatmap — flagship API models × OCR method (text) + direct vision">
+          <p className="text-xs text-text-secondary mb-4 leading-relaxed max-w-4xl">
+            Same 12 questions, but answered by closed-tier flagship APIs. The first 5 columns are
+            the same OCR-text setup as above — flagship reads the per-OCR card, no image. The
+            rightmost column <strong>No OCR — direct vision</strong> skips the OCR step entirely:
+            the flagship sees the raw page image plus the question and answers in one shot.
+          </p>
+          <Heatmap models={FLAGSHIP_MODELS} methods={flagshipMethods} highlightDirectVision />
+          <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
+            <strong className="text-ink font-medium">The question this answers.</strong> If the
+            "direct vision" column is the greenest, the OCR pipeline is adding more noise than
+            signal even for SOTA models — they'd be better off just looking at the page. If
+            the best OCR column beats direct vision, OCR is structurally useful even for the
+            top of the stack (and the cheapest OCR that hits that ceiling wins on cost).
           </p>
         </Section>
 
@@ -233,6 +203,83 @@ export default function OcrGridPage() {
           </div>
         </Section>
       </main>
+    </div>
+  );
+}
+
+function Heatmap({
+  models,
+  methods,
+  highlightDirectVision = false,
+}: {
+  models: readonly { slug: string; label: string; vendor: string }[];
+  methods: OcrMethod[];
+  highlightDirectVision?: boolean;
+}) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm border-collapse">
+        <colgroup>
+          <col style={{ minWidth: "160px" }} />
+          {methods.map((m) => <col key={m.slug} style={{ minWidth: "150px" }} />)}
+        </colgroup>
+        <thead>
+          <tr className="border-b-2 border-ink">
+            <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">Model</th>
+            {methods.map((m) => {
+              const isDirect = highlightDirectVision && m.slug === 'none-direct-vision';
+              return (
+                <th key={m.slug} className={`text-left py-2 px-2 font-medium text-xs uppercase tracking-widest align-bottom ${isDirect ? 'text-ink border-l-2 border-ink bg-panel/30' : 'text-text-secondary'}`}>
+                  <div>{m.label}</div>
+                  <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">{m.vendor.split(' (')[0]}</div>
+                </th>
+              );
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          {models.map((mdl) => (
+            <tr key={mdl.slug} className="border-t border-border align-top">
+              <td className="py-3 pr-3 text-xs">
+                <div className="font-medium text-ink">{mdl.label}</div>
+                <div className="text-text-secondary">{mdl.vendor}</div>
+              </td>
+              {methods.map((m) => {
+                const isDirect = highlightDirectVision && m.slug === 'none-direct-vision';
+                const s = summarize(OCR_GRID_RESULTS, mdl.slug, m.slug);
+                const correctRate = s.total > 0 ? s.correct / s.total : null;
+                const bg = passColor(correctRate, 0);
+                return (
+                  <td key={m.slug} className={`py-3 px-2 text-xs ${isDirect ? 'border-l-2 border-ink' : ''}`} style={{ backgroundColor: bg }}>
+                    {s.total === 0 ? (
+                      <div className="text-text-secondary italic">no data</div>
+                    ) : (
+                      <>
+                        <div className="text-ink font-medium tabular-nums text-sm">
+                          {((correctRate ?? 0) * 100).toFixed(0)}%
+                        </div>
+                        <div className="text-text-secondary tabular-nums text-[11px]">
+                          {s.correct}/{s.total} correct
+                        </div>
+                        {s.band > s.correct && (
+                          <div className="text-text-secondary tabular-nums text-[10px] mt-1">
+                            +{s.band - s.correct} band-only
+                          </div>
+                        )}
+                        {s.errors > 0 && (
+                          <div className="text-status-warning tabular-nums text-[10px]">
+                            {s.errors} err
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
