@@ -8,11 +8,12 @@ export const metadata: Metadata = {
   description: "Heatmap of open-model pass rates by OCR method on archival table questions, plus per-method cost and license.",
 };
 
-// Open-tier models (Ollama local; can't see images)
+// Open-tier models (Ollama local). qwen2.5-vl-7b can also do vision.
 const OPEN_MODELS = [
   { slug: 'apertus-8b',     label: 'Apertus 8B',       vendor: 'Swiss AI' },
   { slug: 'climategpt-13b', label: 'ClimateGPT 13B',   vendor: 'climate-domain Llama-2' },
   { slug: 'qwen2.5-7b',     label: 'Qwen 2.5 7B',      vendor: 'Alibaba' },
+  { slug: 'qwen2.5-vl-7b',  label: 'Qwen 2.5 VL 7B',   vendor: 'Alibaba (vision)' },
 ] as const;
 
 // Closed-tier flagship API models. Each gets two scoring modes:
@@ -24,8 +25,9 @@ const FLAGSHIP_MODELS = [
   { slug: 'gpt-4o',          label: 'GPT-4o',           vendor: 'OpenAI' },
 ] as const;
 
-const OCR_METHODS_IN_GRID = ['docling-easyocr', 'mistral-ocr', 'gpt4o-vision', 'gemini-vision', 'pixtral-vision'];
-const FLAGSHIP_METHODS_IN_GRID = [...OCR_METHODS_IN_GRID, 'none-direct-vision'];
+const OCR_METHODS_IN_GRID = ['docling-easyocr', 'mistral-ocr', 'gpt4o-vision', 'gemini-vision', 'pixtral-vision', 'tesseract', 'paddleocr', 'surya'];
+const OPEN_METHODS_IN_GRID = [...OCR_METHODS_IN_GRID, 'none-direct-vision']; // qwen-vl uses direct-vision
+const FLAGSHIP_METHODS_IN_GRID = ['docling-easyocr', 'mistral-ocr', 'gpt4o-vision', 'gemini-vision', 'pixtral-vision', 'none-direct-vision'];
 
 // Card-variant ablation columns (Grok-4 only). Ordered roughly by score (best first).
 const GROK4_ABLATION_METHODS = [
@@ -72,6 +74,9 @@ function summarize(rows: readonly OcrGridCell[], model: string, method: string):
 
 export default function OcrGridPage() {
   const ocrMethods = OCR_METHODS_IN_GRID
+    .map((slug) => OCR_METHODS.find((m) => m.slug === slug)!)
+    .filter(Boolean);
+  const openMethods = OPEN_METHODS_IN_GRID
     .map((slug) => OCR_METHODS.find((m) => m.slug === slug)!)
     .filter(Boolean);
   const flagshipMethods = FLAGSHIP_METHODS_IN_GRID
@@ -140,13 +145,15 @@ export default function OcrGridPage() {
             (model, OCR method) pair. Cells are tinted by correct-rate (red → amber → green). Local
             open models can only read text, so they see the OCR-generated card — not the page image.
           </p>
-          <Heatmap models={OPEN_MODELS} methods={ocrMethods} />
+          <Heatmap models={OPEN_MODELS} methods={openMethods} highlightDirectVision />
           <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
             <strong className="text-ink font-medium">What to look for.</strong> Variance going across a row tells you
             how much the OCR method matters for that particular model. Variance going down a column tells you how
             the same OCR method serves different open models. If a column is roughly green across all three models,
             that OCR method is producing usable cards for the open-tier. If a row is consistently green, that open
-            model is robust to OCR noise.
+            model is robust to OCR noise. <strong className="text-ink font-medium">Qwen 2.5 VL 7B</strong> is the
+            first open multimodal model in the grid — it only fills the &quot;direct vision&quot; column (it sees the
+            raw page image instead of a text card).
           </p>
         </Section>
 
@@ -167,21 +174,21 @@ export default function OcrGridPage() {
           </p>
         </Section>
 
-        {/* ─────────── Grok-4 card-variant ablation ─────────── */}
-        <Section title="Grok-4 card-variant ablation — which card format helps the strongest flagship?">
+        {/* ─────────── Grok-4 vs Qwen-7B card-variant ablation ─────────── */}
+        <Section title="Card-variant ablation — Grok-4 (flagship) vs Qwen 2.5 7B (best open)">
           <p className="text-xs text-text-secondary mb-3 leading-relaxed max-w-4xl">
-            Grok-4 hits <strong>12/12 correct</strong> on the project's pipeline-v0.7-csv-only card.
-            To isolate <em>what part of the card matters</em>, we re-ran Grok-4 against every existing
-            card variant the Erschließung project has shipped, plus a few floor cases (raw EasyOCR
-            text with no Docling layout reconstruction, plain PDF text layer, direct page vision).
-            All 12 interp questions, sorted by Grok-4 correct count below.
+            Both Grok-4 and Qwen 2.5 7B were tested against every Erschließung card variant + several
+            floor cases (raw EasyOCR with no Docling layout, plain PDF text layer, direct page vision).
+            Same 12 interp questions for each cell. Sorted by Qwen 2.5 7B correct count — the
+            interesting axis is which formats lift the open-tier model above the prior 9/12 ceiling.
           </p>
           <div className="overflow-x-auto">
             <table className="text-sm border-collapse">
               <thead>
                 <tr className="border-b-2 border-ink">
                   <th className="text-left py-2 pr-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '180px'}}>Card variant</th>
-                  <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '140px'}}>Grok-4 result</th>
+                  <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '120px'}}>Qwen 2.5 7B</th>
+                  <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '120px'}}>Grok-4</th>
                   <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '60px'}}>$/page</th>
                   <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '60px'}}>s/page</th>
                   <th className="text-left py-2 pl-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom">What it tests</th>
@@ -191,25 +198,32 @@ export default function OcrGridPage() {
                 {GROK4_ABLATION_METHODS.map((slug) => {
                   const m = OCR_METHODS.find((mm) => mm.slug === slug);
                   if (!m) return null;
-                  const s = summarize(OCR_GRID_RESULTS, 'grok-4', slug);
-                  const correctRate = s.total > 0 ? s.correct / s.total : null;
-                  const bg = passColor(correctRate, 0);
+                  const gs = summarize(OCR_GRID_RESULTS, 'grok-4', slug);
+                  const qs = summarize(OCR_GRID_RESULTS, 'qwen2.5-7b', slug);
+                  const gRate = gs.total > 0 ? gs.correct / gs.total : null;
+                  const qRate = qs.total > 0 ? qs.correct / qs.total : null;
                   return (
                     <tr key={slug} className="border-t border-border align-top">
                       <td className="py-2 pr-3 text-xs">
                         <div className="font-medium text-ink">{m.label}</div>
                         <div className="text-text-secondary text-[10px]">{m.vendor}</div>
                       </td>
-                      <td className="py-2 px-2 text-xs" style={{ backgroundColor: bg }}>
-                        {s.total === 0 ? (
+                      <td className="py-2 px-2 text-xs" style={{ backgroundColor: passColor(qRate, 0) }}>
+                        {qs.total === 0 ? (
                           <div className="text-text-secondary italic">no data</div>
                         ) : (
-                          <>
-                            <div className="text-ink font-medium tabular-nums">
-                              {s.correct}/{s.total} correct
-                              {s.band > s.correct && <span className="text-text-secondary"> · +{s.band - s.correct} band</span>}
-                            </div>
-                          </>
+                          <div className="text-ink font-medium tabular-nums">
+                            {qs.correct}/{qs.total}{qs.band > qs.correct && <span className="text-text-secondary text-[10px]"> +{qs.band - qs.correct}</span>}
+                          </div>
+                        )}
+                      </td>
+                      <td className="py-2 px-2 text-xs" style={{ backgroundColor: passColor(gRate, 0) }}>
+                        {gs.total === 0 ? (
+                          <div className="text-text-secondary italic">no data</div>
+                        ) : (
+                          <div className="text-ink font-medium tabular-nums">
+                            {gs.correct}/{gs.total}{gs.band > gs.correct && <span className="text-text-secondary text-[10px]"> +{gs.band - gs.correct}</span>}
+                          </div>
                         )}
                       </td>
                       <td className="py-2 px-2 text-xs tabular-nums text-right">{m.costPerPageUSD === 0 ? '$0' : `$${m.costPerPageUSD.toFixed(4)}`}</td>
@@ -222,13 +236,13 @@ export default function OcrGridPage() {
             </table>
           </div>
           <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
-            <strong className="text-ink font-medium">What this shows.</strong> For a strong flagship, ~13 different
-            project card variants all score 12/12 — the model is essentially robust to most
-            reasonable formats. The two that hurt are <code>no-frontmatter</code> (strips YAML
-            metadata, 7/12) and <code>easyocr-raw</code> (no layout, 7/12). Floor cases:
-            direct vision = 10/12, raw PDF text layer = 11/12. <strong>The OCR step adds only
-            marginal value at the flagship-tier ceiling</strong> — but the project's pipeline + Grok-4
-            is still the unique combination that hits 100%.
+            <strong className="text-ink font-medium">What this shows.</strong> Grok-4 is roughly format-insensitive —
+            ~13 variants all score 12/12. Qwen 2.5 7B is much more format-sensitive: its peak (10/12 on
+            <code>micro-1k</code>, <code>compact-4k</code>, <code>csv-plus-*</code>, <code>labeled</code>,
+            <code>table-normalized</code>) is one above its score on the project's default
+            <code>docling-easyocr</code> (9/12). Compact-with-context formats help the open model materially.
+            Floor cases — <code>no-frontmatter</code>, <code>easyocr-raw</code>, <code>gpt4o-vision</code> — hurt
+            both, but hurt the open model more.
           </p>
         </Section>
 
