@@ -27,6 +27,18 @@ const FLAGSHIP_MODELS = [
 const OCR_METHODS_IN_GRID = ['docling-easyocr', 'mistral-ocr', 'gpt4o-vision', 'gemini-vision', 'pixtral-vision'];
 const FLAGSHIP_METHODS_IN_GRID = [...OCR_METHODS_IN_GRID, 'none-direct-vision'];
 
+// Card-variant ablation columns (Grok-4 only). Ordered roughly by score (best first).
+const GROK4_ABLATION_METHODS = [
+  'docling-easyocr',
+  'compact-2k', 'table-only', 'csv-plus-scope', 'csv-plus-paragraph', 'csv-plus-all-context',
+  'csv-demerged', 'csv-normalized', 'csv-normalized-rules', 'table-normalized',
+  'json-only', 'stitched',
+  'micro-1k', 'compact-4k', 'csv-plus-headings', 'labeled', 'prose',
+  'mistral-ocr', 'pdf-text-no-ocr', 'none-direct-vision',
+  'gpt4o-vision', 'pixtral-vision', 'easyocr-raw',
+  'no-frontmatter',
+];
+
 function passColor(rate: number | null, q: number): string {
   if (rate === null) return '#f5f5f5';
   // 0..1 → red (low) → amber (mid) → green (high) for q=correct
@@ -152,6 +164,71 @@ export default function OcrGridPage() {
             signal even for SOTA models — they'd be better off just looking at the page. If
             the best OCR column beats direct vision, OCR is structurally useful even for the
             top of the stack (and the cheapest OCR that hits that ceiling wins on cost).
+          </p>
+        </Section>
+
+        {/* ─────────── Grok-4 card-variant ablation ─────────── */}
+        <Section title="Grok-4 card-variant ablation — which card format helps the strongest flagship?">
+          <p className="text-xs text-text-secondary mb-3 leading-relaxed max-w-4xl">
+            Grok-4 hits <strong>12/12 correct</strong> on the project's pipeline-v0.7-csv-only card.
+            To isolate <em>what part of the card matters</em>, we re-ran Grok-4 against every existing
+            card variant the Erschließung project has shipped, plus a few floor cases (raw EasyOCR
+            text with no Docling layout reconstruction, plain PDF text layer, direct page vision).
+            All 12 interp questions, sorted by Grok-4 correct count below.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="text-sm border-collapse">
+              <thead>
+                <tr className="border-b-2 border-ink">
+                  <th className="text-left py-2 pr-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '180px'}}>Card variant</th>
+                  <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '140px'}}>Grok-4 result</th>
+                  <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '60px'}}>$/page</th>
+                  <th className="text-left py-2 px-2 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom" style={{minWidth: '60px'}}>s/page</th>
+                  <th className="text-left py-2 pl-3 font-medium text-[10px] uppercase tracking-widest text-text-secondary align-bottom">What it tests</th>
+                </tr>
+              </thead>
+              <tbody>
+                {GROK4_ABLATION_METHODS.map((slug) => {
+                  const m = OCR_METHODS.find((mm) => mm.slug === slug);
+                  if (!m) return null;
+                  const s = summarize(OCR_GRID_RESULTS, 'grok-4', slug);
+                  const correctRate = s.total > 0 ? s.correct / s.total : null;
+                  const bg = passColor(correctRate, 0);
+                  return (
+                    <tr key={slug} className="border-t border-border align-top">
+                      <td className="py-2 pr-3 text-xs">
+                        <div className="font-medium text-ink">{m.label}</div>
+                        <div className="text-text-secondary text-[10px]">{m.vendor}</div>
+                      </td>
+                      <td className="py-2 px-2 text-xs" style={{ backgroundColor: bg }}>
+                        {s.total === 0 ? (
+                          <div className="text-text-secondary italic">no data</div>
+                        ) : (
+                          <>
+                            <div className="text-ink font-medium tabular-nums">
+                              {s.correct}/{s.total} correct
+                              {s.band > s.correct && <span className="text-text-secondary"> · +{s.band - s.correct} band</span>}
+                            </div>
+                          </>
+                        )}
+                      </td>
+                      <td className="py-2 px-2 text-xs tabular-nums text-right">{m.costPerPageUSD === 0 ? '$0' : `$${m.costPerPageUSD.toFixed(4)}`}</td>
+                      <td className="py-2 px-2 text-xs tabular-nums text-right">{m.secondsPerPage}</td>
+                      <td className="py-2 pl-3 text-[11px] text-text-secondary leading-snug">{m.notes ?? ''}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-text-secondary mt-4 leading-relaxed max-w-4xl">
+            <strong className="text-ink font-medium">What this shows.</strong> For a strong flagship, ~13 different
+            project card variants all score 12/12 — the model is essentially robust to most
+            reasonable formats. The two that hurt are <code>no-frontmatter</code> (strips YAML
+            metadata, 7/12) and <code>easyocr-raw</code> (no layout, 7/12). Floor cases:
+            direct vision = 10/12, raw PDF text layer = 11/12. <strong>The OCR step adds only
+            marginal value at the flagship-tier ceiling</strong> — but the project's pipeline + Grok-4
+            is still the unique combination that hits 100%.
           </p>
         </Section>
 
