@@ -96,17 +96,17 @@ export default function OcrGridPage() {
               Erschließung: OCR-method grid
             </span>
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent">
+          <nav className="flex items-center gap-6">
+            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Interpolation
             </Link>
-            <Link href="/erschliessung/ocr-grid" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent">
-              OCR grid
-            </Link>
-            <a href="/erschliessung/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent">
-              Tests heatmap
+            <span aria-current="page" className="text-xs font-semibold text-ink uppercase tracking-widest border-b-2 border-ink pb-0.5 cursor-default">
+              OCR
+            </span>
+            <a href="/erschliessung/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Models
             </a>
-          </div>
+          </nav>
         </div>
       </header>
 

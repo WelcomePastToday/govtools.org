@@ -118,14 +118,17 @@ export default function ErschliessungPage() {
               Erschließung: Interpolation examples
             </span>
           </div>
-          <div className="flex items-center gap-6">
-            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+          <nav className="flex items-center gap-6">
+            <span aria-current="page" className="text-xs font-semibold text-ink uppercase tracking-widest border-b-2 border-ink pb-0.5 cursor-default">
               Interpolation
+            </span>
+            <Link href="/erschliessung/ocr-grid" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              OCR
             </Link>
-            <a href="/erschliessung/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
-              Tests heatmap
+            <a href="/erschliessung/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Models
             </a>
-          </div>
+          </nav>
         </div>
       </header>
 
