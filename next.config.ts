@@ -14,6 +14,9 @@ const nextConfig: NextConfig = {
     return [
       // Legacy URL — anyone with the old link gets bounced to the clean URL.
       { source: '/erschliessung/heatmap.html', destination: '/erschliessung/heatmap', permanent: true },
+      // Erschließung → Model Evals rename: keep old deep links working.
+      { source: '/erschliessung/ant-catalog', destination: '/model-evals/ant-catalog', permanent: true },
+      { source: '/erschliessung/interpolation', destination: '/model-evals/interpolation', permanent: true },
     ];
   },
 };

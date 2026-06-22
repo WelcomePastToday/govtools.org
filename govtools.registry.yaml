@@ -68,6 +68,15 @@ apps:
       link_text: "View Reports"
       link_url: "/model-evals"
 
+  - id: cfpb-removed-content
+    name: "CFPB Removed Web Content"
+    description: "Inventory of 3,923 Consumer Financial Protection Bureau pages removed from the live website in May–June 2026, recovered and content-verified from the Internet Archive Wayback Machine. Each record links to the exact capture and shows a preview thumbnail."
+    path: "cfpb-static"
+    url: "/cfpb/"
+    status: active
+    # Intentionally unlisted: stays live at /cfpb but must NOT appear as a public card/link.
+    hidden: true
+
   - id: to-do-list-manager
     name: "To-Do List Manager"
     description: "Mark's collaborative to-do list manager."

@@ -1,78 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ANT_MODEL_ROWS, ANT_RUN_META, ANT_ROUTING, type AntModelRow } from "../_data/antCatalog";
+import { ANT_MODEL_ROWS, ANT_RUN_META, ANT_ROUTING } from "../_data/antCatalog";
+import AntCatalogTable from "./AntCatalogTable";
 
 export const metadata: Metadata = {
   title: "ANT catalog-metadata model comparison | Model Evals",
   description:
-    "Which model to use for extracting catalog metadata from government documents — reliability, speed, tokens, and cost across hosted and free local models. An Archival Notation Tracer (ANT) variation of the Model Evals benchmark.",
+    "Which model to use for extracting catalog metadata from government documents — accuracy, schema validity, speed, and cost across hosted and free local models. An Archival Notation Tracer (ANT) variation of the Model Evals benchmark.",
 };
 
-function fmtCost(r: AntModelRow): string {
-  if (r.tier === "local") return "free";
-  if (r.costPer1kDocs == null) return "—";
-  return `$${r.costPer1kDocs.toFixed(2)}`;
-}
-
-function fmtAcc(r: AntModelRow): string {
-  if (r.accuracy == null) return "—";
-  return r.accuracy.toFixed(2) + (r.isPanel ? "*" : "");
-}
-
-function Row({ r }: { r: AntModelRow }) {
-  const reliability = r.ok === r.n ? "text-status-success" : r.ok / Math.max(1, r.n) >= 0.5 ? "text-ink" : "text-status-warning";
-  const accClass = r.isPanel
-    ? "text-text-secondary italic"
-    : r.accuracy == null
-      ? "text-text-secondary"
-      : r.accuracy >= 0.7 ? "text-status-success" : r.accuracy >= 0.55 ? "text-ink" : "text-status-warning";
-  return (
-    <tr className="border-b border-border/60 hover:bg-panel transition-colors">
-      <td className="py-1.5 pr-4 font-medium text-ink whitespace-nowrap">{r.model}</td>
-      <td className={`py-1.5 px-2 tabular-nums text-right font-medium ${accClass}`}>{fmtAcc(r)}</td>
-      <td className={`py-1.5 px-2 tabular-nums text-right ${reliability}`}>{r.ok}/{r.n}</td>
-      <td className="py-1.5 px-2 tabular-nums text-right text-text-secondary">{r.validOutputRate == null ? "—" : (r.validOutputRate * 100).toFixed(0) + "%"}</td>
-      <td className="py-1.5 px-2 tabular-nums text-right text-text-secondary">{r.avgLatencyS.toFixed(1)}s</td>
-      <td className="py-1.5 px-2 tabular-nums text-right text-text-secondary">{r.avgRespTok}</td>
-      <td className="py-1.5 pl-2 tabular-nums text-right font-medium text-ink">{fmtCost(r)}</td>
-    </tr>
-  );
-}
-
-function Table({ rows, title, tag }: { rows: AntModelRow[]; title: string; tag: string }) {
-  if (rows.length === 0) return null;
-  return (
-    <section className="mb-7">
-      <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
-        <h2 className="text-xs font-bold text-ink uppercase tracking-widest">{title}</h2>
-        <span className="text-[10px] text-text-secondary uppercase tracking-widest">{tag}</span>
-      </div>
-      <table className="w-full text-xs leading-snug">
-        <thead>
-          <tr className="text-[10px] uppercase tracking-widest text-text-secondary">
-            <th className="py-1 pr-4 text-left font-medium">Model</th>
-            <th className="py-1 px-2 text-right font-medium">Accuracy</th>
-            <th className="py-1 px-2 text-right font-medium">OK/n</th>
-            <th className="py-1 px-2 text-right font-medium">Valid schema</th>
-            <th className="py-1 px-2 text-right font-medium">Latency</th>
-            <th className="py-1 px-2 text-right font-medium">Resp tok</th>
-            <th className="py-1 pl-2 text-right font-medium">$/1k docs</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((r) => (
-            <Row key={r.model} r={r} />
-          ))}
-        </tbody>
-      </table>
-    </section>
-  );
-}
-
 export default function AntCatalogPage() {
-  const hosted = ANT_MODEL_ROWS.filter((r) => r.tier === "hosted");
-  const local = ANT_MODEL_ROWS.filter((r) => r.tier === "local");
-
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
       <header className="border-b border-border bg-paper sticky top-0 z-10">
@@ -97,18 +34,16 @@ export default function AntCatalogPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-6">
-        <section className="pb-3 mb-4 border-b border-border flex items-baseline justify-between gap-4 flex-wrap">
+        <section className="pb-3 mb-4 border-b border-border">
           <h1 className="text-xl font-bold tracking-tight text-ink">
             Catalog-metadata extraction — model comparison
           </h1>
-          <p className="text-xs text-text-secondary leading-snug max-w-2xl">
-            One of two <strong className="text-ink">automated metadata-assertion pipeline</strong> evaluations:
-            this tests the ability to <strong className="text-ink">create document metadata — especially
-            government classification</strong>; the companion{" "}
+          <p className="text-xs text-text-secondary leading-snug max-w-2xl mt-1">
+            Which model best extracts catalog metadata (title, document type, date, subjects, named entities,
+            issuing body) from government documents. {ANT_RUN_META.models} models × {ANT_RUN_META.docs} documents,
+            generated {ANT_RUN_META.generated}. Companion to the{" "}
             <Link href="/model-evals/interpolation" className="text-accent hover:text-link-hover">Interpolation</Link>{" "}
-            evaluation tests reasoning over tables and charts inside PDFs. Which model to use for extracting catalog
-            metadata (title, document type, date, subjects, named entities, issuing body, abstract…) from government
-            documents. {ANT_RUN_META.models} models × {ANT_RUN_META.docs} documents. Generated {ANT_RUN_META.generated}.
+            eval (reasoning over tables and charts in PDFs).
           </p>
         </section>
 
@@ -117,24 +52,31 @@ export default function AntCatalogPage() {
             Reading this table
           </h2>
           <p className="text-xs text-text-secondary leading-snug">
-            <strong className="text-ink">Accuracy</strong> = macro mean of per-field agreement vs a{" "}
-            <strong className="text-ink">frontier-consensus silver reference</strong> (panel gpt-4.1 / claude-opus-4-8 /
-            gemini-2.5-flash, with grok-4 arbitrating disagreements). Rows marked <strong className="text-ink">*</strong>{" "}
+            Click any column to sort. <strong className="text-ink">Accuracy</strong> = macro mean of per-field
+            agreement vs a <strong className="text-ink">frontier-consensus silver reference</strong> (panel gpt-4.1 /
+            claude-opus-4-8 / gemini-2.5-flash, grok-4 arbitrating). Rows marked <strong className="text-ink">*</strong>{" "}
             are panel members — they <em>define</em> the reference, so their accuracy is circular/inflated; judge them
-            by cost, not accuracy. <strong className="text-ink">Valid schema</strong> = share of outputs that parsed
-            into the controlled {"{value,code}"} schema (instruction-following, not correctness). Sample = {ANT_RUN_META.docs} docs
-            (directional). Cost is an approximate $/1,000-docs estimate (observed tokens × public list prices). Locals run free.
+            by cost, not accuracy. <strong className="text-ink">Completed</strong> = documents that returned a usable
+            result / attempted. <strong className="text-ink">Valid schema</strong> = share of outputs that parsed
+            into the controlled {"{value, code}"} schema (instruction-following, not correctness).{" "}
+            <strong className="text-ink">$/1k docs</strong> = approximate cost per 1,000 documents (observed tokens ×
+            public list prices); locals run free. Sample = {ANT_RUN_META.docs} docs (directional).
           </p>
         </section>
 
-        <Table rows={hosted} title="Hosted (paid API)" tag="01" />
-        <Table rows={local} title="Local open models (free)" tag="02" />
+        <section className="mb-7">
+          <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
+            <h2 className="text-xs font-bold text-ink uppercase tracking-widest">All models — hosted &amp; local</h2>
+            <span className="text-[10px] text-text-secondary uppercase tracking-widest">01 · sortable</span>
+          </div>
+          <AntCatalogTable rows={ANT_MODEL_ROWS} />
+        </section>
 
         {ANT_ROUTING.length > 0 && (
           <section className="mb-7">
             <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
               <h2 className="text-xs font-bold text-ink uppercase tracking-widest">Per-field routing — best non-panel model</h2>
-              <span className="text-[10px] text-text-secondary uppercase tracking-widest">03</span>
+              <span className="text-[10px] text-text-secondary uppercase tracking-widest">02</span>
             </div>
             <p className="text-xs text-text-secondary leading-snug mb-2">
               Accuracy is field-dependent, so the cheapest correct pipeline routes each field to the best
@@ -176,7 +118,7 @@ export default function AntCatalogPage() {
           <p>
             Because accuracy is <strong className="text-ink">field-dependent</strong> (jurisdiction codes are easy
             for everyone; document type and title are not), the cheapest <em>correct</em> pipeline is{" "}
-            <strong className="text-ink">per-field routing</strong> (table 03) rather than one model overall.
+            <strong className="text-ink">per-field routing</strong> (table 02) rather than one model overall.
             Reference is frontier-consensus silver on {ANT_RUN_META.docs} docs — directional, not a human gold set.
           </p>
         </section>
