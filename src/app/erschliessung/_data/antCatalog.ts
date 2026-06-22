@@ -26,21 +26,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 2513,
     "avgRespTok": 689,
     "costPer1kDocs": 89.37,
-    "accuracy": 0.817,
-    "isPanel": true,
-    "validOutputRate": null
-  },
-  {
-    "model": "openai:gpt-4.1",
-    "tier": "hosted",
-    "ok": 10,
-    "n": 10,
-    "avgFields": 10.0,
-    "avgLatencyS": 4.1,
-    "avgPromptTok": 1754,
-    "avgRespTok": 327,
-    "costPer1kDocs": 6.12,
-    "accuracy": 0.777,
+    "accuracy": 0.93,
     "isPanel": true,
     "validOutputRate": null
   },
@@ -54,7 +40,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1979,
     "avgRespTok": 526,
     "costPer1kDocs": 1.91,
-    "accuracy": 0.769,
+    "accuracy": 0.857,
     "isPanel": true,
     "validOutputRate": null
   },
@@ -68,8 +54,22 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1860,
     "avgRespTok": 231,
     "costPer1kDocs": 9.04,
-    "accuracy": 0.739,
+    "accuracy": 0.853,
     "isPanel": false,
+    "validOutputRate": null
+  },
+  {
+    "model": "openai:gpt-4.1",
+    "tier": "hosted",
+    "ok": 10,
+    "n": 10,
+    "avgFields": 10.0,
+    "avgLatencyS": 4.1,
+    "avgPromptTok": 1754,
+    "avgRespTok": 327,
+    "costPer1kDocs": 6.12,
+    "accuracy": 0.838,
+    "isPanel": true,
     "validOutputRate": null
   },
   {
@@ -82,7 +82,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1981,
     "avgRespTok": 588,
     "costPer1kDocs": 14.76,
-    "accuracy": 0.734,
+    "accuracy": 0.827,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -96,7 +96,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 2063,
     "avgRespTok": 483,
     "costPer1kDocs": 7.02,
-    "accuracy": 0.702,
+    "accuracy": 0.78,
     "isPanel": false,
     "validOutputRate": 1.0
   },
@@ -110,7 +110,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1996,
     "avgRespTok": 478,
     "costPer1kDocs": 4.39,
-    "accuracy": 0.651,
+    "accuracy": 0.772,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -124,7 +124,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1756,
     "avgRespTok": 182,
     "costPer1kDocs": 0.37,
-    "accuracy": 0.548,
+    "accuracy": 0.574,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -152,7 +152,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 2150,
     "avgRespTok": 277,
     "costPer1kDocs": null,
-    "accuracy": 0.507,
+    "accuracy": 0.569,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -166,7 +166,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1974,
     "avgRespTok": 212,
     "costPer1kDocs": null,
-    "accuracy": 0.489,
+    "accuracy": 0.542,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -180,7 +180,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1965,
     "avgRespTok": 219,
     "costPer1kDocs": null,
-    "accuracy": 0.456,
+    "accuracy": 0.489,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -399,8 +399,8 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
 export const ANT_ROUTING: AntRouting[] = [
   {
     "field": "abstract_summary",
-    "bestModel": "anthropic:claude-sonnet-4-6",
-    "accuracy": 0.75
+    "bestModel": "xai:grok-4",
+    "accuracy": 1.0
   },
   {
     "field": "coverage_codes",
@@ -420,7 +420,7 @@ export const ANT_ROUTING: AntRouting[] = [
   {
     "field": "issuing_body_name",
     "bestModel": "anthropic:claude-haiku-4-5",
-    "accuracy": 0.938
+    "accuracy": 1.0
   },
   {
     "field": "jurisdiction_code",
@@ -429,8 +429,8 @@ export const ANT_ROUTING: AntRouting[] = [
   },
   {
     "field": "key_points",
-    "bestModel": "openai:gpt-4o-mini",
-    "accuracy": 0.2
+    "bestModel": "anthropic:claude-sonnet-4-6",
+    "accuracy": 0.738
   },
   {
     "field": "language_code",
@@ -439,12 +439,12 @@ export const ANT_ROUTING: AntRouting[] = [
   },
   {
     "field": "subjects",
-    "bestModel": "xai:grok-4",
-    "accuracy": 0.333
+    "bestModel": "anthropic:claude-haiku-4-5",
+    "accuracy": 0.598
   },
   {
     "field": "title",
-    "bestModel": "anthropic:claude-haiku-4-5",
-    "accuracy": 0.786
+    "bestModel": "mistral:large",
+    "accuracy": 0.833
   }
 ];
