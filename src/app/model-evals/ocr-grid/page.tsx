@@ -4,16 +4,20 @@ import { OCR_METHODS, LICENSE_LABEL, LICENSE_TINT, type OcrMethod } from "../_da
 import { OCR_GRID_RESULTS, OCR_GRID_META, type OcrGridCell } from "../_data/ocrGrid";
 
 export const metadata: Metadata = {
-  title: "Erschließung — OCR-method × open-model grid | GovTools",
+  title: "Model Evals — OCR-method × open-model grid | GovTools",
   description: "Heatmap of open-model pass rates by OCR method on archival table questions, plus per-method cost and license.",
 };
 
 // Open-tier models (Ollama local). qwen2.5-vl-7b can also do vision.
+// olmo3-7b added 2026-05-27 to fill PublicAI roster coverage —
+// see docs/publicai-roster-status.md. EuroLLM 22B + Qwen-SEA-LION 32B
+// will land as their runs complete.
 const OPEN_MODELS = [
   { slug: 'apertus-8b',     label: 'Apertus 8B',       vendor: 'Swiss AI' },
   { slug: 'climategpt-13b', label: 'ClimateGPT 13B',   vendor: 'climate-domain Llama-2' },
   { slug: 'qwen2.5-7b',     label: 'Qwen 2.5 7B',      vendor: 'Alibaba' },
   { slug: 'qwen2.5-vl-7b',  label: 'Qwen 2.5 VL 7B',   vendor: 'Alibaba (vision)' },
+  { slug: 'olmo3-7b',       label: 'Olmo-3 7B',        vendor: 'AllenAI (PublicAI)' },
 ] as const;
 
 // Closed-tier flagship API models. Each gets two scoring modes:
@@ -93,17 +97,17 @@ export default function OcrGridPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Erschließung: OCR-method grid
+              Model Evals: OCR-method grid
             </span>
           </div>
           <nav className="flex items-center gap-6">
-            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <Link href="/model-evals/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Interpolation
             </Link>
             <span aria-current="page" className="text-xs font-semibold text-ink uppercase tracking-widest border-b-2 border-ink pb-0.5 cursor-default">
               OCR
             </span>
-            <a href="/erschliessung/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <a href="/model-evals/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Models
             </a>
           </nav>
@@ -123,7 +127,7 @@ export default function OcrGridPage() {
           <div className="text-sm leading-relaxed text-text-secondary max-w-4xl space-y-3">
             <p>
               For each of the 12 final interpolation candidates (Tier-2 verified on{' '}
-              <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">/interpolation</Link>),
+              <Link href="/model-evals/interpolation" className="text-accent hover:text-link-hover">/interpolation</Link>),
               we regenerated the table card using {ocrMethods.length} different OCR methods and re-ran 3 open
               models + 3 closed flagship APIs on each card — plus a "no OCR, direct vision" column where the
               flagship sees the page image directly. {OCR_GRID_META.totalCells} (model × method × question) cells total,
@@ -177,7 +181,7 @@ export default function OcrGridPage() {
         {/* ─────────── Grok-4 vs Qwen-7B card-variant ablation ─────────── */}
         <Section title="Card-variant ablation — Grok-4 (flagship) vs Qwen 2.5 7B (best open)">
           <p className="text-xs text-text-secondary mb-3 leading-relaxed max-w-4xl">
-            Both Grok-4 and Qwen 2.5 7B were tested against every Erschließung card variant + several
+            Both Grok-4 and Qwen 2.5 7B were tested against every Model Evals card variant + several
             floor cases (raw EasyOCR with no Docling layout, plain PDF text layer, direct page vision).
             Same 12 interp questions for each cell. Sorted by Qwen 2.5 7B correct count — the
             interesting axis is which formats lift the open-tier model above the prior 9/12 ceiling.

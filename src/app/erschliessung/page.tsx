@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
-// /erschliessung redirects to its canonical page. The Erschließung
-// site is single-purpose; /erschliessung/interpolation is the home.
-export default function ErschliessungIndex() {
-  redirect("/erschliessung/interpolation");
+// Legacy route. "Erschließung" was renamed to "Model Evals" (/model-evals)
+// for a clearer, US-memorable name describing the pipeline-evaluation pages.
+export default function ErschliessungLegacyRedirect() {
+  redirect("/model-evals");
 }

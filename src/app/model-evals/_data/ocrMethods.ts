@@ -1,4 +1,4 @@
-// OCR method metadata for /erschliessung/ocr-grid.
+// OCR method metadata for /model-evals/ocr-grid.
 // Generated 2026-05-27 from the multi-tool OCR comparison on V27 + V35 + NOAA.
 //
 // Cost notes:
@@ -34,7 +34,7 @@ export const OCR_METHODS: OcrMethod[] = [
     localRunnable: true,
     costPerPageUSD: 0,
     secondsPerPage: 16,
-    notes: 'Erschließung pipeline default. Force-full-page OCR mode (–force-reocr).',
+    notes: 'Model Evals pipeline default. Force-full-page OCR mode (–force-reocr).',
   },
   {
     slug: 'docling-tesseract',
@@ -172,23 +172,23 @@ export const OCR_METHODS: OcrMethod[] = [
   // ─── Card-variant ablation rows (Grok-4 only) ───
   { slug: 'pdf-text-no-ocr',      label: 'pdf-text-no-ocr',          vendor: 'pdftotext (no OCR)',   family: 'pdf-parser',  license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 0.1, notes: 'Embedded PDF text layer via pdftotext. On scanned V27/V35: mostly garbled control characters. On born-digital NOAA: clean text.' },
   { slug: 'easyocr-raw',          label: 'easyocr-raw',              vendor: 'JaidedAI (no Docling)',family: 'image-ocr',  license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 3, notes: 'EasyOCR on the page image, no Docling layout/table reconstruction. Tests the OCR-only floor.' },
-  { slug: 'micro-1k',             label: 'micro-1k',                 vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: '~1.2 KB card variant — caption + table only.' },
-  { slug: 'compact-2k',           label: 'compact-2k',               vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: '~2 KB card variant — caption + table + 1 paragraph.' },
-  { slug: 'compact-4k',           label: 'compact-4k',               vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: '~4 KB card variant.' },
-  { slug: 'table-only',           label: 'table-only',               vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Table + caption only; no surrounding metadata.' },
-  { slug: 'labeled',              label: 'labeled',                  vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Explicit per-section provenance labels.' },
-  { slug: 'csv-plus-headings',    label: 'csv-plus-headings',        vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + section headings.' },
-  { slug: 'csv-plus-scope',       label: 'csv-plus-scope',           vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + geographic+temporal scope.' },
-  { slug: 'csv-plus-paragraph',   label: 'csv-plus-paragraph',       vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + one nearby paragraph (≤400 chars).' },
-  { slug: 'csv-plus-all-context', label: 'csv-plus-all-context',     vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + headings + scope + paragraph.' },
-  { slug: 'csv-demerged',         label: 'csv-demerged',             vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only with merged rows split deterministically.' },
-  { slug: 'csv-normalized',       label: 'csv-normalized',           vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only with visual-confusable OCR normalization.' },
-  { slug: 'csv-normalized-rules', label: 'csv-normalized-rules',     vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-normalized + explicit normalization rules in card.' },
-  { slug: 'table-normalized',     label: 'table-normalized',         vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'table-only + visual-confusable normalization.' },
-  { slug: 'json-only',            label: 'json-only',                vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Table as JSON instead of CSV.' },
-  { slug: 'no-frontmatter',       label: 'no-frontmatter',           vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Strip the YAML frontmatter. Hurts Grok-4 noticeably.' },
-  { slug: 'prose',                label: 'prose',                    vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Table rendered as English prose instead of structured CSV.' },
-  { slug: 'stitched',             label: 'stitched',                 vendor: 'Erschliessung',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Multi-page tables stitched into one logical view.' },
+  { slug: 'micro-1k',             label: 'micro-1k',                 vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: '~1.2 KB card variant — caption + table only.' },
+  { slug: 'compact-2k',           label: 'compact-2k',               vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: '~2 KB card variant — caption + table + 1 paragraph.' },
+  { slug: 'compact-4k',           label: 'compact-4k',               vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: '~4 KB card variant.' },
+  { slug: 'table-only',           label: 'table-only',               vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Table + caption only; no surrounding metadata.' },
+  { slug: 'labeled',              label: 'labeled',                  vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Explicit per-section provenance labels.' },
+  { slug: 'csv-plus-headings',    label: 'csv-plus-headings',        vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + section headings.' },
+  { slug: 'csv-plus-scope',       label: 'csv-plus-scope',           vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + geographic+temporal scope.' },
+  { slug: 'csv-plus-paragraph',   label: 'csv-plus-paragraph',       vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + one nearby paragraph (≤400 chars).' },
+  { slug: 'csv-plus-all-context', label: 'csv-plus-all-context',     vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only + headings + scope + paragraph.' },
+  { slug: 'csv-demerged',         label: 'csv-demerged',             vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only with merged rows split deterministically.' },
+  { slug: 'csv-normalized',       label: 'csv-normalized',           vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-only with visual-confusable OCR normalization.' },
+  { slug: 'csv-normalized-rules', label: 'csv-normalized-rules',     vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'csv-normalized + explicit normalization rules in card.' },
+  { slug: 'table-normalized',     label: 'table-normalized',         vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'table-only + visual-confusable normalization.' },
+  { slug: 'json-only',            label: 'json-only',                vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Table as JSON instead of CSV.' },
+  { slug: 'no-frontmatter',       label: 'no-frontmatter',           vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Strip the YAML frontmatter. Hurts Grok-4 noticeably.' },
+  { slug: 'prose',                label: 'prose',                    vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Table rendered as English prose instead of structured CSV.' },
+  { slug: 'stitched',             label: 'stitched',                 vendor: 'Model Evals',        family: 'pdf-parser', license: 'open-source-local', free: true, localRunnable: true, costPerPageUSD: 0, secondsPerPage: 16, notes: 'Multi-page tables stitched into one logical view.' },
 ];
 
 export const LICENSE_LABEL: Record<License, string> = {

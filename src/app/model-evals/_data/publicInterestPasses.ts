@@ -19,7 +19,7 @@ export interface PublicInterestPassRow {
   cardResponse: string;
   cardEvaluation: Evaluation;
   // Deep links to the verbatim source files hosted under
-  // public/erschliessung/artifacts/ on this same site.
+  // public/model-evals/artifacts/ on this same site.
   cardSourceUrl: string | null;
   promptSourceUrl: string | null;
   // Optional external chat-share URL (e.g. climategpt.ai/shared/...).
@@ -50,8 +50,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "The first reported stranding on the Belgian coast happened in 1912, with the locality being Knocke (Belgium). This information is found in the row for 1912, specifically in the \"Locality\" column.",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NAT-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/v27_table_038.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle17_Q-NAT-001__M3-L4__ollama-apertus-8b.prompt.txt",
     chatUrl: null,
   },
   {
@@ -67,8 +67,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "Source:\n1934: 93,000 tons\n1933: 95,000 tons\nDifference: 2,000 tons less",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_085.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NAT-006__M3-L4__ollama-climategpt-13b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/v27_table_085.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle17_Q-NAT-006__M3-L4__ollama-climategpt-13b.prompt.txt",
     chatUrl: "https://climategpt.ai/shared/perspective/f7bf88cd-9eb2-4e07-b556-b6781cf6888b",
   },
   {
@@ -84,8 +84,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "Based on the provided data, I will interpolate between the depths of 30 meters (6.1 mg P/m\u00b3) and 40 meters (4.4 mg P/m\u00b3). The organic phosphorus concentration at 35 meters would be estimated as approximately **5.2 mg P/m\u00b3**. This estimate is based on linear interpolation, considering the change in concentration between these two depths.",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_096_corrected.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NAT-INT-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/v27_table_096_corrected.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle17_Q-NAT-INT-001__M3-L4__ollama-apertus-8b.prompt.txt",
     chatUrl: null,
   },
   {
@@ -101,8 +101,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "To find the organic phosphorus concentration at 25 meters, we can interpolate from the given data.\n\nThe closest depth to 25 meters is 30 meters (6.1 mg P per m\u00b3). The next lower depth is 20 meters (9.6 mg P per m\u00b3).\n\nUsing linear interpolation:\n- At 30 meters: Organic = 6.1\n- At 20 meters: Organic = 9.6\n\nThe difference in depth between 30 and 25 meters is 5 meters.\n\nLet's calculate the organic phosphorus concentration at 25 meters using a simple linear interpolation formula:\nOrganic at 25 m \u2248 (6.1 + (9.6 - 6.1) * (25 - 30)) / (20 - 30)\n\nCalculating this gives us approximately 7.8 mg P per m\u00b3.\n\nSo, the marine biologist would conclude that the organic phosphorus concentration at 25 meters is approximately 7.8 mg P per m\u00b3. This conclusion is based on interpolation from the given data in Table III.",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_096_corrected.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle34_Q-NAT-INT-002__M3-L4__ollama-apertus-8b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/v27_table_096_corrected.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle34_Q-NAT-INT-002__M3-L4__ollama-apertus-8b.prompt.txt",
     chatUrl: null,
   },
   {
@@ -118,8 +118,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "No, there is no record of a Physalia (Portuguese man-of-war) stranding on the coast of Greece in this list. The closest location mentioned is \"Gu\u00e9ethary Bantry, Co. Cork\" in Ireland and \"Tragumina, Co, Cork\" also in Ireland.",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/v27_table_038.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-apertus-8b.prompt.txt",
     chatUrl: null,
   },
   {
@@ -135,8 +135,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "No. There were no Physalia strandings reported on the coast of Greece.",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/v27_table_038.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-climategpt-13b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/v27_table_038.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle17_Q-V27-NEG-001__M3-L4__ollama-climategpt-13b.prompt.txt",
     chatUrl: "https://climategpt.ai/shared/perspective/01202f3c-81e5-4b00-b38d-bc757a88ceb0",
   },
   {
@@ -152,8 +152,8 @@ export const PUBLIC_INTEREST_PASSES: PublicInterestPassRow[] = [
     jsonEvaluation: "n/a",
     cardResponse: "There is no information about cruise numbers for 1948 in the provided table or source material. The earliest year mentioned is 1950 (Cruise Number 50Y01). Therefore, it's not possible to determine how many cruises were conducted in 1948 based on this data.",
     cardEvaluation: "correct",
-    cardSourceUrl: "/erschliessung/artifacts/cards/noaa_table_017.card.md",
-    promptSourceUrl: "/erschliessung/artifacts/prompts/cycle17_Q-NOAA-NEG-001__M3-L4__ollama-apertus-8b.prompt.txt",
+    cardSourceUrl: "/model-evals/artifacts/cards/noaa_table_017.card.md",
+    promptSourceUrl: "/model-evals/artifacts/prompts/cycle17_Q-NOAA-NEG-001__M3-L4__ollama-apertus-8b.prompt.txt",
     chatUrl: null,
   },
 ];

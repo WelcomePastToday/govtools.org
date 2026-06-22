@@ -3,7 +3,7 @@ import Link from "next/link";
 import { VARIANTS_BY_CATEGORY, type Variant } from "../_data/variants";
 
 export const metadata: Metadata = {
-  title: "Input variants — how evidence is shaped for the model | Erschließung",
+  title: "Input variants — how evidence is shaped for the model | Model Evals",
   description:
     "Every input form the open model can be handed: pipeline derivatives, per-table card variants, document-level maps, and evaluation modes. Each links to inputs, processing time, AI use, OCR, and results.",
 };
@@ -42,14 +42,14 @@ export default function VariantsIndexPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Erschließung: Input variants
+              Model Evals: Input variants
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/erschliessung/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <Link href="/model-evals/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Interpolation
             </Link>
-            <a href="/erschliessung/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <a href="/model-evals/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Tests heatmap
             </a>
           </div>
@@ -82,7 +82,7 @@ export default function VariantsIndexPage() {
                 {variants.map((v) => (
                   <li key={v.slug}>
                     <Link
-                      href={`/erschliessung/variants/${v.slug}`}
+                      href={`/model-evals/variants/${v.slug}`}
                       className="grid grid-cols-[1fr_auto_auto] gap-4 items-baseline py-1.5 border-b border-border/60 hover:bg-panel transition-colors text-xs leading-snug"
                     >
                       <div className="min-w-0 flex items-baseline gap-2 flex-wrap">
@@ -110,7 +110,7 @@ export default function VariantsIndexPage() {
         })}
 
         <section className="mt-4 pt-2 border-t border-border">
-          <Link href="/erschliessung" className="text-xs text-accent hover:text-link-hover">
+          <Link href="/model-evals" className="text-xs text-accent hover:text-link-hover">
             ← Back to Interpolation overview
           </Link>
         </section>
@@ -121,8 +121,8 @@ export default function VariantsIndexPage() {
         <div className="max-w-5xl mx-auto px-6">
           <p className="text-[10px] text-text-secondary leading-snug">
             Variant metadata drawn from{" "}
-            <a href="https://github.com/WelcomePastToday/Erschliessung" className="text-accent hover:text-link-hover">
-              github.com/WelcomePastToday/Erschliessung
+            <a href="https://github.com/WelcomePastToday/Model Evals" className="text-accent hover:text-link-hover">
+              github.com/WelcomePastToday/Model Evals
             </a>
             ; updated as evaluation cycles complete.
           </p>

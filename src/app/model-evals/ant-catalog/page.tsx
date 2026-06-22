@@ -3,9 +3,9 @@ import Link from "next/link";
 import { ANT_MODEL_ROWS, ANT_RUN_META, ANT_ROUTING, type AntModelRow } from "../_data/antCatalog";
 
 export const metadata: Metadata = {
-  title: "ANT catalog-metadata model comparison | Erschließung",
+  title: "ANT catalog-metadata model comparison | Model Evals",
   description:
-    "Which model to use for extracting catalog metadata from government documents — reliability, speed, tokens, and cost across hosted and free local models. An Archival Notation Tracer (ANT) variation of the Erschließung benchmark.",
+    "Which model to use for extracting catalog metadata from government documents — reliability, speed, tokens, and cost across hosted and free local models. An Archival Notation Tracer (ANT) variation of the Model Evals benchmark.",
 };
 
 function fmtCost(r: AntModelRow): string {
@@ -82,14 +82,14 @@ export default function AntCatalogPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Erschließung: ANT catalog eval
+              Model Evals: ANT catalog eval
             </span>
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/erschliessung/variants" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <Link href="/model-evals/variants" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Variants
             </Link>
-            <Link href="/erschliessung" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <Link href="/model-evals" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Overview
             </Link>
           </div>
@@ -105,7 +105,7 @@ export default function AntCatalogPage() {
             One of two <strong className="text-ink">automated metadata-assertion pipeline</strong> evaluations:
             this tests the ability to <strong className="text-ink">create document metadata — especially
             government classification</strong>; the companion{" "}
-            <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">Interpolation</Link>{" "}
+            <Link href="/model-evals/interpolation" className="text-accent hover:text-link-hover">Interpolation</Link>{" "}
             evaluation tests reasoning over tables and charts inside PDFs. Which model to use for extracting catalog
             metadata (title, document type, date, subjects, named entities, issuing body, abstract…) from government
             documents. {ANT_RUN_META.models} models × {ANT_RUN_META.docs} documents. Generated {ANT_RUN_META.generated}.
@@ -182,15 +182,15 @@ export default function AntCatalogPage() {
         </section>
 
         <section className="mt-4 pt-2 border-t border-border">
-          <Link href="/erschliessung" className="text-xs text-accent hover:text-link-hover">
-            ← Back to Erschließung overview
+          <Link href="/model-evals" className="text-xs text-accent hover:text-link-hover">
+            ← Back to Model Evals overview
           </Link>
         </section>
       </main>
 
       <footer className="border-t border-border mt-4 py-3">
         <div className="max-w-5xl mx-auto px-6 text-[10px] text-text-secondary uppercase tracking-widest">
-          GovTools · Erschließung · ANT catalog-metadata variation
+          GovTools · Model Evals · ANT catalog-metadata variation
         </div>
       </footer>
     </div>

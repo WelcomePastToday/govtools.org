@@ -55,18 +55,18 @@ apps:
       link_text: "View Forensic Audit"
       link_url: "/eot/contributors"
 
-  - id: erschliessung
-    name: "Erschließung — Metadata-Assertion Pipeline Evaluations"
+  - id: model-evals
+    name: "Model Evals — Metadata-Assertion Pipeline Evaluations"
     description: "Two evaluations of automated metadata-assertion pipelines: (1) Interpolation — an LLM's ability to access and reason over tables and charts inside archival PDFs; (2) ANT Catalog — the ability to create document metadata, especially government classification. Both benchmark open and frontier models on Internet Archive / government collections."
-    # path = the data/eval/pipeline repo (Erschliessung). NOTE: the public web UI for both
-    # variations is served from the govtools.org repo (src/app/erschliessung), NOT this path.
-    path: "Erschliessung"
-    url: "/erschliessung"
+    # path = the data/eval/pipeline repo (Model Evals). NOTE: the public web UI for both
+    # variations is served from the govtools.org repo (src/app/model-evals), NOT this path.
+    path: "model-evals"
+    url: "/model-evals"
     status: active
     project_info:
       note: "Two variations · table/chart reasoning + government-classification metadata"
       link_text: "View Reports"
-      link_url: "/erschliessung"
+      link_url: "/model-evals"
 
   - id: to-do-list-manager
     name: "To-Do List Manager"

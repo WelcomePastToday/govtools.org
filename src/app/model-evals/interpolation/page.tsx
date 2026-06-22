@@ -4,7 +4,7 @@ import { PUBLIC_INTEREST_PASSES, type Evaluation } from "../_data/publicInterest
 import { INTERP_ROWS, INTERP_META } from "../_data/interpBatchCandidates";
 
 export const metadata: Metadata = {
-  title: "Erschließung — Archival evidence packaging for open models | GovTools",
+  title: "Model Evals — Archival evidence packaging for open models | GovTools",
   description:
     "Compact CSV evidence cards let open models answer archival table questions that raw PDFs and giant Docling JSON cannot. 27% → 55% open-tier pass-rate lift.",
 };
@@ -100,7 +100,7 @@ function evalChip(ev: Evaluation) {
 
 // ─────────────────────── Page ───────────────────────
 
-export default function ErschliessungPage() {
+export default function ModelEvalsPage() {
   const totalRows = PUBLIC_INTEREST_PASSES.length;
   const distinctQuestions = new Set(PUBLIC_INTEREST_PASSES.map((r) => r.qid)).size;
 
@@ -115,20 +115,20 @@ export default function ErschliessungPage() {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              Erschließung: Interpolation examples
+              Model Evals: Interpolation examples
             </span>
           </div>
           <nav className="flex items-center gap-6">
             <span aria-current="page" className="text-xs font-semibold text-ink uppercase tracking-widest border-b-2 border-ink pb-0.5 cursor-default">
               Interpolation
             </span>
-            <Link href="/erschliessung/ocr-grid" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <Link href="/model-evals/ocr-grid" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               OCR
             </Link>
-            <a href="/erschliessung/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <a href="/model-evals/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Models
             </a>
-            <Link href="/erschliessung/ant-catalog" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+            <Link href="/model-evals/ant-catalog" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               ANT Catalog
             </Link>
           </nav>
@@ -151,10 +151,10 @@ export default function ErschliessungPage() {
           </h1>
           <div className="text-sm leading-relaxed text-text-secondary max-w-4xl space-y-3">
             <p>
-              The Erschließung (archival processing) project tested 24 open/open-weight models, plus 6 closed-reference comparators, on a 13-question benchmark from three archival documents: two scanned marine biology journals and one born-digital NOAA fisheries report.
+              The Model Evals (archival processing) project tested 24 open/open-weight models, plus 6 closed-reference comparators, on a 13-question benchmark from three archival documents: two scanned marine biology journals and one born-digital NOAA fisheries report.
             </p>
             <p>
-              This is one of two evaluations of <strong className="text-ink">automated metadata-assertion pipelines</strong>: this page tests an LLM&rsquo;s ability to <strong className="text-ink">access and reason over tables and charts inside PDFs</strong>; the companion <Link href="/erschliessung/ant-catalog" className="text-accent hover:text-link-hover">ANT Catalog</Link> evaluation tests the ability to <strong className="text-ink">create document metadata — especially government classification</strong>.
+              This is one of two evaluations of <strong className="text-ink">automated metadata-assertion pipelines</strong>: this page tests an LLM&rsquo;s ability to <strong className="text-ink">access and reason over tables and charts inside PDFs</strong>; the companion <Link href="/model-evals/ant-catalog" className="text-accent hover:text-link-hover">ANT Catalog</Link> evaluation tests the ability to <strong className="text-ink">create document metadata — especially government classification</strong>.
             </p>
             <p>
               Across 36 cycles, the project evaluated 28 evidence-derivative formats, from raw Docling JSON and full Markdown cards to compact CSV, micro-cards, table-only, stitched, normalized, and column-context variants. It also tested multiple retrieval modes, including oracle cards, all-cards, two-shot index retrieval, HYDE/vector retrieval, full-document Markdown, and raw Docling JSON.
@@ -184,7 +184,7 @@ export default function ErschliessungPage() {
             />
             <InputCard
               label="Compact CSV card"
-              sublabel="Erschließung pipeline output"
+              sublabel="Model Evals pipeline output"
               outcome="7 / 7 correct"
               outcomeKind="pass"
               detail="~1.5 KB per question. Table data as CSV inside a Markdown code block. The model reads it and answers."
@@ -221,7 +221,7 @@ export default function ErschliessungPage() {
                   </th>
                   <th className="text-left py-2 pr-3 font-medium text-xs uppercase tracking-widest text-text-secondary align-bottom">
                     <div>Compact CSV card</div>
-                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">Erschließung pipeline output</div>
+                    <div className="font-normal normal-case tracking-normal text-[10px] text-text-secondary mt-0.5">Model Evals pipeline output</div>
                   </th>
                   <th className="text-left py-2 font-medium text-xs uppercase tracking-widest text-text-secondary whitespace-nowrap align-bottom">Correct answer</th>
                 </tr>
@@ -593,7 +593,7 @@ export default function ErschliessungPage() {
           </div>
           <p className="text-xs text-text-secondary mt-4 leading-relaxed">
             <strong className="text-ink font-medium">28-point lift from packaging alone.</strong> No fine-tuning, no proprietary tooling.
-            See <Link href="/erschliessung/variants" className="text-accent hover:text-link-hover">all input variants →</Link>
+            See <Link href="/model-evals/variants" className="text-accent hover:text-link-hover">all input variants →</Link>
           </p>
         </Section>
 

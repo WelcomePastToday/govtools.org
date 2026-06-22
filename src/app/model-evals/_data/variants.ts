@@ -1,5 +1,5 @@
-// Per-variant / per-test metadata for the Erschließung detail pages.
-// One entry per slug; the dynamic route src/app/erschliessung/variants/[slug]/page.tsx
+// Per-variant / per-test metadata for the Model Evals detail pages.
+// One entry per slug; the dynamic route src/app/model-evals/variants/[slug]/page.tsx
 // reads this file and renders the detail page.
 //
 // Categories:

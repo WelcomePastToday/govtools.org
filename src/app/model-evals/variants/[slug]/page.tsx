@@ -14,9 +14,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const variant = getVariant(slug);
-  if (!variant) return { title: "Variant not found — Erschließung | GovTools" };
+  if (!variant) return { title: "Variant not found — Model Evals | GovTools" };
   return {
-    title: `${variant.name} — Erschließung | GovTools`,
+    title: `${variant.name} — Model Evals | GovTools`,
     description: variant.oneLine,
   };
 }
@@ -71,9 +71,9 @@ export default async function VariantDetailPage({ params }: PageProps) {
               GovTools
             </Link>
             <span className="text-xs text-text-secondary uppercase tracking-widest hidden sm:inline-block">
-              <Link href="/erschliessung" className="hover:text-accent transition-colors">Erschließung</Link>
+              <Link href="/model-evals" className="hover:text-accent transition-colors">Model Evals</Link>
               <span className="mx-2">›</span>
-              <Link href="/erschliessung/variants" className="hover:text-accent transition-colors">Variants</Link>
+              <Link href="/model-evals/variants" className="hover:text-accent transition-colors">Variants</Link>
               <span className="mx-2">›</span>
               {variant.name}
             </span>
@@ -265,7 +265,7 @@ export default async function VariantDetailPage({ params }: PageProps) {
                 return (
                   <li key={s}>
                     <Link
-                      href={`/erschliessung/variants/${s}`}
+                      href={`/model-evals/variants/${s}`}
                       className="grid grid-cols-[200px_1fr] gap-6 py-3 border-b border-border hover:bg-panel transition-colors"
                     >
                       <div className="text-xs text-text-secondary uppercase tracking-widest font-medium pt-1">
@@ -286,7 +286,7 @@ export default async function VariantDetailPage({ params }: PageProps) {
         {/* Back nav */}
         <section className="mt-16 pt-8 border-t border-border">
           <Link
-            href="/erschliessung/variants"
+            href="/model-evals/variants"
             className="text-sm text-accent hover:text-link-hover"
           >
             ← Back to all variants
@@ -299,8 +299,8 @@ export default async function VariantDetailPage({ params }: PageProps) {
         <div className="max-w-5xl mx-auto px-6">
           <p className="text-xs text-text-secondary leading-relaxed">
             Variant metadata is drawn from the project repository at{" "}
-            <a href="https://github.com/WelcomePastToday/Erschliessung" className="text-accent hover:text-link-hover">
-              github.com/WelcomePastToday/Erschliessung
+            <a href="https://github.com/WelcomePastToday/Model Evals" className="text-accent hover:text-link-hover">
+              github.com/WelcomePastToday/Model Evals
             </a>{" "}
             and is updated as new evaluation cycles complete.
           </p>
