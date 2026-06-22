@@ -102,9 +102,13 @@ export default function AntCatalogPage() {
             Catalog-metadata extraction — model comparison
           </h1>
           <p className="text-xs text-text-secondary leading-snug max-w-2xl">
-            Which model to use for extracting catalog metadata (title, document type, date, subjects,
-            named entities, issuing body, abstract…) from government documents. {ANT_RUN_META.models} models ×{" "}
-            {ANT_RUN_META.docs} documents. Generated {ANT_RUN_META.generated}.
+            One of two <strong className="text-ink">automated metadata-assertion pipeline</strong> evaluations:
+            this tests the ability to <strong className="text-ink">create document metadata — especially
+            government classification</strong>; the companion{" "}
+            <Link href="/erschliessung/interpolation" className="text-accent hover:text-link-hover">Interpolation</Link>{" "}
+            evaluation tests reasoning over tables and charts inside PDFs. Which model to use for extracting catalog
+            metadata (title, document type, date, subjects, named entities, issuing body, abstract…) from government
+            documents. {ANT_RUN_META.models} models × {ANT_RUN_META.docs} documents. Generated {ANT_RUN_META.generated}.
           </p>
         </section>
 

@@ -56,14 +56,16 @@ apps:
       link_url: "/eot/contributors"
 
   - id: erschliessung
-    name: "Erschließung — Archival Evidence for Open Models"
-    description: "Pipeline turning archival PDFs into compact, structured evidence packages that open-source AI models can use directly. Tests whether evidence packaging materially improves open-tier table reasoning on Internet Archive collections."
+    name: "Erschließung — Metadata-Assertion Pipeline Evaluations"
+    description: "Two evaluations of automated metadata-assertion pipelines: (1) Interpolation — an LLM's ability to access and reason over tables and charts inside archival PDFs; (2) ANT Catalog — the ability to create document metadata, especially government classification. Both benchmark open and frontier models on Internet Archive / government collections."
+    # path = the data/eval/pipeline repo (Erschliessung). NOTE: the public web UI for both
+    # variations is served from the govtools.org repo (src/app/erschliessung), NOT this path.
     path: "Erschliessung"
     url: "/erschliessung"
     status: active
     project_info:
-      note: "Diagnostic benchmark · 13 questions across 3 archival documents"
-      link_text: "View Report"
+      note: "Two variations · table/chart reasoning + government-classification metadata"
+      link_text: "View Reports"
       link_url: "/erschliessung"
 
   - id: to-do-list-manager
