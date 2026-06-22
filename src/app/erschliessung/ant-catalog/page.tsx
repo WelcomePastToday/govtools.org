@@ -108,11 +108,13 @@ export default function AntCatalogPage() {
           </p>
         </section>
 
-        <section className="mb-6 border border-status-warning/50 bg-status-warning/5 px-4 py-2.5">
+        <section className="mb-6">
+          <h2 className="text-[10px] font-bold text-ink uppercase tracking-widest border-b border-border pb-1 mb-2">
+            Reading this table
+          </h2>
           <p className="text-xs text-text-secondary leading-snug">
-            <span className="font-bold text-ink uppercase tracking-widest text-[10px]">Reading this table&nbsp;</span>
             <strong className="text-ink">Accuracy</strong> = macro mean of per-field agreement vs a{" "}
-            <strong className="text-ink">frontier-consensus SILVER reference</strong> (panel gpt-4.1 / claude-opus-4-8 /
+            <strong className="text-ink">frontier-consensus silver reference</strong> (panel gpt-4.1 / claude-opus-4-8 /
             gemini-2.5-flash, with grok-4 arbitrating disagreements). Rows marked <strong className="text-ink">*</strong>{" "}
             are panel members — they <em>define</em> the reference, so their accuracy is circular/inflated; judge them
             by cost, not accuracy. <strong className="text-ink">Valid schema</strong> = share of outputs that parsed
