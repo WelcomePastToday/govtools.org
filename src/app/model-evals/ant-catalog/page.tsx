@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ANT_MODEL_ROWS, ANT_RUN_META, ANT_ROUTING } from "../_data/antCatalog";
+import { ANT_MODEL_ROWS, ANT_RUN_META, ANT_FIELD_COLS, ANT_FIELD_MATRIX } from "../_data/antCatalog";
 import AntCatalogTable from "./AntCatalogTable";
 
 export const metadata: Metadata = {
@@ -72,34 +72,65 @@ export default function AntCatalogPage() {
           <AntCatalogTable rows={ANT_MODEL_ROWS} />
         </section>
 
-        {ANT_ROUTING.length > 0 && (
+        {ANT_FIELD_MATRIX.length > 0 && (
           <section className="mb-7">
             <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
-              <h2 className="text-xs font-bold text-ink uppercase tracking-widest">Per-field routing — best non-panel model</h2>
+              <h2 className="text-xs font-bold text-ink uppercase tracking-widest">Per-field accuracy — every model</h2>
               <span className="text-[10px] text-text-secondary uppercase tracking-widest">02</span>
             </div>
             <p className="text-xs text-text-secondary leading-snug mb-2">
               Accuracy is field-dependent, so the cheapest correct pipeline routes each field to the best
-              (non-panel) model for it rather than picking one model overall.
+              (non-panel) model for it rather than picking one model overall. Each cell is per-field agreement
+              accuracy; the highlighted cell is the best non-panel model for that field (where you would route it).
             </p>
-            <table className="w-full text-xs leading-snug">
-              <thead>
-                <tr className="text-[10px] uppercase tracking-widest text-text-secondary">
-                  <th className="py-1 pr-4 text-left font-medium">Field</th>
-                  <th className="py-1 px-2 text-left font-medium">Best model</th>
-                  <th className="py-1 pl-2 text-right font-medium">Accuracy</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ANT_ROUTING.map((r) => (
-                  <tr key={r.field} className="border-b border-border/60 hover:bg-panel transition-colors">
-                    <td className="py-1.5 pr-4 font-medium text-ink whitespace-nowrap">{r.field}</td>
-                    <td className="py-1.5 px-2 text-text-secondary whitespace-nowrap">{r.bestModel ?? "—"}</td>
-                    <td className="py-1.5 pl-2 tabular-nums text-right text-ink">{r.accuracy == null ? "—" : r.accuracy.toFixed(2)}</td>
+            <div className="overflow-x-auto">
+              <table className="text-xs leading-snug border-collapse">
+                <thead>
+                  <tr className="text-[10px] uppercase tracking-widest text-text-secondary">
+                    <th className="py-1 pr-3 text-left font-medium sticky left-0 bg-background">Field</th>
+                    {ANT_FIELD_COLS.map((c) => (
+                      <th
+                        key={c.model}
+                        title={c.model + (c.macro == null ? "" : ` · macro ${c.macro.toFixed(2)}`)}
+                        className={`py-1 px-2 text-right font-medium whitespace-nowrap ${c.isPanel ? "text-text-secondary/60" : ""}`}
+                      >
+                        {c.short}{c.isPanel ? "°" : ""}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {ANT_FIELD_MATRIX.map((r) => (
+                    <tr key={r.field} className="border-b border-border/60 hover:bg-panel transition-colors">
+                      <td className="py-1.5 pr-3 font-medium text-ink whitespace-nowrap sticky left-0 bg-background">{r.field}</td>
+                      {ANT_FIELD_COLS.map((c) => {
+                        const v = r.scores[c.model];
+                        const isBest = r.bestModel === c.model;
+                        return (
+                          <td
+                            key={c.model}
+                            className={`py-1.5 px-2 tabular-nums text-right ${
+                              isBest
+                                ? "font-bold text-accent bg-accent/10"
+                                : c.isPanel
+                                  ? "text-text-secondary/60"
+                                  : "text-ink"
+                            }`}
+                          >
+                            {v == null ? "—" : v.toFixed(2)}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-[10px] text-text-secondary leading-snug mt-2">
+              ° panel / reference-defining model (gpt-4.1, opus, gemini-flash) — its accuracy is circular and
+              shown muted, not eligible as a routing target. Highlighted = best non-panel model per field.
+              Columns ordered by macro accuracy.
+            </p>
           </section>
         )}
 

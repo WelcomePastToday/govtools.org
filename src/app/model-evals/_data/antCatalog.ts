@@ -13,7 +13,10 @@ export type AntModelRow = {
 
 export type AntRouting = { field: string; bestModel: string | null; accuracy: number | null };
 
-export const ANT_RUN_META = { docs: 13, models: 27, generated: "2026-06-22", accuracyScored: true };
+export type AntFieldCol = { model: string; short: string; isPanel: boolean; macro: number | null };
+export type AntFieldRow = { field: string; scores: Record<string, number | null>; bestModel: string | null };
+
+export const ANT_RUN_META = { docs: 13, models: 27, generated: "2026-06-25", accuracyScored: true };
 
 export const ANT_MODEL_ROWS: AntModelRow[] = [
   {
@@ -446,5 +449,247 @@ export const ANT_ROUTING: AntRouting[] = [
     "field": "title",
     "bestModel": "mistral:large",
     "accuracy": 0.833
+  }
+];
+
+export const ANT_FIELD_COLS: AntFieldCol[] = [
+  {
+    "model": "anthropic:claude-opus-4-8",
+    "short": "opus",
+    "isPanel": true,
+    "macro": 0.93
+  },
+  {
+    "model": "gemini:2.5-flash",
+    "short": "gemini",
+    "isPanel": true,
+    "macro": 0.857
+  },
+  {
+    "model": "xai:grok-4",
+    "short": "grok-4",
+    "isPanel": false,
+    "macro": 0.853
+  },
+  {
+    "model": "openai:gpt-4.1",
+    "short": "gpt-4.1",
+    "isPanel": true,
+    "macro": 0.838
+  },
+  {
+    "model": "anthropic:claude-sonnet-4-6",
+    "short": "sonnet",
+    "isPanel": false,
+    "macro": 0.827
+  },
+  {
+    "model": "mistral:large",
+    "short": "mistral",
+    "isPanel": false,
+    "macro": 0.78
+  },
+  {
+    "model": "anthropic:claude-haiku-4-5",
+    "short": "haiku",
+    "isPanel": false,
+    "macro": 0.772
+  },
+  {
+    "model": "openai:gpt-4o-mini",
+    "short": "4o-mini",
+    "isPanel": false,
+    "macro": 0.574
+  },
+  {
+    "model": "ollama:granite3.3-8b",
+    "short": "granite",
+    "isPanel": false,
+    "macro": 0.569
+  },
+  {
+    "model": "ollama:gemma2-9b",
+    "short": "gemma",
+    "isPanel": false,
+    "macro": 0.542
+  },
+  {
+    "model": "ollama:qwen2.5-7b",
+    "short": "qwen",
+    "isPanel": false,
+    "macro": 0.489
+  }
+];
+
+export const ANT_FIELD_MATRIX: AntFieldRow[] = [
+  {
+    "field": "jurisdiction_code",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4": 1.0,
+      "openai:gpt-4.1": 1.0,
+      "anthropic:claude-sonnet-4-6": 1.0,
+      "mistral:large": 1.0,
+      "anthropic:claude-haiku-4-5": 0.9,
+      "openai:gpt-4o-mini": 0.8,
+      "ollama:granite3.3-8b": 0.9,
+      "ollama:gemma2-9b": 1.0,
+      "ollama:qwen2.5-7b": 0.7
+    },
+    "bestModel": "ollama:gemma2-9b"
+  },
+  {
+    "field": "language_code",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4": 1.0,
+      "openai:gpt-4.1": 1.0,
+      "anthropic:claude-sonnet-4-6": 1.0,
+      "mistral:large": 1.0,
+      "anthropic:claude-haiku-4-5": 1.0,
+      "openai:gpt-4o-mini": 0.9,
+      "ollama:granite3.3-8b": 0.9,
+      "ollama:gemma2-9b": 1.0,
+      "ollama:qwen2.5-7b": 0.9
+    },
+    "bestModel": "ollama:gemma2-9b"
+  },
+  {
+    "field": "document_type_code",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4": 1.0,
+      "openai:gpt-4.1": 0.78,
+      "anthropic:claude-sonnet-4-6": 0.89,
+      "mistral:large": 0.83,
+      "anthropic:claude-haiku-4-5": 0.78,
+      "openai:gpt-4o-mini": 0.89,
+      "ollama:granite3.3-8b": 0.44,
+      "ollama:gemma2-9b": 0.5,
+      "ollama:qwen2.5-7b": 0.67
+    },
+    "bestModel": "xai:grok-4"
+  },
+  {
+    "field": "coverage_codes",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 0.29,
+      "xai:grok-4": 1.0,
+      "openai:gpt-4.1": 1.0,
+      "anthropic:claude-sonnet-4-6": 1.0,
+      "mistral:large": 0.83,
+      "anthropic:claude-haiku-4-5": 0.83,
+      "openai:gpt-4o-mini": 0.3,
+      "ollama:granite3.3-8b": 0.4,
+      "ollama:gemma2-9b": 0.22,
+      "ollama:qwen2.5-7b": 0.3
+    },
+    "bestModel": "xai:grok-4"
+  },
+  {
+    "field": "coverage_text",
+    "scores": {
+      "anthropic:claude-opus-4-8": 0.93,
+      "gemini:2.5-flash": 0.8,
+      "xai:grok-4": 1.0,
+      "openai:gpt-4.1": 1.0,
+      "anthropic:claude-sonnet-4-6": 0.93,
+      "mistral:large": 0.9,
+      "anthropic:claude-haiku-4-5": 0.64,
+      "openai:gpt-4o-mini": 0.64,
+      "ollama:granite3.3-8b": 0.43,
+      "ollama:gemma2-9b": 0.58,
+      "ollama:qwen2.5-7b": 0.79
+    },
+    "bestModel": "xai:grok-4"
+  },
+  {
+    "field": "issuing_body_name",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4": 0.88,
+      "openai:gpt-4.1": 0.94,
+      "anthropic:claude-sonnet-4-6": 0.94,
+      "mistral:large": 0.88,
+      "anthropic:claude-haiku-4-5": 1.0,
+      "openai:gpt-4o-mini": 0.62,
+      "ollama:granite3.3-8b": 0.81,
+      "ollama:gemma2-9b": 0.79,
+      "ollama:qwen2.5-7b": 0.5
+    },
+    "bestModel": "anthropic:claude-haiku-4-5"
+  },
+  {
+    "field": "title",
+    "scores": {
+      "anthropic:claude-opus-4-8": 0.81,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4": 0.56,
+      "openai:gpt-4.1": 0.81,
+      "anthropic:claude-sonnet-4-6": 0.69,
+      "mistral:large": 0.83,
+      "anthropic:claude-haiku-4-5": 0.75,
+      "openai:gpt-4o-mini": 0.31,
+      "ollama:granite3.3-8b": 0.38,
+      "ollama:gemma2-9b": 0.44,
+      "ollama:qwen2.5-7b": 0.25
+    },
+    "bestModel": "mistral:large"
+  },
+  {
+    "field": "subjects",
+    "scores": {
+      "anthropic:claude-opus-4-8": 0.75,
+      "gemini:2.5-flash": 0.71,
+      "xai:grok-4": 0.45,
+      "openai:gpt-4.1": 0.62,
+      "anthropic:claude-sonnet-4-6": 0.59,
+      "mistral:large": 0.43,
+      "anthropic:claude-haiku-4-5": 0.6,
+      "openai:gpt-4o-mini": 0.36,
+      "ollama:granite3.3-8b": 0.41,
+      "ollama:gemma2-9b": 0.42,
+      "ollama:qwen2.5-7b": 0.43
+    },
+    "bestModel": "anthropic:claude-haiku-4-5"
+  },
+  {
+    "field": "key_points",
+    "scores": {
+      "anthropic:claude-opus-4-8": 0.81,
+      "gemini:2.5-flash": 0.78,
+      "xai:grok-4": 0.65,
+      "openai:gpt-4.1": 0.73,
+      "anthropic:claude-sonnet-4-6": 0.74,
+      "mistral:large": 0.59,
+      "anthropic:claude-haiku-4-5": 0.72,
+      "openai:gpt-4o-mini": 0.42,
+      "ollama:granite3.3-8b": 0.52,
+      "ollama:gemma2-9b": 0.47,
+      "ollama:qwen2.5-7b": 0.36
+    },
+    "bestModel": "anthropic:claude-sonnet-4-6"
+  },
+  {
+    "field": "abstract_summary",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4": 1.0,
+      "openai:gpt-4.1": 0.5,
+      "anthropic:claude-sonnet-4-6": 0.5,
+      "mistral:large": 0.5,
+      "anthropic:claude-haiku-4-5": 0.5,
+      "openai:gpt-4o-mini": 0.5,
+      "ollama:granite3.3-8b": 0.5,
+      "ollama:gemma2-9b": 0.0,
+      "ollama:qwen2.5-7b": 0.0
+    },
+    "bestModel": "xai:grok-4"
   }
 ];
