@@ -142,9 +142,9 @@ export default function AntCatalogPage() {
             The current catalog pipeline runs on <strong className="text-ink">grok-4.20</strong> (~grok-4 tier,
             ~0.74 accuracy here). Field-completeness alone suggested cheap/free models were equivalent — but{" "}
             <strong className="text-ink">accuracy tells a sharper story</strong>: free local models emit perfect
-            schema yet get more values wrong (≈0.46–0.51), and <strong className="text-ink">gpt-4o-mini</strong>{" "}
-            (~24× cheaper) drops to ≈0.55. The strongest genuinely-cheap, non-panel option is{" "}
-            <strong className="text-ink">claude-haiku-4-5</strong> (≈0.65).
+            schema yet get more values wrong (≈0.49–0.57), and <strong className="text-ink">gpt-4o-mini</strong>{" "}
+            (~24× cheaper) drops to ≈0.57. The strongest genuinely-cheap, non-panel option is{" "}
+            <strong className="text-ink">claude-haiku-4-5</strong> (≈0.77).
           </p>
           <p>
             Because accuracy is <strong className="text-ink">field-dependent</strong> (jurisdiction codes are easy
