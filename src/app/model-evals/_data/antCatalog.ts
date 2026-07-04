@@ -16,7 +16,7 @@ export type AntRouting = { field: string; bestModel: string | null; accuracy: nu
 export type AntFieldCol = { model: string; short: string; isPanel: boolean; macro: number | null };
 export type AntFieldRow = { field: string; scores: Record<string, number | null>; bestModel: string | null };
 
-export const ANT_RUN_META = { docs: 13, models: 27, generated: "2026-06-25", accuracyScored: true };
+export const ANT_RUN_META = { docs: 13, models: 30, generated: "2026-07-04", accuracyScored: true };
 
 export const ANT_MODEL_ROWS: AntModelRow[] = [
   {
@@ -29,7 +29,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 2513,
     "avgRespTok": 689,
     "costPer1kDocs": 89.37,
-    "accuracy": 0.93,
+    "accuracy": 0.936,
     "isPanel": true,
     "validOutputRate": null
   },
@@ -43,7 +43,35 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1979,
     "avgRespTok": 526,
     "costPer1kDocs": 1.91,
-    "accuracy": 0.857,
+    "accuracy": 0.87,
+    "isPanel": true,
+    "validOutputRate": null
+  },
+  {
+    "model": "xai:grok-4.3",
+    "tier": "hosted",
+    "ok": 10,
+    "n": 10,
+    "avgFields": 8.0,
+    "avgLatencyS": 8.2,
+    "avgPromptTok": 2076,
+    "avgRespTok": 306,
+    "costPer1kDocs": 3.36,
+    "accuracy": 0.859,
+    "isPanel": false,
+    "validOutputRate": 1.0
+  },
+  {
+    "model": "openai:gpt-4.1",
+    "tier": "hosted",
+    "ok": 10,
+    "n": 10,
+    "avgFields": 10.0,
+    "avgLatencyS": 4.1,
+    "avgPromptTok": 1754,
+    "avgRespTok": 327,
+    "costPer1kDocs": 6.12,
+    "accuracy": 0.852,
     "isPanel": true,
     "validOutputRate": null
   },
@@ -57,22 +85,8 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1860,
     "avgRespTok": 231,
     "costPer1kDocs": 9.04,
-    "accuracy": 0.853,
+    "accuracy": 0.846,
     "isPanel": false,
-    "validOutputRate": null
-  },
-  {
-    "model": "openai:gpt-4.1",
-    "tier": "hosted",
-    "ok": 10,
-    "n": 10,
-    "avgFields": 10.0,
-    "avgLatencyS": 4.1,
-    "avgPromptTok": 1754,
-    "avgRespTok": 327,
-    "costPer1kDocs": 6.12,
-    "accuracy": 0.838,
-    "isPanel": true,
     "validOutputRate": null
   },
   {
@@ -85,9 +99,23 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1981,
     "avgRespTok": 588,
     "costPer1kDocs": 14.76,
-    "accuracy": 0.827,
+    "accuracy": 0.843,
     "isPanel": false,
     "validOutputRate": null
+  },
+  {
+    "model": "xai:grok-4.20-0309-reasoning",
+    "tier": "hosted",
+    "ok": 10,
+    "n": 10,
+    "avgFields": 8.0,
+    "avgLatencyS": 13.3,
+    "avgPromptTok": 2070,
+    "avgRespTok": 368,
+    "costPer1kDocs": 6.35,
+    "accuracy": 0.814,
+    "isPanel": false,
+    "validOutputRate": 1.0
   },
   {
     "model": "mistral:large",
@@ -99,7 +127,21 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 2063,
     "avgRespTok": 483,
     "costPer1kDocs": 7.02,
-    "accuracy": 0.78,
+    "accuracy": 0.8,
+    "isPanel": false,
+    "validOutputRate": 1.0
+  },
+  {
+    "model": "xai:grok-4.20-0309-non-reasoning",
+    "tier": "hosted",
+    "ok": 10,
+    "n": 10,
+    "avgFields": 8.0,
+    "avgLatencyS": 3.1,
+    "avgPromptTok": 2068,
+    "avgRespTok": 347,
+    "costPer1kDocs": null,
+    "accuracy": 0.788,
     "isPanel": false,
     "validOutputRate": 1.0
   },
@@ -113,7 +155,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1996,
     "avgRespTok": 478,
     "costPer1kDocs": 4.39,
-    "accuracy": 0.772,
+    "accuracy": 0.773,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -127,7 +169,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1756,
     "avgRespTok": 182,
     "costPer1kDocs": 0.37,
-    "accuracy": 0.574,
+    "accuracy": 0.613,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -155,7 +197,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 2150,
     "avgRespTok": 277,
     "costPer1kDocs": null,
-    "accuracy": 0.569,
+    "accuracy": 0.588,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -169,7 +211,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1974,
     "avgRespTok": 212,
     "costPer1kDocs": null,
-    "accuracy": 0.542,
+    "accuracy": 0.572,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -183,7 +225,7 @@ export const ANT_MODEL_ROWS: AntModelRow[] = [
     "avgPromptTok": 1965,
     "avgRespTok": 219,
     "costPer1kDocs": null,
-    "accuracy": 0.489,
+    "accuracy": 0.505,
     "isPanel": false,
     "validOutputRate": null
   },
@@ -416,6 +458,11 @@ export const ANT_ROUTING: AntRouting[] = [
     "accuracy": 1.0
   },
   {
+    "field": "date",
+    "bestModel": "openai:gpt-4o-mini",
+    "accuracy": 1.0
+  },
+  {
     "field": "document_type_code",
     "bestModel": "xai:grok-4",
     "accuracy": 1.0
@@ -457,67 +504,85 @@ export const ANT_FIELD_COLS: AntFieldCol[] = [
     "model": "anthropic:claude-opus-4-8",
     "short": "opus",
     "isPanel": true,
-    "macro": 0.93
+    "macro": 0.936
   },
   {
     "model": "gemini:2.5-flash",
     "short": "gemini",
     "isPanel": true,
-    "macro": 0.857
+    "macro": 0.87
   },
   {
-    "model": "xai:grok-4",
-    "short": "grok-4",
+    "model": "xai:grok-4.3",
+    "short": "grok-4.3",
     "isPanel": false,
-    "macro": 0.853
+    "macro": 0.859
   },
   {
     "model": "openai:gpt-4.1",
     "short": "gpt-4.1",
     "isPanel": true,
-    "macro": 0.838
+    "macro": 0.852
+  },
+  {
+    "model": "xai:grok-4",
+    "short": "grok-4",
+    "isPanel": false,
+    "macro": 0.846
   },
   {
     "model": "anthropic:claude-sonnet-4-6",
     "short": "sonnet",
     "isPanel": false,
-    "macro": 0.827
+    "macro": 0.843
+  },
+  {
+    "model": "xai:grok-4.20-0309-reasoning",
+    "short": "grok-4.20-r",
+    "isPanel": false,
+    "macro": 0.814
   },
   {
     "model": "mistral:large",
     "short": "mistral",
     "isPanel": false,
-    "macro": 0.78
+    "macro": 0.8
+  },
+  {
+    "model": "xai:grok-4.20-0309-non-reasoning",
+    "short": "grok-4.20-nr",
+    "isPanel": false,
+    "macro": 0.788
   },
   {
     "model": "anthropic:claude-haiku-4-5",
     "short": "haiku",
     "isPanel": false,
-    "macro": 0.772
+    "macro": 0.773
   },
   {
     "model": "openai:gpt-4o-mini",
     "short": "4o-mini",
     "isPanel": false,
-    "macro": 0.574
+    "macro": 0.613
   },
   {
     "model": "ollama:granite3.3-8b",
     "short": "granite",
     "isPanel": false,
-    "macro": 0.569
+    "macro": 0.588
   },
   {
     "model": "ollama:gemma2-9b",
     "short": "gemma",
     "isPanel": false,
-    "macro": 0.542
+    "macro": 0.572
   },
   {
     "model": "ollama:qwen2.5-7b",
     "short": "qwen",
     "isPanel": false,
-    "macro": 0.489
+    "macro": 0.505
   }
 ];
 
@@ -527,10 +592,13 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 1.0,
       "gemini:2.5-flash": 1.0,
-      "xai:grok-4": 1.0,
+      "xai:grok-4.3": 1.0,
       "openai:gpt-4.1": 1.0,
+      "xai:grok-4": 1.0,
       "anthropic:claude-sonnet-4-6": 1.0,
+      "xai:grok-4.20-0309-reasoning": 1.0,
       "mistral:large": 1.0,
+      "xai:grok-4.20-0309-non-reasoning": 1.0,
       "anthropic:claude-haiku-4-5": 0.9,
       "openai:gpt-4o-mini": 0.8,
       "ollama:granite3.3-8b": 0.9,
@@ -544,10 +612,13 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 1.0,
       "gemini:2.5-flash": 1.0,
-      "xai:grok-4": 1.0,
+      "xai:grok-4.3": 1.0,
       "openai:gpt-4.1": 1.0,
+      "xai:grok-4": 1.0,
       "anthropic:claude-sonnet-4-6": 1.0,
+      "xai:grok-4.20-0309-reasoning": 1.0,
       "mistral:large": 1.0,
+      "xai:grok-4.20-0309-non-reasoning": 1.0,
       "anthropic:claude-haiku-4-5": 1.0,
       "openai:gpt-4o-mini": 0.9,
       "ollama:granite3.3-8b": 0.9,
@@ -557,48 +628,77 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "bestModel": "ollama:gemma2-9b"
   },
   {
+    "field": "date",
+    "scores": {
+      "anthropic:claude-opus-4-8": 1.0,
+      "gemini:2.5-flash": 1.0,
+      "xai:grok-4.3": 1.0,
+      "openai:gpt-4.1": 1.0,
+      "xai:grok-4": 0.78,
+      "anthropic:claude-sonnet-4-6": 1.0,
+      "xai:grok-4.20-0309-reasoning": 1.0,
+      "mistral:large": 1.0,
+      "xai:grok-4.20-0309-non-reasoning": 1.0,
+      "anthropic:claude-haiku-4-5": 0.78,
+      "openai:gpt-4o-mini": 1.0,
+      "ollama:granite3.3-8b": 0.78,
+      "ollama:gemma2-9b": 0.88,
+      "ollama:qwen2.5-7b": 0.67
+    },
+    "bestModel": "openai:gpt-4o-mini"
+  },
+  {
     "field": "document_type_code",
     "scores": {
       "anthropic:claude-opus-4-8": 1.0,
       "gemini:2.5-flash": 1.0,
-      "xai:grok-4": 1.0,
+      "xai:grok-4.3": 1.0,
       "openai:gpt-4.1": 0.78,
+      "xai:grok-4": 1.0,
       "anthropic:claude-sonnet-4-6": 0.89,
+      "xai:grok-4.20-0309-reasoning": 1.0,
       "mistral:large": 0.83,
+      "xai:grok-4.20-0309-non-reasoning": 0.78,
       "anthropic:claude-haiku-4-5": 0.78,
       "openai:gpt-4o-mini": 0.89,
       "ollama:granite3.3-8b": 0.44,
       "ollama:gemma2-9b": 0.5,
       "ollama:qwen2.5-7b": 0.67
     },
-    "bestModel": "xai:grok-4"
+    "bestModel": "xai:grok-4.3"
   },
   {
     "field": "coverage_codes",
     "scores": {
       "anthropic:claude-opus-4-8": 1.0,
       "gemini:2.5-flash": 0.29,
-      "xai:grok-4": 1.0,
+      "xai:grok-4.3": 1.0,
       "openai:gpt-4.1": 1.0,
+      "xai:grok-4": 1.0,
       "anthropic:claude-sonnet-4-6": 1.0,
+      "xai:grok-4.20-0309-reasoning": 1.0,
       "mistral:large": 0.83,
+      "xai:grok-4.20-0309-non-reasoning": 0.43,
       "anthropic:claude-haiku-4-5": 0.83,
       "openai:gpt-4o-mini": 0.3,
       "ollama:granite3.3-8b": 0.4,
       "ollama:gemma2-9b": 0.22,
       "ollama:qwen2.5-7b": 0.3
     },
-    "bestModel": "xai:grok-4"
+    "bestModel": "xai:grok-4.3"
   },
   {
     "field": "coverage_text",
     "scores": {
       "anthropic:claude-opus-4-8": 0.93,
       "gemini:2.5-flash": 0.8,
-      "xai:grok-4": 1.0,
+      "xai:grok-4.3": 0.93,
       "openai:gpt-4.1": 1.0,
+      "xai:grok-4": 1.0,
       "anthropic:claude-sonnet-4-6": 0.93,
+      "xai:grok-4.20-0309-reasoning": 0.93,
       "mistral:large": 0.9,
+      "xai:grok-4.20-0309-non-reasoning": 0.86,
       "anthropic:claude-haiku-4-5": 0.64,
       "openai:gpt-4o-mini": 0.64,
       "ollama:granite3.3-8b": 0.43,
@@ -612,10 +712,13 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 1.0,
       "gemini:2.5-flash": 1.0,
-      "xai:grok-4": 0.88,
+      "xai:grok-4.3": 0.88,
       "openai:gpt-4.1": 0.94,
+      "xai:grok-4": 0.88,
       "anthropic:claude-sonnet-4-6": 0.94,
+      "xai:grok-4.20-0309-reasoning": 0.75,
       "mistral:large": 0.88,
+      "xai:grok-4.20-0309-non-reasoning": 0.75,
       "anthropic:claude-haiku-4-5": 1.0,
       "openai:gpt-4o-mini": 0.62,
       "ollama:granite3.3-8b": 0.81,
@@ -629,10 +732,13 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 0.81,
       "gemini:2.5-flash": 1.0,
-      "xai:grok-4": 0.56,
+      "xai:grok-4.3": 0.62,
       "openai:gpt-4.1": 0.81,
+      "xai:grok-4": 0.56,
       "anthropic:claude-sonnet-4-6": 0.69,
+      "xai:grok-4.20-0309-reasoning": 0.62,
       "mistral:large": 0.83,
+      "xai:grok-4.20-0309-non-reasoning": 0.62,
       "anthropic:claude-haiku-4-5": 0.75,
       "openai:gpt-4o-mini": 0.31,
       "ollama:granite3.3-8b": 0.38,
@@ -646,10 +752,13 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 0.75,
       "gemini:2.5-flash": 0.71,
-      "xai:grok-4": 0.45,
+      "xai:grok-4.3": 0.46,
       "openai:gpt-4.1": 0.62,
+      "xai:grok-4": 0.45,
       "anthropic:claude-sonnet-4-6": 0.59,
+      "xai:grok-4.20-0309-reasoning": 0.49,
       "mistral:large": 0.43,
+      "xai:grok-4.20-0309-non-reasoning": 0.54,
       "anthropic:claude-haiku-4-5": 0.6,
       "openai:gpt-4o-mini": 0.36,
       "ollama:granite3.3-8b": 0.41,
@@ -663,10 +772,13 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 0.81,
       "gemini:2.5-flash": 0.78,
-      "xai:grok-4": 0.65,
+      "xai:grok-4.3": 0.57,
       "openai:gpt-4.1": 0.73,
+      "xai:grok-4": 0.65,
       "anthropic:claude-sonnet-4-6": 0.74,
+      "xai:grok-4.20-0309-reasoning": 0.66,
       "mistral:large": 0.59,
+      "xai:grok-4.20-0309-non-reasoning": 0.69,
       "anthropic:claude-haiku-4-5": 0.72,
       "openai:gpt-4o-mini": 0.42,
       "ollama:granite3.3-8b": 0.52,
@@ -680,16 +792,19 @@ export const ANT_FIELD_MATRIX: AntFieldRow[] = [
     "scores": {
       "anthropic:claude-opus-4-8": 1.0,
       "gemini:2.5-flash": 1.0,
-      "xai:grok-4": 1.0,
+      "xai:grok-4.3": 1.0,
       "openai:gpt-4.1": 0.5,
+      "xai:grok-4": 1.0,
       "anthropic:claude-sonnet-4-6": 0.5,
+      "xai:grok-4.20-0309-reasoning": 0.5,
       "mistral:large": 0.5,
+      "xai:grok-4.20-0309-non-reasoning": 1.0,
       "anthropic:claude-haiku-4-5": 0.5,
       "openai:gpt-4o-mini": 0.5,
       "ollama:granite3.3-8b": 0.5,
       "ollama:gemma2-9b": 0.0,
       "ollama:qwen2.5-7b": 0.0
     },
-    "bestModel": "xai:grok-4"
+    "bestModel": "xai:grok-4.3"
   }
 ];
