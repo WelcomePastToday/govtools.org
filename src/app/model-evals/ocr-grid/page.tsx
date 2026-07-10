@@ -107,6 +107,9 @@ export default function OcrGridPage() {
             <span aria-current="page" className="text-xs font-semibold text-ink uppercase tracking-widest border-b-2 border-ink pb-0.5 cursor-default">
               OCR
             </span>
+            <Link href="/model-evals/host-class" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Host Classification
+            </Link>
             <a href="/model-evals/heatmap" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Models
             </a>

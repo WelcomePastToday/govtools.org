@@ -131,6 +131,9 @@ export default function ModelEvalsPage() {
             <Link href="/model-evals/ant-catalog" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               ANT Catalog
             </Link>
+            <Link href="/model-evals/host-class" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Host Classification
+            </Link>
           </nav>
         </div>
       </header>

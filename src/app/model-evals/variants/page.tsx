@@ -49,6 +49,9 @@ export default function VariantsIndexPage() {
             <Link href="/model-evals/interpolation" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Interpolation
             </Link>
+            <Link href="/model-evals/host-class" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Host Classification
+            </Link>
             <a href="/model-evals/heatmap.html" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Tests heatmap
             </a>

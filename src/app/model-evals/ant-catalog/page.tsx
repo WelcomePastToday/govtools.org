@@ -26,6 +26,9 @@ export default function AntCatalogPage() {
             <Link href="/model-evals/variants" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Variants
             </Link>
+            <Link href="/model-evals/host-class" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
+              Host Classification
+            </Link>
             <Link href="/model-evals" className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors">
               Overview
             </Link>
