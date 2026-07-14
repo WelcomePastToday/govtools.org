@@ -86,3 +86,16 @@ apps:
     status: active
     hidden: true
 
+  - id: leiden-collection
+    name: "Leiden Dissertations Collection"
+    description: "Browse and search ~350,000 European doctoral dissertations (1600s–1990) donated by Leiden University, digitized progressively on the Internet Archive. Wave 1 of a broader ANT-based explorer with planned Wikidata reconciliation and curation tooling."
+    # path = the Leiden project repo (metadata sync script + future ANT accessioning),
+    # separate from this repo. The web UI lives here (src/app/collections/leiden).
+    path: "Leiden"
+    url: "/collections/leiden"
+    status: active
+    project_info:
+      note: "Live search/browse · metadata mirror synced from archive.org"
+      link_text: "Browse Collection"
+      link_url: "/collections/leiden"
+
