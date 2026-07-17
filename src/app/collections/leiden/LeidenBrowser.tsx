@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import ExportPanel from "./ExportPanel";
 
 type LeidenItem = {
   identifier: string;
@@ -105,6 +106,20 @@ export default function LeidenBrowser() {
 
   const loading = resolvedKey !== queryString;
 
+  // Just the filter portion (no page/pageSize/sort/dir) — the export route
+  // applies pagination itself per the chosen scope.
+  const filterOnlyParams = useMemo(() => {
+    const params = new URLSearchParams();
+    if (qDebounced) params.set("q", qDebounced);
+    if (institution) params.set("institution", institution);
+    if (language) params.set("language", language);
+    if (decade) {
+      params.set("yearFrom", decade);
+      params.set("yearTo", String(Number(decade) + 9));
+    }
+    return params;
+  }, [qDebounced, institution, language, decade]);
+
   const totalPages = useMemo(
     () => (result ? Math.max(1, Math.ceil(result.total / PAGE_SIZE)) : 1),
     [result]
@@ -179,6 +194,13 @@ export default function LeidenBrowser() {
           {facets.missingInstitution.toLocaleString()} items are missing a university value
         </p>
       )}
+
+      <ExportPanel
+        filterParams={filterOnlyParams}
+        viewCount={result?.items.length ?? 0}
+        filteredCount={result?.total ?? 0}
+        grandTotal={facets?.total ?? 0}
+      />
 
       <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
         <h2 className="text-xs font-bold text-ink uppercase tracking-widest">
