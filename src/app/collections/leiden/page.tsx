@@ -57,8 +57,8 @@ export default function LeidenCollectionPage() {
           <p className="text-xs text-text-secondary leading-snug mt-2">
             <strong className="text-ink tabular-nums">{total.toLocaleString()}</strong> of an estimated{" "}
             <strong className="text-ink tabular-nums">{DIGITIZATION_TARGET.toLocaleString()}</strong>{" "}
-            dissertations digitized so far
-            {syncedAt && <> — mirror last synced {new Date(syncedAt).toLocaleString()}</>}.
+            dissertations digitized so far.
+            {syncedAt && <> Mirror last synced {syncedAt.slice(0, 10)}.</>}
           </p>
         </section>
 
