@@ -56,6 +56,7 @@ export default function LeidenBrowser() {
   const [dir, setDir] = useState<Dir>("desc");
   const [result, setResult] = useState<SearchResponse | null>(null);
   const [resolvedKey, setResolvedKey] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/leiden/facets")
@@ -97,10 +98,18 @@ export default function LeidenBrowser() {
 
   useEffect(() => {
     fetch(`/api/leiden/search?${queryString}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`Search request failed (${r.status})`);
+        return r.json();
+      })
       .then((data: SearchResponse) => {
         setResult(data);
         setResolvedKey(queryString);
+        setSearchError(null);
+      })
+      .catch(() => {
+        setResolvedKey(queryString);
+        setSearchError("Search results couldn't be loaded. Please try again.");
       });
   }, [queryString]);
 
@@ -141,53 +150,81 @@ export default function LeidenBrowser() {
     { key: "year", label: "Year" },
   ];
 
+  const resultsHeadingId = "leiden-results-heading";
+  const ariaSortFor = (key: SortKey): "ascending" | "descending" | "none" =>
+    sort === key ? (dir === "asc" ? "ascending" : "descending") : "none";
+
   return (
     <section>
-      <div className="flex flex-wrap gap-2 mb-3">
-        <input
-          type="text"
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Search title, author, university…"
-          className="flex-1 min-w-[220px] text-xs px-3 py-1.5 border border-border rounded-sm bg-paper text-ink placeholder:text-text-muted focus:outline-none focus:border-accent"
-        />
-        <select
-          value={institution}
-          onChange={(e) => setInstitution(e.target.value)}
-          className="text-xs px-2 py-1.5 border border-border rounded-sm bg-paper text-ink max-w-[220px]"
-        >
-          <option value="">All universities</option>
-          {facets?.institutions.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.value} ({f.count.toLocaleString()})
-            </option>
-          ))}
-        </select>
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="text-xs px-2 py-1.5 border border-border rounded-sm bg-paper text-ink"
-        >
-          <option value="">All languages</option>
-          {facets?.languages.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.value} ({f.count.toLocaleString()})
-            </option>
-          ))}
-        </select>
-        <select
-          value={decade}
-          onChange={(e) => setDecade(e.target.value)}
-          className="text-xs px-2 py-1.5 border border-border rounded-sm bg-paper text-ink"
-        >
-          <option value="">All decades</option>
-          {facets?.decades.map((f) => (
-            <option key={f.value} value={f.value}>
-              {f.value}s ({f.count.toLocaleString()})
-            </option>
-          ))}
-        </select>
-      </div>
+      <search aria-label="Filter dissertations" className="flex flex-wrap gap-2 mb-3 items-end">
+        <div className="flex-1 min-w-[220px] flex flex-col gap-1">
+          <label htmlFor="leiden-q" className="text-[10px] text-text-secondary uppercase tracking-widest">
+            Search
+          </label>
+          <input
+            id="leiden-q"
+            type="text"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Title, author, university…"
+            className="text-xs px-3 py-1.5 border border-border rounded-sm bg-paper text-ink placeholder:text-text-muted focus:outline-2 focus:outline-accent focus:outline-offset-1 focus:border-accent"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="leiden-institution" className="text-[10px] text-text-secondary uppercase tracking-widest">
+            University
+          </label>
+          <select
+            id="leiden-institution"
+            value={institution}
+            onChange={(e) => setInstitution(e.target.value)}
+            className="text-xs px-2 py-1.5 border border-border rounded-sm bg-paper text-ink max-w-[220px] focus:outline-2 focus:outline-accent focus:outline-offset-1"
+          >
+            <option value="">All universities</option>
+            {facets?.institutions.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.value} ({f.count.toLocaleString()})
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="leiden-language" className="text-[10px] text-text-secondary uppercase tracking-widest">
+            Language
+          </label>
+          <select
+            id="leiden-language"
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="text-xs px-2 py-1.5 border border-border rounded-sm bg-paper text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1"
+          >
+            <option value="">All languages</option>
+            {facets?.languages.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.value} ({f.count.toLocaleString()})
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="leiden-decade" className="text-[10px] text-text-secondary uppercase tracking-widest">
+            Decade
+          </label>
+          <select
+            id="leiden-decade"
+            value={decade}
+            onChange={(e) => setDecade(e.target.value)}
+            className="text-xs px-2 py-1.5 border border-border rounded-sm bg-paper text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1"
+          >
+            <option value="">All decades</option>
+            {facets?.decades.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.value}s ({f.count.toLocaleString()})
+              </option>
+            ))}
+          </select>
+        </div>
+      </search>
 
       {facets && facets.missingInstitution > 0 && (
         <p className="text-[10px] text-text-secondary uppercase tracking-widest mb-2">
@@ -203,41 +240,69 @@ export default function LeidenBrowser() {
       />
 
       <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
-        <h2 className="text-xs font-bold text-ink uppercase tracking-widest">
+        <h2 id={resultsHeadingId} className="text-xs font-bold text-ink uppercase tracking-widest">
           {result ? `${result.total.toLocaleString()} results` : "Loading…"}
         </h2>
         <span className="text-[10px] text-text-secondary uppercase tracking-widest">
           {loading ? "updating…" : `page ${page} / ${totalPages}`}
         </span>
       </div>
+      {/* Visually-hidden live announcement — the heading/status text above updates
+          visually, but without this, screen reader users get no cue that a search
+          or filter change actually changed the result set. */}
+      <p role="status" aria-live="polite" className="sr-only">
+        {searchError
+          ? searchError
+          : loading
+          ? "Updating results…"
+          : result
+          ? `${result.total.toLocaleString()} results, page ${page} of ${totalPages}`
+          : ""}
+      </p>
+      {searchError && (
+        <p className="text-xs text-status-error mb-2">{searchError}</p>
+      )}
 
       <div className="overflow-x-auto">
-        <table className="w-full text-xs leading-snug">
+        <table className="w-full text-xs leading-snug" aria-labelledby={resultsHeadingId}>
           <thead>
             <tr className="text-[10px] uppercase tracking-widest text-text-secondary">
               {COLS.map((c) => (
-                <th
-                  key={c.key}
-                  onClick={() => onSort(c.key)}
-                  className={`py-1 pr-4 text-left font-medium cursor-pointer select-none hover:text-ink transition-colors ${
-                    sort === c.key ? "text-ink" : ""
-                  }`}
-                >
-                  {c.label}
-                  <span className="inline-block w-2.5">{sort === c.key ? (dir === "asc" ? "▲" : "▼") : ""}</span>
+                <th key={c.key} scope="col" aria-sort={ariaSortFor(c.key)} className="py-1 pr-4 text-left font-medium">
+                  <button
+                    type="button"
+                    onClick={() => onSort(c.key)}
+                    className={`flex items-center gap-1 font-medium hover:text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors ${
+                      sort === c.key ? "text-ink" : "text-text-secondary"
+                    }`}
+                  >
+                    {c.label}
+                    <span className="inline-block w-2.5" aria-hidden="true">
+                      {sort === c.key ? (dir === "asc" ? "▲" : "▼") : ""}
+                    </span>
+                  </button>
                 </th>
               ))}
-              <th className="py-1 pr-4 text-left font-medium">Language</th>
-              <th className="py-1 text-left font-medium">Flags</th>
+              <th scope="col" className="py-1 pr-4 text-left font-medium">
+                Language
+              </th>
+              <th scope="col" className="py-1 text-left font-medium">
+                Flags
+              </th>
             </tr>
           </thead>
           <tbody>
             {result?.items.map((item) => {
               const badges = missingBadges(item);
+              const badgeText =
+                badges.length > 0 ? `${badges.length} missing: ${badges.map((b) => b.label).join(", ")}` : "";
               return (
                 <tr key={item.identifier} className="border-b border-border/60 hover:bg-panel transition-colors align-top">
                   <td className="py-1.5 pr-4 font-medium text-ink max-w-[320px]">
-                    <Link href={`/collections/leiden/${encodeURIComponent(item.identifier)}`} className="hover:text-accent">
+                    <Link
+                      href={`/collections/leiden/${encodeURIComponent(item.identifier)}`}
+                      className="hover:text-accent focus:outline-2 focus:outline-accent focus:outline-offset-1 rounded-sm"
+                    >
                       {item.title || "(untitled)"}
                     </Link>
                   </td>
@@ -249,7 +314,8 @@ export default function LeidenBrowser() {
                     {badges.length > 0 && (
                       <span
                         className="text-[10px] text-status-warning uppercase tracking-widest"
-                        title={`Missing: ${badges.map((b) => b.label).join(", ")}`}
+                        title={badgeText}
+                        aria-label={badgeText}
                       >
                         {badges.length} missing
                       </span>
@@ -262,13 +328,13 @@ export default function LeidenBrowser() {
         </table>
       </div>
 
-      <div className="flex items-center justify-between mt-3 text-xs">
+      <nav aria-label="Results pages" className="flex items-center justify-between mt-3 text-xs">
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page <= 1}
-          className="px-2 py-1 border border-border rounded-sm text-text-secondary disabled:opacity-40 hover:text-ink transition-colors"
+          className="px-2 py-1 border border-border rounded-sm text-text-secondary disabled:opacity-40 hover:text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors"
         >
-          ← Prev
+          <span aria-hidden="true">← </span>Prev
         </button>
         <span className="text-text-secondary">
           Page {page} of {totalPages}
@@ -276,11 +342,11 @@ export default function LeidenBrowser() {
         <button
           onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
           disabled={page >= totalPages}
-          className="px-2 py-1 border border-border rounded-sm text-text-secondary disabled:opacity-40 hover:text-ink transition-colors"
+          className="px-2 py-1 border border-border rounded-sm text-text-secondary disabled:opacity-40 hover:text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors"
         >
-          Next →
+          Next<span aria-hidden="true"> →</span>
         </button>
-      </div>
+      </nav>
     </section>
   );
 }

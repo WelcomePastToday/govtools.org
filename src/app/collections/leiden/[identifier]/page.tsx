@@ -19,6 +19,26 @@ function asText(value: string | string[] | undefined): string | null {
   return Array.isArray(value) ? value.join("; ") : value;
 }
 
+// WCAG 3.1.2 (Language of Parts) -- this collection is majority German/French,
+// and the `language` metadata field already tells us which, so map it to a
+// real lang attribute instead of leaving foreign-language titles unmarked.
+const LANG_CODES: Record<string, string> = {
+  german: "de",
+  french: "fr",
+  latin: "la",
+  english: "en",
+  dutch: "nl",
+  swedish: "sv",
+  italian: "it",
+  spanish: "es",
+  danish: "da",
+};
+
+function langCode(language: string | null): string | undefined {
+  if (!language) return undefined;
+  return LANG_CODES[language.trim().toLowerCase()];
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { identifier } = await params;
   const item = await fetchArchiveItem(identifier);
@@ -54,25 +74,37 @@ export default async function LeidenItemPage({ params }: Props) {
       ? `https://${item.server}${item.dir}/${encodeURIComponent(pdf.name)}`
       : null;
 
+  const titleLang = langCode(language);
+
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
       <header className="border-b border-border bg-paper sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center gap-4">
-          <Link href="/" className="text-xl font-bold tracking-tight text-ink hover:text-accent transition-colors">
+          <Link href="/" className="text-xl font-bold tracking-tight text-ink hover:text-accent focus:outline-2 focus:outline-accent focus:outline-offset-1 rounded-sm transition-colors">
             GovTools
-          </Link>
-          <Link
-            href="/collections/leiden"
-            className="text-xs font-medium text-text-secondary uppercase tracking-widest hover:text-accent transition-colors"
-          >
-            ← Leiden Dissertations Collection
           </Link>
         </div>
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-6">
+        <nav aria-label="Breadcrumb" className="mb-3">
+          <ol className="flex items-center gap-1.5 text-xs text-text-secondary uppercase tracking-widest">
+            <li>
+              <Link href="/collections/leiden" className="hover:text-accent focus:outline-2 focus:outline-accent focus:outline-offset-1 rounded-sm transition-colors">
+                Leiden Dissertations Collection
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li aria-current="page" className="text-ink truncate max-w-[280px]">
+              {title}
+            </li>
+          </ol>
+        </nav>
+
         <section className="pb-3 mb-4 border-b border-border">
-          <h1 className="text-xl font-bold tracking-tight text-ink">{title}</h1>
+          <h1 className="text-xl font-bold tracking-tight text-ink" lang={titleLang}>
+            {title}
+          </h1>
           {creator && <p className="text-sm text-text-secondary mt-1">{creator}</p>}
         </section>
 
@@ -89,12 +121,12 @@ export default async function LeidenItemPage({ params }: Props) {
         )}
 
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 mb-6 text-xs">
-          <Field label="University" value={institution} />
-          <Field label="Department" value={department} />
+          <Field label="University" value={institution} lang={titleLang} />
+          <Field label="Department" value={department} lang={titleLang} />
           <Field label="Date" value={date ? date.slice(0, 10) : null} />
           <Field label="Language" value={language} />
-          <Field label="Major professor" value={majorProfessor} />
-          <Field label="Publisher" value={publisher} />
+          <Field label="Major professor" value={majorProfessor} lang={titleLang} />
+          <Field label="Publisher" value={publisher} lang={titleLang} />
           <Field label="Identifier" value={identifier} mono />
         </section>
 
@@ -103,18 +135,20 @@ export default async function LeidenItemPage({ params }: Props) {
             href={detailsUrl}
             target="_blank"
             rel="noreferrer"
-            className="text-xs px-3 py-1.5 border border-border rounded-sm text-ink hover:border-accent hover:text-accent transition-colors"
+            className="text-xs px-3 py-1.5 border border-border rounded-sm text-ink hover:border-accent hover:text-accent focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors"
           >
-            View on archive.org →
+            View on archive.org<span aria-hidden="true"> →</span>
+            <span className="sr-only"> (opens in a new tab)</span>
           </a>
           {pdfUrl && (
             <a
               href={pdfUrl}
               target="_blank"
               rel="noreferrer"
-              className="text-xs px-3 py-1.5 border border-border rounded-sm text-ink hover:border-accent hover:text-accent transition-colors"
+              className="text-xs px-3 py-1.5 border border-border rounded-sm text-ink hover:border-accent hover:text-accent focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors"
             >
-              Open PDF →
+              Open PDF<span aria-hidden="true"> →</span>
+              <span className="sr-only"> (opens in a new tab)</span>
             </a>
           )}
         </section>
@@ -129,11 +163,23 @@ export default async function LeidenItemPage({ params }: Props) {
   );
 }
 
-function Field({ label, value, mono }: { label: string; value: string | null; mono?: boolean }) {
+function Field({
+  label,
+  value,
+  mono,
+  lang,
+}: {
+  label: string;
+  value: string | null;
+  mono?: boolean;
+  lang?: string;
+}) {
   return (
     <div>
       <p className="text-[10px] uppercase tracking-widest text-text-secondary">{label}</p>
-      <p className={`text-ink ${mono ? "font-mono text-[11px]" : ""}`}>{value || "—"}</p>
+      <p className={`text-ink ${mono ? "font-mono text-[11px]" : ""}`} lang={value ? lang : undefined}>
+        {value || <span aria-label="Not available">—</span>}
+      </p>
     </div>
   );
 }

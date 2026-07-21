@@ -54,26 +54,29 @@ export default function ExportPanel({
   })();
 
   const scopeCount = scope === "view" ? viewCount : scope === "filtered" ? filteredCount : grandTotal;
+  const panelId = "leiden-export-panel";
 
   return (
     <div className="border border-border rounded-sm mb-4">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-ink hover:bg-panel transition-colors"
+        aria-expanded={open}
+        aria-controls={panelId}
+        className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-ink hover:bg-panel focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors"
       >
         <span>Export</span>
-        <span className="text-text-secondary">{open ? "▲" : "▼"}</span>
+        <span className="text-text-secondary" aria-hidden="true">{open ? "▲" : "▼"}</span>
       </button>
 
       {open && (
-        <div className="px-3 pb-3 pt-1 border-t border-border text-xs">
+        <div id={panelId} className="px-3 pb-3 pt-1 border-t border-border text-xs">
           <div className="flex flex-wrap gap-4 mb-3">
             <label className="flex items-center gap-2">
               <span className="text-text-secondary">Format</span>
               <select
                 value={format}
                 onChange={(e) => setFormat(e.target.value as Format)}
-                className="px-2 py-1 border border-border rounded-sm bg-paper text-ink"
+                className="px-2 py-1 border border-border rounded-sm bg-paper text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1"
               >
                 <option value="csv">CSV</option>
                 <option value="jsonl">JSON Lines</option>
@@ -86,7 +89,7 @@ export default function ExportPanel({
               <select
                 value={scope}
                 onChange={(e) => setScope(e.target.value as Scope)}
-                className="px-2 py-1 border border-border rounded-sm bg-paper text-ink"
+                className="px-2 py-1 border border-border rounded-sm bg-paper text-ink focus:outline-2 focus:outline-accent focus:outline-offset-1"
               >
                 <option value="view">Current page ({viewCount.toLocaleString()})</option>
                 <option value="filtered">Matching current filters ({filteredCount.toLocaleString()})</option>
@@ -95,31 +98,35 @@ export default function ExportPanel({
             </label>
           </div>
 
-          <p className="text-text-secondary mb-1.5">Fields</p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
-            {FIELD_OPTIONS.map((f) => (
-              <label key={f.key} className="flex items-center gap-1.5 text-ink">
-                <input
-                  type="checkbox"
-                  checked={fields.has(f.key)}
-                  onChange={() => toggleField(f.key)}
-                  className="accent-accent"
-                />
-                {f.label}
-              </label>
-            ))}
-          </div>
+          <fieldset className="mb-3 border-0 p-0 m-0">
+            <legend className="text-text-secondary mb-1.5 px-0">Fields</legend>
+            <div className="flex flex-wrap gap-x-4 gap-y-1">
+              {FIELD_OPTIONS.map((f) => (
+                <label key={f.key} className="flex items-center gap-1.5 text-ink">
+                  <input
+                    type="checkbox"
+                    checked={fields.has(f.key)}
+                    onChange={() => toggleField(f.key)}
+                    className="accent-accent focus:outline-2 focus:outline-accent focus:outline-offset-1"
+                  />
+                  {f.label}
+                </label>
+              ))}
+            </div>
+          </fieldset>
 
-          {fields.size === 0 ? (
-            <span className="text-text-secondary">Select at least one field to export.</span>
-          ) : (
-            <a
-              href={exportUrl}
-              className="inline-block px-3 py-1.5 border border-accent rounded-sm text-accent hover:bg-accent/5 transition-colors"
-            >
-              Download {scopeCount.toLocaleString()} rows ({format.toUpperCase()}) →
-            </a>
-          )}
+          <p role="status" aria-live="polite">
+            {fields.size === 0 ? (
+              <span className="text-text-secondary">Select at least one field to export.</span>
+            ) : (
+              <a
+                href={exportUrl}
+                className="inline-block px-3 py-1.5 border border-accent rounded-sm text-accent hover:bg-accent/5 focus:outline-2 focus:outline-accent focus:outline-offset-1 transition-colors"
+              >
+                Download {scopeCount.toLocaleString()} rows ({format.toUpperCase()})<span aria-hidden="true"> →</span>
+              </a>
+            )}
+          </p>
         </div>
       )}
     </div>
