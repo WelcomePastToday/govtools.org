@@ -9,6 +9,39 @@ export const metadata: Metadata = {
     "Which model to use for extracting catalog metadata from government documents — accuracy, schema validity, speed, and cost across hosted and free local models. An Archival Notation Tracer (ANT) variation of the Model Evals benchmark.",
 };
 
+const PANEL = new Set(ANT_MODEL_ROWS.filter((r) => r.isPanel).map((r) => r.model));
+const tierOf = (model: string) => ANT_MODEL_ROWS.find((r) => r.model === model)?.tier;
+
+// Three distinct "best" claims — never collapse these into one. Panel members
+// define the silver reference, so their accuracy is circular/inflated; a
+// "best overall" that quietly means "best paid flagship" is exactly the
+// framing we want to avoid crowning without the free/local counterpart.
+const scored = ANT_MODEL_ROWS.filter((r) => r.accuracy != null);
+const bestOverall = scored.reduce((a, b) => ((b.accuracy ?? -1) > (a.accuracy ?? -1) ? b : a));
+const bestNonPanelPaid = scored
+  .filter((r) => r.tier === "hosted" && !r.isPanel)
+  .reduce((a, b) => ((b.accuracy ?? -1) > (a.accuracy ?? -1) ? b : a));
+const bestFree = scored
+  .filter((r) => r.tier === "local")
+  .reduce((a, b) => ((b.accuracy ?? -1) > (a.accuracy ?? -1) ? b : a));
+const freeVsPaidGap =
+  bestNonPanelPaid.accuracy != null && bestFree.accuracy != null
+    ? bestNonPanelPaid.accuracy - bestFree.accuracy
+    : null;
+
+// Per-field best FREE/local model (mirrors the host-classification eval's
+// "best free model" routing table) — computed from the same shipped matrix,
+// no re-run needed.
+const bestFreePerField = ANT_FIELD_MATRIX.map((row) => {
+  let best: { model: string; score: number } | null = null;
+  for (const col of ANT_FIELD_COLS) {
+    if (tierOf(col.model) !== "local") continue;
+    const v = row.scores[col.model];
+    if (v != null && (best == null || v > best.score)) best = { model: col.model, score: v };
+  }
+  return { field: row.field, best };
+}).filter((r) => r.best != null) as { field: string; best: { model: string; score: number } }[];
+
 export default function AntCatalogPage() {
   return (
     <div className="min-h-screen bg-paper text-ink font-sans">
@@ -82,9 +115,11 @@ export default function AntCatalogPage() {
               <span className="text-[10px] text-text-secondary uppercase tracking-widest">02</span>
             </div>
             <p className="text-xs text-text-secondary leading-snug mb-2">
-              Accuracy is field-dependent, so the cheapest correct pipeline routes each field to the best
-              (non-panel) model for it rather than picking one model overall. Each cell is per-field agreement
-              accuracy; the highlighted cell is the best non-panel model for that field (where you would route it).
+              Accuracy is field-dependent, so the cheapest correct pipeline routes each field to its best model
+              rather than picking one model overall. Each cell is per-field agreement accuracy.{" "}
+              <strong className="text-ink">Gold</strong> = best non-panel model for that field (cost-agnostic routing
+              pick). <strong className="text-status-success">Green ring</strong> = best <em>free/local</em> model for
+              that field (table 03) — the pick if you can only route to models with no per-token cost.
             </p>
             <div className="overflow-x-auto">
               <table className="text-xs leading-snug border-collapse">
@@ -94,66 +129,106 @@ export default function AntCatalogPage() {
                     {ANT_FIELD_COLS.map((c) => (
                       <th
                         key={c.model}
-                        title={c.model + (c.macro == null ? "" : ` · macro ${c.macro.toFixed(2)}`)}
+                        title={c.model + (c.macro == null ? "" : ` · macro ${c.macro.toFixed(2)}`) + (tierOf(c.model) === "local" ? " · free/local" : "")}
                         className={`py-1 px-2 text-right font-medium whitespace-nowrap ${c.isPanel ? "text-text-secondary/60" : ""}`}
                       >
-                        {c.short}{c.isPanel ? "°" : ""}
+                        {c.short}{c.isPanel ? "°" : ""}{tierOf(c.model) === "local" ? "†" : ""}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {ANT_FIELD_MATRIX.map((r) => (
-                    <tr key={r.field} className="border-b border-border/60 hover:bg-panel transition-colors">
-                      <td className="py-1.5 pr-3 font-medium text-ink whitespace-nowrap sticky left-0 bg-background">{r.field}</td>
-                      {ANT_FIELD_COLS.map((c) => {
-                        const v = r.scores[c.model];
-                        const isBest = r.bestModel === c.model;
-                        return (
-                          <td
-                            key={c.model}
-                            className={`py-1.5 px-2 tabular-nums text-right ${
-                              isBest
-                                ? "font-bold text-accent bg-accent/10"
-                                : c.isPanel
-                                  ? "text-text-secondary/60"
-                                  : "text-ink"
-                            }`}
-                          >
-                            {v == null ? "—" : v.toFixed(2)}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
+                  {ANT_FIELD_MATRIX.map((r) => {
+                    const freeBestModel = bestFreePerField.find((f) => f.field === r.field)?.best?.model;
+                    return (
+                      <tr key={r.field} className="border-b border-border/60 hover:bg-panel transition-colors">
+                        <td className="py-1.5 pr-3 font-medium text-ink whitespace-nowrap sticky left-0 bg-background">{r.field}</td>
+                        {ANT_FIELD_COLS.map((c) => {
+                          const v = r.scores[c.model];
+                          const isBest = r.bestModel === c.model;
+                          const isFreeBest = freeBestModel === c.model;
+                          return (
+                            <td
+                              key={c.model}
+                              className={`py-1.5 px-2 tabular-nums text-right ${
+                                isBest
+                                  ? "font-bold text-accent bg-accent/10"
+                                  : c.isPanel
+                                    ? "text-text-secondary/60"
+                                    : "text-ink"
+                              } ${isFreeBest ? "ring-1 ring-inset ring-status-success" : ""}`}
+                            >
+                              {v == null ? "—" : v.toFixed(2)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
             <p className="text-[10px] text-text-secondary leading-snug mt-2">
               ° panel / reference-defining model (gpt-4.1, opus, gemini-flash) — its accuracy is circular and
-              shown muted, not eligible as a routing target. Highlighted = best non-panel model per field.
-              Columns ordered by macro accuracy.
+              shown muted, not eligible as a routing target. † free/local (Ollama) model. Gold = best non-panel
+              model per field; green ring = best free/local model per field (table 03). Columns ordered by macro accuracy.
             </p>
           </section>
         )}
+
+        <section className="mb-7">
+          <div className="flex items-baseline justify-between border-b border-border pb-1 mb-2">
+            <h2 className="text-xs font-bold text-ink uppercase tracking-widest">Per-field routing — best free/local model</h2>
+            <span className="text-[10px] text-text-secondary uppercase tracking-widest">03</span>
+          </div>
+          <p className="text-xs text-text-secondary leading-snug mb-2">
+            The best <strong className="text-ink">free, local</strong> (Ollama) model for each field — the pick if
+            the pipeline can only route to models with $0 per-token cost, no matter what table 01&rsquo;s single
+            best-overall model is.
+          </p>
+          <table className="text-xs leading-snug border-collapse">
+            <thead>
+              <tr className="text-[10px] uppercase tracking-widest text-text-secondary">
+                <th className="py-1 pr-4 text-left font-medium">Field</th>
+                <th className="py-1 pr-4 text-left font-medium">Best free model</th>
+                <th className="py-1 px-2 text-right font-medium">Accuracy</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bestFreePerField.map((r) => (
+                <tr key={r.field} className="border-b border-border/60 hover:bg-panel transition-colors">
+                  <td className="py-1.5 pr-4 font-medium text-ink whitespace-nowrap">{r.field}</td>
+                  <td className="py-1.5 pr-4 text-ink whitespace-nowrap">{r.best.model}</td>
+                  <td className={`py-1.5 px-2 tabular-nums text-right font-medium ${r.best.score >= 0.85 ? "text-status-success" : r.best.score >= 0.6 ? "text-ink" : "text-status-warning"}`}>
+                    {r.best.score.toFixed(2)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
 
         <section className="mb-6 text-xs text-text-secondary leading-snug">
           <h2 className="text-xs font-bold text-ink uppercase tracking-widest border-b border-border pb-1 mb-2">
             The cost story
           </h2>
           <p className="mb-1.5">
-            The current catalog pipeline runs on <strong className="text-ink">grok-4.20</strong> (~grok-4 tier,
-            ~0.74 accuracy here). Field-completeness alone suggested cheap/free models were equivalent — but{" "}
-            <strong className="text-ink">accuracy tells a sharper story</strong>: free local models emit perfect
-            schema yet get more values wrong (≈0.49–0.57), and <strong className="text-ink">gpt-4o-mini</strong>{" "}
-            (~24× cheaper) drops to ≈0.57. The strongest genuinely-cheap, non-panel option is{" "}
-            <strong className="text-ink">claude-haiku-4-5</strong> (≈0.77).
+            Best free/local model: <strong className="text-ink">{bestFree.model}</strong> ={" "}
+            {bestFree.accuracy?.toFixed(3)}. Best non-panel paid model:{" "}
+            <strong className="text-ink">{bestNonPanelPaid.model}</strong> = {bestNonPanelPaid.accuracy?.toFixed(3)}.
+            Gap: <strong className="text-ink">{freeVsPaidGap != null ? (freeVsPaidGap >= 0 ? "+" : "") + freeVsPaidGap.toFixed(3) : "—"}</strong>{" "}
+            — free local models are not yet competitive here on raw accuracy, though they emit perfectly-formed
+            schema every time. (Best overall, including circular panel members:{" "}
+            <strong className="text-ink">{bestOverall.model}</strong> = {bestOverall.accuracy?.toFixed(3)} — not a
+            deployable target, since it defines the reference it's scored against.)
           </p>
           <p>
             Because accuracy is <strong className="text-ink">field-dependent</strong> (jurisdiction codes are easy
             for everyone; document type and title are not), the cheapest <em>correct</em> pipeline is{" "}
-            <strong className="text-ink">per-field routing</strong> (table 02) rather than one model overall.
-            Reference is frontier-consensus silver on {ANT_RUN_META.docs} docs — directional, not a human gold set.
+            <strong className="text-ink">per-field routing</strong> (tables 02–03) rather than one model overall —
+            and the free-model routing table (03) shows exactly where a $0 pipeline is viable field-by-field vs.
+            where paying still helps. Reference is frontier-consensus silver on {ANT_RUN_META.docs} docs —
+            directional, not a human gold set.
           </p>
         </section>
 
